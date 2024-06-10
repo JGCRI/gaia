@@ -1,4 +1,4 @@
-title: rtemplate
+title: gaea
 
 home:
   sidebar:
@@ -26,6 +26,6 @@ navbar:
     - icon: fas fa-question
       text: Support
       href: SUPPORT.html
-      
+
 toc:
   depth: 3

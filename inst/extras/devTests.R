@@ -1,117 +1,74 @@
 # Testing scripts
-library(osiris); library(dplyr);library(tibble);library(ncdf4);library(rlang); library(data.table)
+library(gaea); library(dplyr);library(tibble)
 
-# Test for Step 0: get_example_data
-# You may define your own write_dir and dir_name.
-osiris::get_example_data(
-  write_dir = getwd(),
-  dir_name = "Osiris_Data_Test",
-  data_link = "https://zenodo.org/record/7530067/files/Osiris_Data_Test.zip?download=1"
-) -> data_folder; data_folder;
+# Test Script
 
-# Change data folder
-# Run Step 0 to get the path to the data files
-# data_folder = ADD_PATH_TO_YOUR_OSIRIS_DATA
+output_dir <- 'C:/WorkSpace/github/test_scripts/gaea/output'
+gaea::weighted_climate(pr_files = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/pr_mon_basd_CanESM5_W5E5v2_GCAM_ref_2015-2100.nc',
+                       tas_file = NULL,
+                       # tas_files = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/tas_mon_basd_CanESM5_W5E5v2_GCAM_ref_2015-2100.nc',
+                       timestep = 'monthly',
+                       climate_model = 'canesm5',
+                       climate_scenario = 'gcam-ref',
+                       time_periods = seq(2015, 2020, 1),
+                       output_dir = output_dir)
 
-# Test for wrf_to_osiris
-osiris::wrf_to_osiris(
-  wrf_ncdf = ADD_PATH_TO_YOUR_WRF_DATA,
-  write_dir = paste0(data_folder,"/wrf_to_osiris"),
-  osiris_ncdf = paste0(data_folder,"/climate_data/tas_Amon_CanESM5_historical_r1i1p1f1_orig.nc"),
-  time_step = "3 hours",
-  scenario = "historical"
+pr_files = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/pr_mon_basd_CanESM5_W5E5v2_GCAM_ref_2015-2100.nc'
+tas_files = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/tas_mon_basd_CanESM5_W5E5v2_GCAM_ref_2015-2100.nc'
+timestep = 'monthly'
+climate_model = 'canesm5'
+climate_scenario = 'gcam-ref'
+time_periods = seq(2015, 2020, 1)
+start_year = 2015
+end_year = 2100
+base_year = 2015
+diagnostics <- TRUE
+output_dir = output_dir
+
+crops <- tibble::tibble(
+  crop_mirca = c('wheat', 'sorghum', 'maize', 'rice', 'soybean', 'sugarcane', 'sugarbeet', 'cotton', 'cassava', 'root_tuber', 'sunflower'),
+  crop_sage = c('wheat', 'sorghum', 'maize', 'rice', 'soybeans', 'sugarcane', 'sugarbeets', 'cotton', 'cassava', 'potatoes', 'sunflower')
 )
 
 
-# Test for Step 1: calculate_deltas_from_climate
-osiris::calculate_deltas_from_climate(
-  climate_dir = paste0(data_folder,"/climate_data"),
-  write_dir = paste0(data_folder,"/outputs_calculate_delta_from_climate"),
-  monthly_growing_season = paste0(data_folder,"/growing_seasons/pmonth_gslength_unifWheat_smallareamask.csv"),
-  monthly_harvest_season = paste0(data_folder,"/growing_seasons/p_h_months_unifWheat_smallareamask.csv"),
-  growing_season_dir = paste0(data_folder,"/outputs_growing_season_climate_data"),
-  esm_name = "CanESM5",
-  crops = c("Corn", "Wheat", "Rice", "Soy"),
-  irrigation_rainfed = c("IRR", "RFD"),
-  minlat = -87.8638,
-  minlon = -179.75,
-  rollingAvgYears = 1,
-  tas_historical = "tas_Amon_CanESM5_historical_r1i1p1f1_gn_201001-201501.nc",
-  tas_projected = "tas_Amon_CanESM5_ssp245_r1i1p1f1_gn_201501-202101.nc",
-  pr_historical = "pr_Amon_CanESM5_historical_r1i1p1f1_gn_201001-201501.nc",
-  pr_projected = "pr_Amon_CanESM5_ssp245_r1i1p1f1_gn_201501-202101.nc",
-  historical_start_year = 2010,
-  projection_start_year = 2015
-)
+crop_cal <- gaea::crop_calendars(output_dir = output_dir)
 
 
-# Test for Step 2: grid_to_basin_yield
-osiris::grid_to_basin_yield(
-  carbon = paste0(data_folder,"/yield_response_inputs/magicc_rcp8p5_co2.csv"),
-  weight_floor_ha = 1,
-  emulator_dir = paste0(data_folder,"/yield_response_fcns/ggcmi_phase2"),
-  input_dir = paste0(data_folder,"/outputs_calculate_delta_from_climate"),
-  area_dir = paste0(data_folder,"/area_data"),
-  basin_grid = paste0(data_folder,"/mapping_data/gridData.csv"),
-  basin_id = paste0(data_folder,"/mapping_data/gcam_basin_ids.csv"),
-  write_dir = paste0(data_folder,"/outputs_grid_to_basin_yield"),
-  wheat_area = paste0(data_folder,"/winter_and_spring_wheat_areas_v1_180627.nc4"),
-  crops = c("maize", "rice", "soy", "wheat"),
-  esm_name = "CanESM5",
-  cm_name = "LPJmL",
-  scn_name = "ssp245",
-  N = 200
-)
+
+# test data_aggregation
+climate_hist_dir <- file.path(output_dir, 'climate', 'country_climate_txt')
+climate_impact_dir <- file.path(output_dir, 'climate')
+
+crop <- gaea::data_aggregation(climate_hist_dir = climate_hist_dir,
+                               climate_impact_dir = climate_impact_dir,
+                               climate_model = climate_model,
+                               climate_scenario = climate_scenario,
+                               output_dir = output_dir)
 
 
-# Test for Step 3: yield_to_gcam_basin
-osiris::yield_to_gcam_basin(
-  write_dir = paste0(data_folder,"/outputs_yield_to_gcam_basin"),
-  emulated_basin_yield_dir = paste0(data_folder,"/outputs_grid_to_basin_yield"),
-  iso_GCAM_region_mapping = paste0(data_folder,"/mapping_data/iso_GCAM_regID.csv"),
-  FAO_ag_mapping = paste0(data_folder,"/gcamdata_files/FAO_ag_items_PRODSTAT_expanded_corrected.csv"),
-  iso_harvest_area_mapping = paste0(data_folder,"/gcamdata_files/L100.LDS_ag_HA_ha.csv"),
-  iso_GCAM_basin_mapping = paste0(data_folder,"/mapping_data/gcam_basin_ids.csv"),
-  esm_name = "CanESM5",
-  scn_name = "ssp245",
-  max_CCImult = 2.5,
-  min_CCImult = 0.01,
-  weight_floor_ha = 1,
-  rolling_avg_years = 1,
-  maxHistYear = 2015,
-  minFutYear = 2015,
-  maxFutYear = 2020,
-  extrapolate_to = NULL
-)
+# test yield_regression
+gaea::yield_regression(diagnostics = diagnostics,
+                       output_dir = output_dir)
 
 
-# Test for Step 4: create_AgProdChange_xml
-osiris::create_AgProdChange_xml(
-  write_dir = paste0(data_folder,"/outputs_create_AgProdChange_xml"),
-  esm_name = 'CanESM5',
-  scn_name = 'ssp245',
-  ssp = 'ssp5',
-  ag_irr_ref = paste0(data_folder,"/reference_agprodchange/L2052.AgProdChange_irr_high.csv"),
-  bio_irr_ref = paste0(data_folder,"/reference_agprodchange/L2052.AgProdChange_bio_irr_ref.csv"),
-  ag_impacts = paste0(data_folder,"/outputs_yield_to_gcam_basin/ag_impacts_CanESM5_ssp245_rcp_gcm_gcm_R_GLU_C_IRR_allyears_RA3_gridcull_allyroutlier.csv"),
-  bio_impacts = paste0(data_folder,"/outputs_yield_to_gcam_basin/bio_impacts_CanESM5_ssp245_rcp_gcm_gcm_R_GLU_C_IRR_allyears_RA3_gridcull_allyroutlier.csv"),
-  GCAM_region_mapping = paste0(data_folder,"/mapping_data/GCAM_region_names.csv"),
-  timestep = 5,
-  maxHistYear = 2010,
-  minFutYear = 2015,
-  appliedto = "full"
-)
+# test z_estimate
+t <- gaea::z_estimate(climate_model,
+                      climate_scenario,
+                      crop_name = 'maize',
+                      output_dir = output_dir)
+
+# test yield_projections
+t <- gaea::yield_projections(climate_model = climate_model,
+                             climate_scenario = climate_scenario,
+                             base_year = base_year,
+                             start_year = start_year,
+                             end_year = end_year,
+                             smooth_window = 20,
+                             diagnostics = T,
+                             output_dir = output_dir)
 
 
-# Test for WRF diagnostic_plots
-osiris::diagnostic_plots(
-  hot_ssp3_apc = paste0(data_folder,"/outputs_create_AgProdChange_xml/ag_prodchange_rcp8p5_hot_ssp3_WRF_LPJmL.csv"),
-  hot_ssp5_apc = paste0(data_folder,"/outputs_create_AgProdChange_xml/ag_prodchange_rcp8p5_hot_ssp5_WRF_LPJmL.csv"),
-  cold_ssp3_apc = paste0(data_folder,"/outputs_create_AgProdChange_xml/ag_prodchange_rcp8p5_cold_ssp3_WRF_LPJmL.csv"),
-  cold_ssp5_apc = paste0(data_folder,"/outputs_create_AgProdChange_xml/ag_prodchange_rcp8p5_cold_ssp5_WRF_LPJmL.csv"),
-  reference_apc = paste0(data_folder,"/gcamdata_files/ag_prodchange_ref_IRR_MGMT.csv"),
-  agyield = paste0(data_folder,"/gcamdata_files/L101.ag_Yield_kgm2_R_C_Y_GLU.csv"),
-  iso_GCAM_basin_mapping = paste0(data_folder,"/mapping_data/gcam_basin_ids.csv"),
-  write_dir = paste0(data_folder,"/outputs_diagnostic_plots")
-)
-
+# test plot_map
+gaea::plot_map(data = t,
+               plot_years = 2090,
+               output_dir = output_dir)

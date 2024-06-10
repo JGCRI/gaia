@@ -5,7 +5,7 @@
 <!-------------------------->
 <!-------------------------->
 
-Author, I., 2022. rtemplate: A template to build R packages using GitHub Actions for CI/CD, testing, code coverage, and documentation. (In progress) Journal, DOI: XXXX
+Zhao, M., Waldhoff, S., Tebaldi, C., Snyder, A. 2022. gaea: An R package to estimate crop yield responses to temperature and precipitation. (In progress) Journal of Open Source Software, DOI: XXXX
 
 
 <!-------------------------->
@@ -15,12 +15,13 @@ Author, I., 2022. rtemplate: A template to build R packages using GitHub Actions
 <!-------------------------->
 
 ```
-@article{snyder2022osiris,
-  title={A template to build R packages using GitHub Actions for CI/CD, testing, code coverage, and documentation},
-  author = {First Last1 and First Last2},
-  year = {2022},
+@article{zhao_2024,
+  title={gaea: An R package to estimate crop yield responses to temperature
+    and precipitation},
+  author = {Zhao, Mengqi and Waldhoff, Stephanie and Tebaldi, Claudia and Snyder, Abigail},
+  year = {2024},
   note = {In Progress},
-  url = {https://github.com/JGCRI/rtemplate},
+  url = {https://github.com/JGCRI/gaea},
   doi = {xxx},
   journal={Journal}
 }

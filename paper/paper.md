@@ -1,5 +1,5 @@
 ---
-title: 'rtemplate: Template to build R packages with GitHub actions and CI/CD, tests, codecov and documentation'
+title: 'gaea: An R package to estimate crop yield responses to temperature and precipitation'
 
 tags:
   - 

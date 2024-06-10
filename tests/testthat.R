@@ -1,4 +1,4 @@
 library(testthat)
-library(rtemplate)
+library(gaea)
 
-test_check("rtemplate")
+test_check("gaea")

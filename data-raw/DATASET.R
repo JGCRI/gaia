@@ -1,0 +1,395 @@
+# Save data to internal data/.rds file
+
+library(tibble)
+library(dplyr)
+library(raster)
+library(sp)
+library(usethis)
+library(ggplot2)
+
+#-------------------------------------------------------------------------------
+# Initialize
+#-------------------------------------------------------------------------------
+
+climate_data.dir <- 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data'
+model_data.dir <- 'C:/WorkSpace/GCIMS/GCIMS_Yield/regression_analysis/data'
+mirca.dir <- file.path(climate_data.dir, 'MIRCA2000')
+gcam_boundary.dir <- file.path(climate_data.dir, 'gcam_boundaries_moirai_3p1_0p5arcmin_wgs84')
+
+
+#===============================================================================
+# External Data
+#===============================================================================
+
+#-------------------------------------------------------------------------------
+# Historical CO2 concentration
+#-------------------------------------------------------------------------------
+co2_historical <- data.table::fread(
+  file = file.path(model_data.dir, 'data_raw', 'hist_co2_conc.csv'),
+  skip = 1, header = T)
+usethis::use_data(co2_historical, overwrite = TRUE)
+
+
+#-------------------------------------------------------------------------------
+# Reference Future CO2 concentration
+#-------------------------------------------------------------------------------
+co2 <- read.csv(
+  file = file.path(model_data.dir, 'data_ext', 'gcam7', 'ref_CO2_concentrations.csv'),
+  skip = 1, header = T) %>%
+  dplyr::select(`X1980`:`X2100`) %>%
+  tidyr::pivot_longer(tidyr::everything(), names_to = 'year', values_to = 'value') %>%
+  dplyr::mutate(year = as.integer(gsub('X', '', year))) %>%
+  # add 1951 value based on historical part of the co2_rcp4p5_8p5_1951_2099.csv
+  dplyr::bind_rows(data.frame(year = 1951, value = 311.1)) %>%
+  dplyr::arrange(year)
+
+co2_conc <- approx(x = co2$year, y = co2$value, method = 'linear',
+                   xout = seq(1951, 2100, 1))
+co2_projection <- data.frame(year = co2_conc$x, co2_conc = co2_conc$y)
+
+usethis::use_data(co2_projection, overwrite = TRUE)
+
+
+#===============================================================================
+# Internal Data
+#===============================================================================
+
+#-------------------------------------------------------------------------------
+# Country Mapping
+#-------------------------------------------------------------------------------
+# country names and ids (from Stephanie's ag yield data)
+country_id <- data.table::fread(file.path(climate_data.dir, 'country_id.csv')) %>%
+  dplyr::rename(country_id = ID,
+                country_name = NAME,
+                iso = ISO3)
+
+
+# FAO country from gcam boundary dataset (from https://zenodo.org/record/4688451)
+country_fao <- data.table::fread(file.path(gcam_boundary.dir,
+                                           'spatial_input_files',
+                                           'FAO_iso_VMAP0_ctry.csv')) %>%
+  dplyr::mutate(iso3 = toupper(iso3_abbr)) %>%
+  dplyr::select(fao_code, iso = iso3, fao_name)
+
+# merge
+mapping_country <- dplyr::full_join(country_fao, country_id, by = 'iso') %>%
+  dplyr::select(country_id, country_name, iso, fao_code, fao_name) %>%
+  dplyr::arrange(country_id) %>%
+  dplyr::filter(!is.na(country_name)) %>%
+  tibble::as_tibble()
+
+
+#-------------------------------------------------------------------------------
+# GCAM GLU-Country intersection Mapping
+#-------------------------------------------------------------------------------
+
+# Mapping with country defined by FAO and GLU defined by GCAM at 0.5 degree
+# Note: 0.5 deg pixels fraction bounded by country and 0.5 deg pixels fraction bounded by glu (basin)
+# 1. cell_area_x: 0.5 deg pixel area intersected by x
+# 2. Zone fraction_x: this is the portion of the polygon x from the pixel over the entire polygon
+# 3. Cell_fraction_x: this is the portion of the cell that is covered by an individual polygon x. Each cell can now be covered by multiple polygons.
+# 4. We also retain lat, lon info for each pixel so that you can join with any dataset at the same resolution.
+fao_glu_mapping <- data.table::fread(file.path(climate_data.dir, 'MIRCA_0.5deg_ctry_GLU.csv')) %>%
+  dplyr::rename(lon = Longitude,
+                lat = Latitude,
+                fao_code = ctry_id,
+                ctry_area = country_area) %>%
+  dplyr::select(-key, -cell_id, -zone_frac) %>%
+  dplyr::distinct()
+
+# Mapping of intersection between country defined by FAO and GLU defined by GCAM at 0.5 degree
+# Note: 0.5 deg pixels fraction bounded by country and glu (basin) intersection
+# 1. Zone fraction: this is the portion of the intersected polygon from the pixel over the entire polygon
+# 2. Cell_fraction: this is the portion of the cell that is covered by an individual intersected polygon. Each cell can now be covered by multiple polygons.
+# 3. polygon_area: area of the intersected polygon
+fao_glu_intersect_mapping <- data.table::fread(file.path(climate_data.dir, 'MIRCA_GCAM_Intersections_0.5deg.csv')) %>%
+  dplyr::rename(lon = Longitude,
+                lat = Latitude,
+                fao_code = ctry_id,
+                intersect_area = polygon_area,
+                cell_area_intersect = part_area) %>%
+  dplyr::select(-key, -cell_id, -cell_area, -zone_frac)
+
+# merge them together
+# glu is gcam basin, ctry_nm is GCAM country name
+mapping_fao_glu <- fao_glu_mapping %>%
+  dplyr::left_join(fao_glu_intersect_mapping,
+                   by = c('lon', 'lat', 'glu_id', 'glu_nm', 'fao_code'),
+                   suffix = c('', '_intersect')) %>%
+  dplyr::group_by(fao_code) %>%
+  tidyr::fill(ctry_nm, .direction = 'downup') %>%
+  dplyr::ungroup() %>%
+  dplyr::select(lat, lon, glu_id, glu_name = glu_nm, fao_code, country_name = ctry_nm,
+                cell_area, glu_area = GLU_area, ctry_area, intersect_area,
+                cell_area_glu = cell_area_GLU, cell_area_ctry, cell_area_intersect,
+                cell_frac_glu = cell_frac_GLU, cell_frac_ctry, cell_frac_intersect = cell_frac) %>%
+  tidyr::replace_na(list(intersect_area = 0, cell_area_intersect = 0, cell_frac_intersect = 0))
+
+
+#-------------------------------------------------------------------------------
+# MIRCA cropland area (m2)
+#-------------------------------------------------------------------------------
+
+# cropland area file list
+crop_area_list <- list.files(
+  file.path(climate_data.dir, 'MIRCA2000', 'harvested_area_grids_26crops_30mn'),
+  full.names = TRUE)
+
+# convert ASCII files to raster bick
+ras_brick <- raster::stack(crop_area_list)
+
+# get lon lat from MIRCA
+lonlat <- sp::SpatialPoints(cbind(lon = fao_glu_mapping$lon,
+                                  lat = fao_glu_mapping$lat))
+
+# get crop area by lon lat
+grid <- dplyr::bind_cols(
+  raster::as.data.frame(raster::extract(x = ras_brick, y = lonlat,  sp = T))) %>%
+  tibble::as_tibble()
+
+# update names
+name_orig <- names(ras_brick)
+name_new <- stringr::str_replace_all(name_orig, c('annual_area_harvested_|_ha_30mn'), '')
+
+grid <- grid %>%
+  dplyr::rename(setNames(c(name_orig, 'lon', 'lat'),
+                         c(name_new, 'lon', 'lat')))
+
+# convert area unit from ha to m2
+mirca_harvest_area <- grid %>%
+  dplyr::mutate(dplyr::across(-c(lon, lat), ~. * 10000))
+
+attr(mirca_harvest_area, 'unit') <- 'm2'
+
+
+#-------------------------------------------------------------------------------
+# ISO Mapping
+#-------------------------------------------------------------------------------
+mapping_gcam_iso <- gaea::input_data(
+  folder_path = file.path(model_data.dir, 'data_raw'),
+  input_file = 'iso_GCAM_regID_name.csv',
+  skip_number = 0)
+
+
+#-------------------------------------------------------------------------------
+# SAGE Data
+#-------------------------------------------------------------------------------
+# crop calendar dataset
+# https://sage.nelson.wisc.edu/data-and-models/datasets/crop-calendar-dataset/
+sage <- gaea::input_data(
+  folder_path = file.path(model_data.dir, 'data_raw'),
+  input_file = 'SAGE_All_data_with_climate.csv',
+  skip_number = 0)
+
+sage <- sage %>%
+  dplyr::select(-V1)
+
+
+#-------------------------------------------------------------------------------
+# FAO Data - Harvested Area
+#-------------------------------------------------------------------------------
+fao_yield <- gaea::input_data(
+  folder_path = file.path(model_data.dir, 'data_raw'),
+  input_file = 'FAO_yield_ha.csv',
+  skip_number = 0
+)
+
+fao_yield <- gaea::clean_yield(fao_yield)
+
+#-------------------------------------------------------------------------------
+# FAO Data - Irrigation Equip
+#-------------------------------------------------------------------------------
+fao_irr_equip <- gaea::input_data(
+  folder_path = file.path(model_data.dir, 'data_raw'),
+  input_file = 'fao_irr_equip.csv',
+  skip_number = 0
+)
+
+fao_irr_equip <- fao_irr_equip %>%
+  dplyr::rename(irr_equip = value) %>%
+  dplyr::select(-V1)
+
+
+#-------------------------------------------------------------------------------
+# GDP
+#-------------------------------------------------------------------------------
+gdp <- gaea::input_data(
+  folder_path = file.path(model_data.dir, 'data_raw'),
+  input_file = "pwt_gdp_pcap_ppp.csv",
+  skip_number = 0)
+
+gdp <- gdp %>%
+  dplyr::rename(gdp_pcap_ppp = gdp_pcap_ppp_thous) %>%
+  dplyr::select(-V1)
+
+
+#-------------------------------------------------------------------------------
+# MIRCA Crop Mapping
+#-------------------------------------------------------------------------------
+crop_mirca <- tibble::tribble(
+  ~ crop_id, ~ crop, ~ crop_name,
+  "crop01", "wheat", "wheat",
+  "crop02", "maize", "maize",
+  "crop03", "rice", "rice",
+  "crop04", "barley", NA,
+  "crop05", "rye", NA,
+  "crop06", "millet", NA,
+  "crop07", "sorghum", "sorghum",
+  "crop08", "soybean", "soybean",
+  "crop09", "sunflower", "sunflower",
+  "crop10", "potatoes", "root_tuber",
+  "crop11", "cassava", "cassava",
+  "crop12", "sugarcane", "sugarcane",
+  "crop13", "sugarbeet", "sugarbeet",
+  "crop14", "oil palm", NA,
+  "crop15", "rape seed,canola", NA,
+  "crop16", "groundnuts,peanuts", NA,
+  "crop17", "pulses", NA,
+  "crop18", "citrus", NA,
+  "crop19", "date palm", NA,
+  "crop20", "grapes,vine", NA,
+  "crop21", "cotton", "cotton",
+  "crop22", "cocoa", NA,
+  "crop23", "coffee", NA,
+  "crop24", "others perennial", NA,
+  "crop25", "fodder grasses", NA,
+  "crop26", "other annual", NA
+)
+
+#-------------------------------------------------------------------------------
+# Selected Crops
+#-------------------------------------------------------------------------------
+mapping_mirca_sage <- tibble::tibble(
+  crop_mirca = c('wheat', 'sorghum', 'maize', 'rice', 'soybean', 'sugarcane', 'sugarbeet', 'cotton', 'cassava', 'root_tuber', 'sunflower'),
+  crop_sage = c('wheat', 'sorghum', 'maize', 'rice', 'soybeans', 'sugarcane', 'sugarbeets', 'cotton', 'cassava', 'potatoes', 'sunflower')
+)
+
+
+#-------------------------------------------------------------------------------
+# Default Regression Formula
+#-------------------------------------------------------------------------------
+
+# default formula from Waldhoff et al., 2020 DOI: 10.1088/1748-9326/abadcb
+waldhoff_formula <- "ln_yield ~ year + temp_mean + temp_mean_2 + temp_max + temp_max_2 + temp_min + temp_min_2 +
+precip_mean + precip_mean_2 + precip_max + precip_max_2 + precip_min + precip_min_2 + factor( iso )"
+
+# yield equation
+y_hat <- "temp_mean*(d$temp_mean) + temp_mean_2*(d$temp_mean_2) +
+          temp_max*(d$temp_max) + temp_max_2*(d$temp_max_2) +
+          temp_min*(d$temp_min) + temp_min_2*(d$temp_min_2) +
+          precip_mean*(d$precip_mean) + precip_mean_2*(d$precip_mean_2) +
+          precip_max*(d$precip_max) + precip_max_2*(d$precip_max_2) +
+          precip_min*(d$precip_min) + precip_min_2*(d$precip_min_2)"
+
+# regression variables
+reg_vars <- c( "iso", "GCAM_region_name", "area_harvest", "yield", "ln_yield", "year", #"gdp_pcap_ppp", #"co2_conc", #"co2_conc_2",
+               "temp_mean", "temp_mean_2", #"temp_mean_3", "temp_mean_4",
+               "temp_max", "temp_max_2", #"temp_max_3", "temp_max_4",
+               "temp_min", "temp_min_2", #"temp_min_3", "temp_min_4",
+               "precip_mean", "precip_mean_2", #"precip_mean_3", "precip_mean_4")#,
+               "precip_max", "precip_max_2", #"precip_max_3", "precip_max_4",
+               "precip_min", "precip_min_2")#, "precip_min_3", "precip_min_4" )
+
+# variable to be used to weight
+weight_var <- "area_harvest"
+
+# p value for including variables
+n_sig <- 0.1
+
+# fit name to label the fitting specifications
+fit_name <- "fit_lnyield_mmm_quad_noco2_nogdp"
+
+
+#-------------------------------------------------------------------------------
+# GCAM region color definition
+#-------------------------------------------------------------------------------
+## GCAM region color definition
+region_color <- c( "Africa_Eastern" = "olivedrab2",
+                   "Africa_Northern" = "darkgreen",
+                   "Africa_Southern" = "green4",
+                   "Africa_Western" = "olivedrab3",
+                   "Argentina" = "mediumpurple",
+                   "Australia_NZ" = "cornflowerblue",
+                   "Brazil" = "mediumpurple4",
+                   "Canada" = "chocolate1",
+                   "Central America and Caribbean" = "darkorchid4",
+                   "Central Asia" = "firebrick1",
+                   "China" = "firebrick4",
+                   "Colombia" = "magenta4",
+                   "EU-12" = "dodgerblue4",
+                   "EU-15" = "dodgerblue3",
+                   "Europe_Eastern" = "deepskyblue3",
+                   "Europe_Non_EU" = "cadetblue2",
+                   "European Free Trade Association" = "cadetblue",
+                   "India" = "indianred",
+                   "Indonesia" = "firebrick2",
+                   "Japan" = "deeppink4",
+                   "Mexico" = "orchid4",
+                   "Middle East" = "darkolivegreen3",
+                   "Pakistan" = "indianred4",
+                   "Russia" = "red4",
+                   "South Africa" = "olivedrab4",
+                   "South America_Northern" = "purple4",
+                   "South America_Southern" = "purple2",
+                   "South Asia" = "indianred2",
+                   "South Korea" = "deeppink3",
+                   "Southeast Asia" = "red3",
+                   "Taiwan" = "deeppink3",
+                   "USA" = "chocolate3" )
+
+# color scale
+col_scale_region <- ggplot2::scale_colour_manual( name = "gcam_region", values = region_color )
+
+# fill scale
+col_fill_region <- ggplot2::scale_fill_manual( name = "gcam_region", values = region_color )
+
+# define theme
+theme_basic <- ggplot2::theme_bw() +
+  ggplot2::theme(
+    legend.text = element_text( size = 16, vjust = .5 ),
+    legend.title = element_text( size = 16, vjust = 2 ),
+    axis.text = element_text( size = 16 ),
+    axis.title = element_text( size = 20, face = "bold" ),
+    plot.title = element_text( size = 24, face = "bold", vjust = 1 ),
+    strip.text = element_text( size = 14 ) )
+
+
+#-------------------------------------------------------------------------------
+# World map: countries
+#-------------------------------------------------------------------------------
+
+library(rnaturalearth)
+
+sf_country <- rnaturalearth::ne_countries(returnclass = "sf", scale = 'medium')
+
+sf_country <- sf_country %>%
+  dplyr::select(country_name = admin,
+                iso = adm0_a3) %>%
+  dplyr::mutate(source = "rnaturalearth::ne_countries()",
+                country_name = as.character(country_name),
+                country_name = ifelse(country_name == "United States of America", "USA", country_name))
+
+sf_country <- sf_country[!grepl("Antarctica", sf_country$country_name), ]
+
+area_thresh <- units::set_units(50, km^2)
+sf::sf_use_s2(FALSE)
+area <- sf::st_area(sf_country)
+sf_country <- sf_country %>%
+  dplyr::mutate(area = area)
+
+map_country <- sf_country %>%
+  dplyr::select(country_name, iso, area, source, geometry)
+
+sf::st_crs(map_country) <- 4326
+
+
+
+#'*Save All Internal Data*
+#'=========================
+usethis::use_data(country_id, mapping_country, mapping_fao_glu, mapping_gcam_iso,
+                  crop_mirca, mapping_mirca_sage,
+                  mirca_harvest_area, sage, fao_yield, fao_irr_equip, gdp,
+                  waldhoff_formula, y_hat, reg_vars, weight_var, n_sig, fit_name,
+                  col_scale_region, col_fill_region, theme_basic,
+                  map_country,
+                  internal = TRUE, overwrite = TRUE )

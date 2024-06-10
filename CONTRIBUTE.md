@@ -1,6 +1,6 @@
-# How to Contribute to `rtemplate`
+# How to Contribute to `gaea`
 
-Thank you for taking the time to contribute and help us advance the science and architecture of `rtemplate`. We provide few guidelines that we ask contributors to follow. The guidelines aim to ease the maintainers' organizational and logistical duties, while encouraging development by others.
+Thank you for taking the time to contribute and help us advance the science and architecture of `gaea`. We provide few guidelines that we ask contributors to follow. The guidelines aim to ease the maintainers' organizational and logistical duties, while encouraging development by others.
 
 Before you start:
 
@@ -9,12 +9,12 @@ Before you start:
 
 ## Did you find a bug?
 
-* Make sure the bug was not already reported in the Github [Issues](https://github.com/JGCRI/rtemplate/issues).
-* [Open an issue](https://github.com/JGCRI/rtemplate/issues/new) and clearly describe the issue with as much information as possible. A code sample or an executable test case are recommended.
+* Make sure the bug was not already reported in the Github [Issues](https://github.com/JGCRI/gaea/issues).
+* [Open an issue](https://github.com/JGCRI/gaea/issues/new) and clearly describe the issue with as much information as possible. A code sample or an executable test case are recommended.
   
 ## Did you plan to write a patch that fixes a bug?
 
-  * [Open an issue](https://github.com/JGCRI/rtemplate/issues/new) and clearly describe the problem and discuss how your solution will affect `rtemplate`.
+  * [Open an issue](https://github.com/JGCRI/gaea/issues/new) and clearly describe the problem and discuss how your solution will affect `gaea`.
   * Fork the repository on GitHub to work on the patch.
   * Interact with the project maintainers to refine/change/prioritize your issue.
 
@@ -28,10 +28,10 @@ Before you start:
 
 ## Submitting changes
 
-* Submit a pull request with clear documentation of the methodology to the main `rtemplate` repository.
+* Submit a pull request with clear documentation of the methodology to the main `gaea` repository.
 * **Your pull request should include one of the following two statements**:
-   * You own the copyright on the code being contributed, and you hereby grant PNNL unlimited license to use this code in this version or any future version of `rtemplate`. You reserve all other rights to the code.
-   * Somebody else owns the copyright on the code being contributed (e.g., your employer because you did it as part of your work for them); you are authorized by that owner to grant PNNL an unlimited license to use this code in this version or any future version of `rtemplate`, and you hereby do so. All other rights to the code are reserved by the copyright owner.
+   * You own the copyright on the code being contributed, and you hereby grant PNNL unlimited license to use this code in this version or any future version of `gaea`. You reserve all other rights to the code.
+   * Somebody else owns the copyright on the code being contributed (e.g., your employer because you did it as part of your work for them); you are authorized by that owner to grant PNNL an unlimited license to use this code in this version or any future version of `gaea`, and you hereby do so. All other rights to the code are reserved by the copyright owner.
 * The core team looks at Pull Requests, and will respond as soon as possible.
 
 # Additional Resources
