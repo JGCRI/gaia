@@ -29,7 +29,7 @@ alt="https://jgcri.github.io/gaea/" height="60"/></a>
 <!-- ------------------------>
 <!-- ------------------------>
 
-Zhao, M., Waldhoff, S., Tebaldi, C., Snyder, A. 2022. gaea: An R package to estimate crop yield responses to temperature and precipitation. (In progress) Journal of Open Source Software, DOI: XXXX
+> Zhao, M., Waldhoff, S., Tebaldi, C., Snyder, A. 2024. gaea: An R package to estimate crop yield responses to temperature and precipitation. (In progress) Journal of Open Source Software, DOI: XXXX
 
 <!-- ------------------------>
 <!-- ------------------------>
