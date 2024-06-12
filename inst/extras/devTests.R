@@ -64,7 +64,7 @@ t <- gaea::yield_projections(climate_model = climate_model,
                              start_year = start_year,
                              end_year = end_year,
                              smooth_window = 20,
-                             diagnostics = T,
+                             diagnostics = F,
                              output_dir = output_dir)
 
 

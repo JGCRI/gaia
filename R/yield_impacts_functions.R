@@ -708,13 +708,13 @@ smooth_impacts <- function(data = NULL,
   d <- out
 
   d$model <- climate_model
-  d$rcp <- climate_scenario
+  d$scenario <- climate_scenario
   d$crop <- crop_name
 
   d.out <- d
 
   d <- d[ order( d$iso, d$year ), ]
-  d <- data.table::dcast( d, crop + model + iso ~ year, value.var = "yield_impact" )
+  d <- data.table::dcast( d, crop + model + scenario + iso ~ year, value.var = "yield_impact" )
 
   # save smoothed output
   gaea::output_data(
@@ -726,6 +726,63 @@ smooth_impacts <- function(data = NULL,
   return( d.out )
 }
 
+
+# ------------------------------------------------------------------------------
+#' format_projection
+#'
+#' Format smoothed yield impact projection to wider
+#'
+#' @param data Default = NULL. data frame from yield_projections with columns [crop, model, iso, years]
+#' @param base_year Default = NULL. integer for the base year (for GCAM)
+#' @param select_years Default = NULL. vector of integers of selected years to format
+#' @param output_dir Default = NULL. string for path to the output folder
+#'
+#' @keywords internal
+#' @export
+
+format_projection <- function(data = NULL,
+                              base_year = NULL,
+                              select_years = NULL,
+                              output_dir = NULL){
+
+  # get the harvest area (ha) from FAO data
+  d_ha <- subset(fao_yield, year == 2014)
+  d_ha <- subset( d_ha, select = c( "crop", "iso", "area_harvest" ) )
+  d_ha <- gaea::colname_replace( d_ha, "area_harvest", "harvested_area" )
+
+  # set up the years to filter out
+  if(is.null(select_years)){
+    select_years <- c(base_year, seq(2020, 2090, 10))
+  }
+
+  # format data
+  d <- data[ order( data$iso, data$year ), ]
+  d$cropmodel <- 'regression'
+  d$irrtype <- 'noirr'
+
+  d <- d %>%
+    dplyr::left_join(d_ha, by = c('iso', 'crop')) %>%
+    dplyr::select(cropmodel, model, scenario, iso, crop, irrtype, year,  harvested_area, yield_impact) %>%
+    # dplyr::select('cropmodel', 'climatemodel', 'crop', 'scenario', 'iso', 'irrtype', 'harvested_area') %>%
+    dplyr::filter(year %in% select_years) %>%
+    dplyr::mutate(year = paste0('X', year)) %>%
+    tidyr::pivot_wider(values_from = 'yield_impact', names_from = 'year') %>%
+    dplyr::rename(climatemodel = model)
+
+  # d <- data.table::dcast( d, climatemodel + scenario + iso + crop ~ year, value.var = "yield_impact" )
+  # d <- gaea::colname_replace(data, 'model', 'climatemodel')
+
+
+  # write output
+  gaea::output_data(
+    data = d,
+    save_path = file.path(output_dir, 'data_processed'),
+    file_name = paste0("format_yield_change_rel", base_year, ".csv" ),
+    data_info = 'Formatted smoothed yield')
+
+  return(d)
+
+}
 
 
 # ------------------------------------------------------------------------------
@@ -835,27 +892,6 @@ plot_map <- function(data = NULL,
                      plot_years = NULL,
                      output_dir = NULL){
 
-  # ----------------------------------------------------------------------------
-  # Group yields into bins for mapping
-  # data$yield_impact <- ifelse( data$yield_impact > 1.5, 13, data$yield_impact )
-  # data$yield_impact <- ifelse( data$yield_impact > 1.4 & data$yield_impact <= 1.5, 12, data$yield_impact )
-  # data$yield_impact <- ifelse( data$yield_impact > 1.3 & data$yield_impact <= 1.4, 11, data$yield_impact )
-  # data$yield_impact <- ifelse( data$yield_impact > 1.2 & data$yield_impact <= 1.3, 10, data$yield_impact )
-  # data$yield_impact <- ifelse( data$yield_impact > 1.1 & data$yield_impact <= 1.2, 9, data$yield_impact )
-  # data$yield_impact <- ifelse( data$yield_impact > 1.0 & data$yield_impact <= 1.1, 8, data$yield_impact )
-  # data$yield_impact <- ifelse( data$yield_impact == 1.0, 7, data$yield_impact )
-  # data$yield_impact <- ifelse( data$yield_impact >= 0.9 & data$yield_impact < 1.0, 6, data$yield_impact )
-  # data$yield_impact <- ifelse( data$yield_impact >= 0.8 & data$yield_impact < 0.9, 5, data$yield_impact )
-  # data$yield_impact <- ifelse( data$yield_impact >= 0.7 & data$yield_impact < 0.8, 4, data$yield_impact )
-  # data$yield_impact <- ifelse( data$yield_impact >= 0.6 & data$yield_impact < 0.7, 3, data$yield_impact )
-  # data$yield_impact <- ifelse( data$yield_impact >= 0.5 & data$yield_impact < 0.6, 2, data$yield_impact )
-  # data$yield_impact <- ifelse( data$yield_impact < 0.5, 1, data$yield_impact )
-
-  # gaea::output_data(data = data,
-  #                   save_path = file.path(output_dir, 'data_processed'),
-  #                   file_name = paste0("binned_yield_change_rel", base_year, ".csv" ),
-  #                   data_info = 'Binned yield impacts')
-
 
   data$iso <- gsub('rom', 'rou', data$iso)
   data$iso <- toupper(data$iso)
@@ -864,8 +900,6 @@ plot_map <- function(data = NULL,
     plot_years <- max(unique(data$year))
   }
 
-  # pal_fill <- c( "darkgoldenrod4", "darkgoldenrod", "goldenrod", "goldenrod1", "gold1", "lightgoldenrod1", "white",
-  #                "darkolivegreen2", "darkolivegreen3", "darkolivegreen4", "olivedrab4", "olivedrab", "darkolivegreen" )
 
   pal_fill <- c("#A71B4BFF", "#CD463CFF", "#E96F02FF", "#F39B29FF", "#F9C25CFF", "#FDE48FFF", "#FEFDBEFF",
                 "#C7F1AFFF", "#81DEADFF", "#22C4B3FF", "#00A3B6FF", "#0D7CB1FF", "#584B9FFF")

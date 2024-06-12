@@ -91,6 +91,11 @@ yield_projections <- function(climate_model = 'gcm',
 
   }
 
-  return(d_bind)
+  # format the smoothed yield
+  d_format <- gaea::format_projection(data = d_bind,
+                                      base_year = base_year,
+                                      output_dir = output_dir)
+
+  return(d_format)
 
 }
