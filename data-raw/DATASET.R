@@ -15,7 +15,7 @@ climate_data.dir <- 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data'
 model_data.dir <- 'C:/WorkSpace/GCIMS/GCIMS_Yield/regression_analysis/data'
 mirca.dir <- file.path(climate_data.dir, 'MIRCA2000')
 gcam_boundary.dir <- file.path(climate_data.dir, 'gcam_boundaries_moirai_3p1_0p5arcmin_wgs84')
-
+agprodchange.dir <- file.path(model_data.dir, 'data_ext')
 
 #===============================================================================
 #'* External Data *
@@ -48,6 +48,47 @@ co2_conc <- approx(x = co2$year, y = co2$value, method = 'linear',
 co2_projection <- data.frame(year = co2_conc$x, co2_conc = co2_conc$y)
 
 usethis::use_data(co2_projection, overwrite = TRUE)
+
+
+#-------------------------------------------------------------------------------
+# Reference Agricultural Producticvity Change
+#-------------------------------------------------------------------------------
+
+# for GCAM 7
+agprodchange_ni_gcam7 <- dplyr::bind_rows(
+  data.table::fread(file.path(agprodchange.dir, 'gcam7', 'L2052.AgProdChange_bio_irr_ref.csv')),
+  data.table::fread(file.path(agprodchange.dir, 'gcam7', 'L2052.AgProdChange_ag_irr_ref.csv'))) %>%
+  dplyr::mutate(year = paste0('X', year)) %>%
+  dplyr::rename(AgProdChange_ni = AgProdChange)
+
+agprodchange_ni_gcam7 <- dplyr::bind_rows(
+  agprodchange_ni_gcam7,
+  agprodchange_ni_gcam7 %>%
+    dplyr::select(-year, -AgProdChange_ni) %>%
+    dplyr::distinct() %>%
+    dplyr::mutate(year = 'X2015',
+                  AgProdChange_ni = 0)
+)
+
+usethis::use_data(agprodchange_ni_gcam7, overwrite = TRUE)
+
+# For GCAM6
+agprodchange_ni_gcam6 <- dplyr::bind_rows(
+  data.table::fread(file.path(agprodchange.dir, 'gcam6', 'L2052.AgProdChange_bio_irr_ref.csv')),
+  data.table::fread(file.path(agprodchange.dir, 'gcam6', 'L2052.AgProdChange_ag_irr_ref.csv'))) %>%
+  dplyr::mutate(year = paste0('X', year)) %>%
+  dplyr::rename(AgProdChange_ni = AgProdChange)
+
+agprodchange_ni_gcam6 <- dplyr::bind_rows(
+  agprodchange_ni_gcam6,
+  agprodchange_ni_gcam6 %>%
+    dplyr::select(-year, -AgProdChange_ni) %>%
+    dplyr::distinct() %>%
+    dplyr::mutate(year = 'X2015',
+                  AgProdChange_ni = 0)
+)
+
+usethis::use_data(agprodchange_ni_gcam6, overwrite = TRUE)
 
 
 #===============================================================================

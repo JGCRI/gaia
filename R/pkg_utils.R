@@ -232,6 +232,52 @@ merge_data <- function( d1, d2, x1, x2 )
 
 
 # ------------------------------------------------------------------------------
+#' agprodchange_ref
+#'
+#' Get the reference agricultural productivity change based GCAM version
+#'
+#' @param gcam_version Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7
+#' @param gcamdata_dir Default = NULL. string for directory to the gcamdata folder within the specific GCAM version. The gcamdata need to be run with drake to have the CSV outputs beforehand.
+#' @keywords internal
+#' @export
+
+agprodchange_ref <- function(gcam_version = 'gcam7',
+                             gcamdata_dir = NULL){
+
+  if(!is.null(gcamdata_dir)){
+
+    gaea::path_check(gcamdata_dir)
+
+    agprodchange_ni <- dplyr::bind_rows(
+      data.table::fread(file.path(gcamdata_dir, 'outputs', 'L2052.AgProdChange_bio_irr_ref.csv')),
+      data.table::fread(file.path(gcamdata_dir, 'outputs', 'L2052.AgProdChange_ag_irr_ref.csv'))) %>%
+      dplyr::mutate(year = paste0('X', year)) %>%
+      dplyr::rename(AgProdChange_ni = AgProdChange)
+
+    agprodchange_ni <- dplyr::bind_rows(
+      agprodchange_ni,
+      agprodchange_ni %>%
+        dplyr::select(-year, -AgProdChange_ni) %>%
+        dplyr::distinct() %>%
+        dplyr::mutate(year = 'X2015',
+                      AgProdChange_ni = 0)
+    )
+  } else {
+
+    if(gcam_version == 'gcam6'){
+      agprodchange_ni <- agprodchange_ni_gcam6
+    }
+
+    if(gcam_version == 'gcam7'){
+      agprodchange_ni <- agprodchange_ni_gcam7
+    }
+
+  }
+
+  return(agprodchange_ni)
+}
+
+# ------------------------------------------------------------------------------
 #' iso_replace
 #'
 #' ISO replacements for countries with non-standard names (can ad to as they come up)
