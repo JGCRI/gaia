@@ -136,6 +136,7 @@ fao_glu_mapping <- data.table::fread(file.path(climate_data.dir, 'MIRCA_0.5deg_c
                 fao_code = ctry_id,
                 ctry_area = country_area) %>%
   dplyr::select(-key, -cell_id, -zone_frac) %>%
+  dplyr::filter(!(cell_area_ctry == 0 & cell_area_GLU == 0)) %>%
   dplyr::distinct()
 
 # Mapping of intersection between country defined by FAO and GLU defined by GCAM at 0.5 degree
@@ -149,18 +150,26 @@ fao_glu_intersect_mapping <- data.table::fread(file.path(climate_data.dir, 'MIRC
                 fao_code = ctry_id,
                 intersect_area = polygon_area,
                 cell_area_intersect = part_area) %>%
+  dplyr::left_join(country_fao %>% dplyr::mutate(fao_name = gsub(' ', '', fao_name)),
+                   by = 'fao_code') %>%
+  dplyr::mutate(ctry_nm = ifelse(ctry_nm == '#N/A', fao_name, ctry_nm)) %>%
   dplyr::select(-key, -cell_id, -cell_area, -zone_frac)
+
+grid_fao_glu <- fao_glu_intersect_mapping %>%
+  dplyr::select(lon, lat, iso, fao_name, glu_id, glu_name = glu_nm) %>%
+  dplyr::distinct()
 
 # merge them together
 # glu is gcam basin, ctry_nm is GCAM country name
-mapping_fao_glu <- fao_glu_mapping %>%
-  dplyr::left_join(fao_glu_intersect_mapping,
+mapping_fao_glu <- fao_glu_intersect_mapping %>%
+  dplyr::inner_join(fao_glu_mapping,
                    by = c('lon', 'lat', 'glu_id', 'glu_nm', 'fao_code'),
-                   suffix = c('', '_intersect')) %>%
+                   suffix = c('_intersect', '')) %>%
+  # dplyr::filter(!is.na(ctry_nm)) %>%
   dplyr::group_by(fao_code) %>%
   tidyr::fill(ctry_nm, .direction = 'downup') %>%
   dplyr::ungroup() %>%
-  dplyr::select(lat, lon, glu_id, glu_name = glu_nm, fao_code, country_name = ctry_nm,
+  dplyr::select(lat, lon, glu_id, glu_name = glu_nm, fao_code, fao_name, country_name = ctry_nm, iso,
                 cell_area, glu_area = GLU_area, ctry_area, intersect_area,
                 cell_area_glu = cell_area_GLU, cell_area_ctry, cell_area_intersect,
                 cell_frac_glu = cell_frac_GLU, cell_frac_ctry, cell_frac_intersect = cell_frac) %>%
@@ -210,6 +219,7 @@ mapping_gcam_iso <- gaea::input_data(
   folder_path = file.path(model_data.dir, 'data_raw'),
   input_file = 'iso_GCAM_regID_name.csv',
   skip_number = 0)
+
 
 
 #-------------------------------------------------------------------------------
@@ -297,6 +307,46 @@ crop_mirca <- tibble::tribble(
   "crop26", "other annual", NA
 )
 
+
+#-------------------------------------------------------------------------------
+# GCAM Commodity Mapping
+#-------------------------------------------------------------------------------
+# only mapped MIRCA crops to GCAM commodity
+gcam_commod <- tibble::tribble(
+  ~GCAM_commod, ~crop, ~crop_type,
+  "biomass", "maize", "Grass",
+  "biomass", "sorghum", "Grass",
+  "biomass", "sugarcane", "Grass",
+  "Corn", "maize", "C4",
+  "FiberCrop", "cotton", "",
+  "FodderHerb", "maize", "C4",
+  "FodderHerb", "sorghum", "C4",
+  "Fruits", "rice", "",
+  "Fruits", "wheat", "",
+  "Legumes", "maize", "",
+  "Legumes", "wheat", "",
+  "MiscCrop", "rice", "",
+  "MiscCrop", "wheat", "",
+  "NutsSeeds", "rice", "",
+  "NutsSeeds", "wheat", "",
+  "OilCrop", "soybean", "",
+  "OilPalm", "rice", "",
+  "OilPalm", 'wheat', "",
+  "OtherGrain", "rice", "",
+  "OtherGrain", "sorghum", "C4",
+  "OtherGrain", "wheat", "",
+  "Rice", "rice", "",
+  "RootTuber", "root_tuber", "",
+  "RootTuber", "potato", "",
+  "RootTuber", "cassava", "",
+  "Soybean", 'soybean', "",
+  "SugarCrop", "sugarcane", "C4",
+  "SugarCrop", "sugarbeet", "",
+  "Vegetables", "rice", "",
+  "Vegetables", "wheat", "",
+  "Wheat", "wheat", ""
+)
+
 #-------------------------------------------------------------------------------
 # Selected Crops
 #-------------------------------------------------------------------------------
@@ -339,6 +389,7 @@ n_sig <- 0.1
 
 # fit name to label the fitting specifications
 fit_name <- "fit_lnyield_mmm_quad_noco2_nogdp"
+
 
 
 #-------------------------------------------------------------------------------
@@ -424,13 +475,25 @@ map_country <- sf_country %>%
 sf::st_crs(map_country) <- 4326
 
 
+#-------------------------------------------------------------------------------
+# Raster of Cropland Area
+#-------------------------------------------------------------------------------
+
+# cropland area file list
+crop_area_list <- list.files(
+  file.path(mirca.dir, 'harvested_area_grids_26crops_30mn'),
+  full.names = TRUE)
+
+# convert ASCII files to raster bick
+mirca_ras_brick <- raster::stack(crop_area_list)
+
 
 #'*Save All Internal Data*
 #'=========================
-usethis::use_data(country_id, mapping_country, mapping_fao_glu, mapping_gcam_iso,
-                  crop_mirca, mapping_mirca_sage,
+usethis::use_data(country_id, mapping_country, grid_fao_glu, mapping_fao_glu, mapping_gcam_iso,
+                  crop_mirca, gcam_commod, mapping_mirca_sage,
                   mirca_harvest_area, sage, fao_yield, fao_irr_equip, gdp,
                   waldhoff_formula, y_hat, reg_vars, weight_var, n_sig, fit_name,
                   col_scale_region, col_fill_region, theme_basic,
-                  map_country,
+                  map_country, mirca_ras_brick,
                   internal = TRUE, overwrite = TRUE )
