@@ -975,3 +975,114 @@ plot_map <- function(data = NULL,
     }
   }
 }
+
+
+
+# ------------------------------------------------------------------------------
+#' plot_yield_impact
+#'
+#' Plot projected yield impact by GCAM commodity
+#'
+#' @param data Default = NULL. data frame for the data to plot
+#' @param commodity Default = NULL. string for GCAM commodity
+#' @param crop_type Default = NULL. string for mirca crop type
+#' @param output_dir Default = NULL. string for path to the output folder
+#' @keywords internal
+#' @export
+
+
+plot_yield_impact <- function(data = NULL,
+                              commodity = NULL,
+                              crop_type = NULL,
+                              output_dir = NULL){
+
+  print(paste0('Plotting ', commodity, crop_type))
+
+  df_plot <- data %>%
+    dplyr::filter(GCAM_commod == commodity, crop_type %in% crop_type) %>%
+    dplyr::mutate(X2025 = ((X2020 + X2030) / 2),
+                  X2035 = ((X2030 + X2040) / 2),
+                  X2045 = ((X2040 + X2050) / 2),
+                  X2055 = ((X2050 + X2060) / 2),
+                  X2065 = ((X2060 + X2070) / 2),
+                  X2075 = ((X2070 + X2080) / 2),
+                  X2085 = ((X2080 + X2090) / 2),
+                  X2095 = X2090,
+                  X2100 = X2090) %>%
+    tidyr::pivot_longer(cols = all_of(paste0('X', seq(2015, 2100, 5))),
+                        names_to = 'year', values_to = 'yield_multiplier') %>%
+    dplyr::mutate(year = as.integer(gsub('X', '', year)),
+                  AgProductionTechnology = paste(glu, paste0(GCAM_commod, crop_type), irrtype, sep = '_'))
+
+  cropmodel <- unique(df_plot$cropmodel)
+  climatemodel <- unique(df_plot$climatemodel)
+  scenario <- unique(df_plot$scenario)
+
+  p <- ggplot2::ggplot(data = df_plot,
+                       ggplot2::aes(x = year, y = yield_multiplier,
+                                    group = interaction(region_name, AgProductionTechnology, irrtype))) +
+    ggplot2::geom_line(ggplot2::aes(color = irrtype), show.legend = T) +
+    ggplot2::facet_wrap(~ region_name) +
+    ggplot2::labs(title = paste(cropmodel, climatemodel, scenario, paste0(commodity, crop_type), sep = ' | '),
+                  x = NULL,
+                  y = 'Yield Change Relative to the Average of 2015 - 2020') +
+    ggplot2::scale_color_manual(values = c('IRR' = '#FFB900',
+                                           'RFD' = '#5773CC')) +
+    ggplot2::theme_bw()
+
+  ggplot2::ggsave(p,
+                  filename = file.path(output_dir, 'figures_yield_impacts', paste0(commodity, crop_type, '.png')),
+                  height = 10, width = 10, dpi = 300)
+
+}
+
+
+# ------------------------------------------------------------------------------
+#' plot_agprodchange
+#'
+#' Plot projected ag productivity change by GCAM commodity
+#'
+#' @param data Default = NULL. data frame for the data to plot
+#' @param commodity Default = NULL. string for GCAM commodity
+#' @param output_dir Default = NULL. string for path to the output folder
+#' @keywords internal
+#' @export
+
+plot_agprodchange <- function(data = NULL,
+                              commodity = NULL,
+                              output_dir = NULL){
+
+  print(paste0('Plotting ', commodity))
+
+  df_plot <- data %>%
+    tidyr::separate(col = AgProductionTechnology, sep = '_',
+                    into = c('crop', 'GLU', 'irrtype', 'mgmt'),
+                    remove = F) %>%
+    dplyr::filter(crop %in% commodity, mgmt == 'hi')
+
+  cropmodel <- unique(df_plot$cropmodel)
+  climatemodel <- unique(df_plot$climatemodel)
+  scenario <- unique(df_plot$scenario)
+
+
+  if(nrow(df_plot > 0)){
+    ggplot2::ggplot(data = df_plot,
+                    ggplot2::aes(x = year, y = AgProdChange,
+                                 group = interaction(region, AgProductionTechnology, irrtype))) +
+      ggplot2::geom_line(ggplot2::aes(color = irrtype), show.legend = T) +
+      ggplot2::facet_wrap(~ region) +
+      ggplot2::labs(title = paste(cropmodel, climatemodel, scenario, commodity, sep = ' | '),
+                    x = NULL,
+                    y = 'Agriculture Productivity Change') +
+      ggplot2::scale_color_manual(values = c('IRR' = '#FFB900',
+                                             'RFD' = '#5773CC')) +
+      ggplot2::theme_bw()
+
+    ggplot2::ggsave(filename = file.path(output_dir, 'figures_agprodchange', paste0(commodity, '.png')),
+                    height = 10, width = 10, dpi = 300)
+  } else {
+    print(paste0('No data for ', commodity))
+  }
+
+
+}
