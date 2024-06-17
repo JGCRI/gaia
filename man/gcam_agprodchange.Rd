@@ -2,14 +2,36 @@
 % Please edit documentation in R/gcam_agprodchange.R
 \name{gcam_agprodchange}
 \alias{gcam_agprodchange}
-\title{gcam_agprodchange}
+\title{-----------------------------------------------------------------------------
+gcam_agprodchange}
 \usage{
-gcam_agprodchange(data = NULL, output_dir = NULL)
+gcam_agprodchange(
+  data = NULL,
+  climate_model = "gcm",
+  climate_scenario = "rcp",
+  member = "member",
+  bias_adj = "ba",
+  gcam_version = "gcam7",
+  cfe = "no-cfe",
+  diagnostics = TRUE,
+  output_dir = file.path(getwd(), "output")
+)
 }
 \arguments{
+\item{data}{Default = NULL. output data from function yield_projections, or similar format of data}
+
+\item{climate_model}{Default = NULL. string for climate model (e.g., 'CanESM5')}
+
+\item{climate_scenario}{Default = NULL. string for climate scenario (e.g., 'ssp245')}
+
+\item{gcam_version}{Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7}
+
+\item{diagnostics}{Default = TRUE. Logical for performing diagnostic plot}
+
 \item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
 }
 \description{
 Map country level yield impacts to GCAM region-GLU level
 Calculate agricultural productivity change by region GLU
+Output agprodchange XML
 }

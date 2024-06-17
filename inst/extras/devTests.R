@@ -18,6 +18,9 @@ tas_files = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/tas_mon
 timestep = 'monthly'
 climate_model = 'canesm5'
 climate_scenario = 'gcam-ref'
+member = 'r1i1p1f1'
+bias_adj = 'W5E5v2'
+cfe = 'no-cfe'
 time_periods = seq(2015, 2020, 1)
 start_year = 2015
 end_year = 2100
@@ -58,21 +61,33 @@ t <- gaea::z_estimate(climate_model,
                       output_dir = output_dir)
 
 # test yield_projections
-t <- gaea::yield_projections(climate_model = climate_model,
-                             climate_scenario = climate_scenario,
-                             base_year = base_year,
-                             start_year = start_year,
-                             end_year = end_year,
-                             smooth_window = 20,
-                             diagnostics = F,
-                             output_dir = output_dir)
+t_yield_projection <- gaea::yield_projections(climate_model = climate_model,
+                                              climate_scenario = climate_scenario,
+                                              base_year = base_year,
+                                              start_year = start_year,
+                                              end_year = end_year,
+                                              smooth_window = 20,
+                                              diagnostics = F,
+                                              output_dir = output_dir)
 
 
 # test plot_map
-gaea::plot_map(data = t,
+gaea::plot_map(data = t_yield_projection,
                plot_years = 2090,
                output_dir = output_dir)
 
 # test agprodchange_ref
 gaea::agprodchange_ref(gcam_version = 'gcam7')
 # gaea::agprodchange_ref(gcamdata_dir = 'C:/WorkSpace/GCAM-Models/gcam-v6.0/input/gcamdata')
+
+
+# test gcam_agprodchange
+t <- gaea::gcam_agprodchange(data = t_yield_projection,
+                             climate_model = climate_model,
+                             climate_scenario = climate_scenario,
+                             member = member,
+                             bias_adj = bias_adj,
+                             cfe = cfe,
+                             gcam_version = 'gcam7',
+                             diagnostics = T,
+                             output_dir = output_dir)
