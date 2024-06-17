@@ -10,7 +10,7 @@ jobs:
   pkgdown:
     runs-on: macOS-12
     env:
-      GITHUB_PAT: ${{ secrets.PAT }}
+      GITHUB_PAT: ${{ secrets.GAEA_PAT }}
     steps:
       - uses: actions/checkout@v4
 
