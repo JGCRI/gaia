@@ -16,7 +16,14 @@
 #' @keywords internal
 #' @export
 
-mirca_to_gcam <- function(gcam_version = 'gcam7'){
+mirca_to_gcam <- function(gcam_version = 'gcam7')
+{
+
+  subRegionMap <- country_name <- AgSupplySector <- crop_type <- GCAM_commod <-
+    crop_type.x <- crop_type.y <- crop <- region <- AgSupplySubsector <- glu <-
+    iso <- fao_name <- glu_id <- glu_name <- lon <- lat <- regionID <-
+    regionName <- basinID <- basinName <- countryID <- countryName <-
+    region_code <- NULL
 
   # ----------------------------------------------------------------------------
   # Load data
@@ -69,11 +76,7 @@ mirca_to_gcam <- function(gcam_version = 'gcam7'){
     dplyr::left_join(mp_iso, by = c('iso'))
 
   # mapping from rmap [lon, lat, region_id, region_name, glu_id, glu_nm, ctry_id, ctry_nm]
-  mp_rmap <- rmap::mapping_tethys_grid_basin_region_country %>%
-    dplyr::select(lon, lat,
-                  region_id = regionID, region_name = regionName,
-                  glu_id = basinID, glu_name = basinName,
-                  country_id = countryID, country_name = countryName)
+  mp_rmap <- mapping_rmap_grid
 
   # mapping from rmap [region_id, region_name, glu_id, glu_nm, ctry_id, ctry_nm]
   # mp_ctry_glu_reg <- mp_rmap %>%
@@ -83,9 +86,9 @@ mirca_to_gcam <- function(gcam_version = 'gcam7'){
 
   # final mapping for GCAM ag
   mp_gcam <- mp_glu %>%
-    dplyr::left_join(rmap::mapping_gcambasins, by = c('glu' = 'subRegion')) %>%
+    dplyr::left_join(mapping_rmap_gcambasins, by = c('glu' = 'subRegion')) %>%
     dplyr::left_join(mp_mirca, by = c('region' = 'GCAM_region_name', 'subRegionMap' = 'glu_name')) %>%
-    dplyr::left_join(rmap::mapping_country_gcam32 %>% dplyr::select(region_code, region) %>% dplyr::distinct(),
+    dplyr::left_join(mapping_rmap_gcamregions,
                      by = c('region')) %>%
     # dplyr::left_join(d.iso %>%  dplyr::select(iso, country_name),
     #                  by = c('iso') )%>%
@@ -141,7 +144,10 @@ mirca_to_gcam <- function(gcam_version = 'gcam7'){
 #' @export
 
 get_mirca_cropland <- function(raster_brick = NULL,
-                               mapping = NULL){
+                               mapping = NULL)
+{
+
+  lon <- lat <- NULL
 
 
   # get lon lat from MIRCA
@@ -158,7 +164,7 @@ get_mirca_cropland <- function(raster_brick = NULL,
   name_new <- stringr::str_replace_all(name_orig, c('annual_area_harvested_|_ha_30mn'), '')
 
   grid <- grid %>%
-    dplyr::rename(setNames(c(name_orig, 'lon', 'lat'),
+    dplyr::rename(stats::setNames(c(name_orig, 'lon', 'lat'),
                            c(name_new, 'lon', 'lat')))
 
   # convert area unit from ha to m2
@@ -183,7 +189,11 @@ get_mirca_cropland <- function(raster_brick = NULL,
 #'
 #' @export
 
-get_cropland_weight <- function(gcam_version = 'gcam7'){
+get_cropland_weight <- function(gcam_version = 'gcam7')
+{
+
+  region_name <- basin_name <- glu <- region_id <- glu_id <- glu_name <- crop <-
+    croparea_to <- croparea_from <- country_name <- irr <- irrtype <- iso <- NULL
 
   # get mapping
   mp <- mirca_to_gcam(gcam_version = gcam_version)
@@ -209,7 +219,7 @@ get_cropland_weight <- function(gcam_version = 'gcam7'){
                        dplyr::select(region_name, glu_name = basin_name, glu),
                      by = c('region_name', 'glu_name')) %>%
     dplyr::filter(!is.na(glu)) %>%
-    tidyr::pivot_longer(cols = all_of(name_new), names_to = 'crop', values_to = 'croparea_to') %>%
+    tidyr::pivot_longer(cols = dplyr::all_of(name_new), names_to = 'crop', values_to = 'croparea_to') %>%
     dplyr::group_by(region_id, region_name, glu_id, glu_name, glu, crop) %>%
     dplyr::summarise(croparea_to = sum(croparea_to)) %>%
     dplyr::ungroup()
@@ -221,7 +231,7 @@ get_cropland_weight <- function(gcam_version = 'gcam7'){
                        dplyr::select(region_name, glu_name = basin_name, glu),
                      by = c('region_name', 'glu_name')) %>%
     dplyr::filter(!is.na(glu)) %>%
-    tidyr::pivot_longer(cols = all_of(name_new), names_to = 'crop', values_to = 'croparea_from') %>%
+    tidyr::pivot_longer(cols = dplyr::all_of(name_new), names_to = 'crop', values_to = 'croparea_from') %>%
     dplyr::group_by(region_id, region_name, country_name, glu_id, glu_name, glu, crop) %>%
     dplyr::summarise(croparea_from = sum(croparea_from)) %>%
     dplyr::ungroup()
@@ -275,7 +285,12 @@ get_cropland_weight <- function(gcam_version = 'gcam7'){
 get_weighted_yield_impact <- function(data = NULL,
                                       gcam_version = 'gcam7',
                                       diagnostics = TRUE,
-                                      output_dir = file.path(getwd(), 'output')){
+                                      output_dir = file.path(getwd(), 'output'))
+{
+
+  glu <- cropmodel <- climatemodel <- scenario <- region_id <- region_name <-
+    glu_id <- iso <- crop <- irrtype <- weight_sum <- croparea_to <- GCAM_commod <-
+    crop_type <- count <- NULL
 
   # get weight of cropland area within the intersected region-glu-country to
   # cropland area within intersected region-glu
@@ -299,7 +314,7 @@ get_weighted_yield_impact <- function(data = NULL,
     dplyr::filter(!is.na(glu)) %>%
     dplyr::select(cropmodel, climatemodel, scenario,
                   region_id, region_name, glu_id, glu, iso,
-                  crop, irrtype, all_of(years), weight) %>%
+                  crop, irrtype, dplyr::all_of(years), weight) %>%
     dplyr::distinct()
   any(is.na(yield_impact_clean))
 
@@ -321,14 +336,14 @@ get_weighted_yield_impact <- function(data = NULL,
                                      weight_sum < 1 ~ weight * (1/weight_sum),
                                      TRUE ~ weight),
                   weight_sum = sum(weight)) %>%
-    dplyr::mutate(dplyr::across(all_of(years), ~ ifelse(is.na(weight),
-                                                        .x,
-                                                        .x * weight))) %>%
+    dplyr::mutate(dplyr::across(dplyr::all_of(years), ~ ifelse(is.na(weight),
+                                                               .x,
+                                                               .x * weight))) %>%
     dplyr::ungroup() %>%
     dplyr::select(-weight, -count, -weight_sum) %>%
     dplyr::distinct() %>%
     dplyr::group_by(cropmodel, climatemodel, scenario, region_id, region_name, glu_id, glu, crop, irrtype) %>%
-    dplyr::mutate(dplyr::across(all_of(years), ~ ifelse(crop == 'root_tuber', mean(.), sum(.)))) %>%
+    dplyr::mutate(dplyr::across(dplyr::all_of(years), ~ ifelse(crop == 'root_tuber', mean(.), sum(.)))) %>%
     dplyr::ungroup() %>%
     dplyr::distinct() %>%
     dplyr::mutate(X2015 = 1,
@@ -346,7 +361,7 @@ get_weighted_yield_impact <- function(data = NULL,
     dplyr::filter(!is.na(GCAM_commod)) %>%
     dplyr::mutate(harvested_area = dplyr::if_else(croparea_to == 0, 1, croparea_to)) %>%
     dplyr::group_by(cropmodel, climatemodel, scenario, region_id, region_name, glu_id, glu, GCAM_commod, crop_type, irrtype) %>%
-    dplyr::summarise(dplyr::across(all_of(years), ~ weighted.mean(., harvested_area))) %>%
+    dplyr::summarise(dplyr::across(dplyr::all_of(years), ~ stats::weighted.mean(., harvested_area))) %>%
     dplyr::ungroup()
   any(is.na(yield_impact_clean))
 
@@ -392,7 +407,10 @@ get_weighted_yield_impact <- function(data = NULL,
 
 get_agprodchange <- function(data = NULL,
                              from_year = NULL,
-                             to_year = NULL){
+                             to_year = NULL)
+{
+
+  year <- yield_multiplier <- AgProdChange_ni <- AgProdChange <- NULL
 
   y1 <- paste0('X', from_year)
   y2 <- paste0('X', to_year)
@@ -418,8 +436,11 @@ get_agprodchange <- function(data = NULL,
 #' Output agprodchange XML
 #'
 #' @param data Default = NULL. output data from function yield_projections, or similar format of data
-#' @param climate_model Default = NULL. string for climate model (e.g., 'CanESM5')
-#' @param climate_scenario Default = NULL. string for climate scenario (e.g., 'ssp245')
+#' @param climate_model Default = 'gcm'. string for climate model name (e.g., 'CanESM5')
+#' @param climate_scenario Default = 'rcp'. string for climate scenario name (e.g., 'ssp245')
+#' @param member Default = 'member'. string for the ensemble member name
+#' @param bias_adj Default = 'ba'. string for the dataset used for climate data bias adjustment
+#' @param cfe Default = 'no-cfe'. string for whether the yield impact formula implimented CO2 fertilization effect.
 #' @param gcam_version Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7
 #' @param diagnostics Default = TRUE. Logical for performing diagnostic plot
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
@@ -434,7 +455,14 @@ gcam_agprodchange <- function(data = NULL,
                               gcam_version = 'gcam7',
                               cfe = 'no-cfe',
                               diagnostics = TRUE,
-                              output_dir = file.path(getwd(), 'output')){
+                              output_dir = file.path(getwd(), 'output'))
+{
+
+  X2020 <- X2030 <- X2040 <- X2050 <- X2060 <- X2070 <- X2080 <- X2090 <-
+    GCAM_commod <- crop_type <- glu <- GLU <-  year <- irrtype <- mgmt <-
+    yield_multiplier <- region_name <- region <- AgProdChange <-
+    AgProductionTechnology <- AgSupplySubsector <- AgSupplySector <- NULL
+
 
   output_dir <- file.path(output_dir, paste(gcam_version, 'agprodchange', cfe, sep = '_'))
   if(!dir.exists(output_dir)){
@@ -463,7 +491,7 @@ gcam_agprodchange <- function(data = NULL,
                   X2085 = ((X2080 + X2090) / 2),
                   X2095 = X2090,
                   X2100 = X2090) %>%
-    tidyr::pivot_longer(cols = all_of(paste0('X', seq(2015, 2100, 5))),
+    tidyr::pivot_longer(cols = dplyr::all_of(paste0('X', seq(2015, 2100, 5))),
                         names_to = 'year', values_to = 'yield_multiplier') %>%
     dplyr::mutate(AgSupplySubsector = paste(paste0(GCAM_commod, crop_type), glu, sep = '_'),
                   AgProductionTechnology = paste(paste0(GCAM_commod, crop_type), glu, irrtype, mgmt, sep = '_')) %>%

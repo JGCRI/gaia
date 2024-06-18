@@ -10,7 +10,8 @@ smooth_impacts(
   climate_scenario = NULL,
   crop_name = NULL,
   base_year = NULL,
-  smooth_window = 20
+  smooth_window = 20,
+  output_dir = file.path(getwd(), "output")
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ smooth_impacts(
 \item{base_year}{Default = NULL. integer for the base year (for GCAM)}
 
 \item{smooth_window}{Default = 20. integer for smoothing window in years}
+
+\item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
 }
 \description{
 Smooth annual impacts using moving average and output certain time step

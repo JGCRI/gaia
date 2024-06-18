@@ -39,7 +39,8 @@ yield_regression <- function(formula = NULL,
     # regression analysis with fixed effects
     d_crop_reg_fe <- gaea::regression_fixed_effects(d = d_crop_reg,
                                                     crop_name = crop_i,
-                                                    formula = formula)
+                                                    formula = formula,
+                                                    output_dir = output_dir)
 
     # plot
     if(diagnostics == TRUE){

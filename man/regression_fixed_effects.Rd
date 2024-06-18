@@ -4,7 +4,12 @@
 \alias{regression_fixed_effects}
 \title{regression_fixed_effects}
 \usage{
-regression_fixed_effects(data = NULL, crop_name = NULL, formula = NULL, ...)
+regression_fixed_effects(
+  data = NULL,
+  crop_name = NULL,
+  formula = NULL,
+  output_dir = file.path(getwd(), "output")
+)
 }
 \arguments{
 \item{data}{Default = NULL. data frame for crop data}
@@ -12,6 +17,8 @@ regression_fixed_effects(data = NULL, crop_name = NULL, formula = NULL, ...)
 \item{crop_name}{Default = NULL. string for crop name}
 
 \item{formula}{Default = NULL. string for regression fomular. Default is waldhoff_formula}
+
+\item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
 }
 \description{
 Estimate regression

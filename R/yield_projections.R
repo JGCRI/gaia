@@ -66,7 +66,8 @@ yield_projections <- function(climate_model = 'gcm',
                               climate_scenario = climate_scenario,
                               crop_name = crop_i,
                               base_year = base_year,
-                              smooth_window = smooth_window)
+                              smooth_window = smooth_window,
+                              output_dir = output_dir)
 
     # bind crops
     d_bind <- rbind( d_bind, d )

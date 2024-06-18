@@ -8,8 +8,6 @@ crop_calendars(output_dir = file.path(getwd(), "output"))
 }
 \arguments{
 \item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
-
-\item{data_sage}{Default = NULL. Data frame for raw SAGE data}
 }
 \description{
 Generate planting months for each country

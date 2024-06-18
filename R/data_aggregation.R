@@ -9,13 +9,17 @@
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @importFrom magrittr %>%
 #' @importFrom data.table :=
+#' @importFrom utils glob2rx
 #' @export
 
 data_aggregation <- function(climate_hist_dir = NULL,
                              climate_impact_dir = NULL,
                              climate_model = 'gcm',
                              climate_scenario = 'rcp',
-                             output_dir = file.path(getwd(), 'output')){
+                             output_dir = file.path(getwd(), 'output'))
+{
+
+  co2_historical <- co2_projection <- NULL
 
   message('Starting Step: data_aggregation')
 
@@ -43,7 +47,7 @@ data_aggregation <- function(climate_hist_dir = NULL,
   # get file list
   list_precip_rfc <- list.files(
     path = climate_hist_dir,
-    pattern = glob2rx('*precip*rfc*'),
+    pattern = utils::glob2rx('*precip*rfc*'),
     recursive = TRUE, full.names = TRUE)
 
   list_temp_rfc <- list.files(

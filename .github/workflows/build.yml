@@ -50,10 +50,6 @@ jobs:
           brew install pkg-config
           brew install gdal
 
-      - name: Debug GITHUB_PAT
-        run: echo "GITHUB_PAT is set"
-        env:
-          GITHUB_PAT: ${{ secrets.GAEA_PAT }}
 
       - name: Install dependencies
         run: |

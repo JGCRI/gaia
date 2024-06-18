@@ -12,6 +12,9 @@
 
 clean_yield <- function(fao_yield = NULL)
 {
+
+  AreaName <- crop <- NULL
+
   d <- subset( fao_yield, select = c( "AreaName", "ElementName", "ItemName", "Year", "Value" ) )
   d <- subset( d, AreaName != "" )
   d <- subset( d, AreaName != "China, mainland" )
@@ -62,6 +65,8 @@ weather_clean <- function(file = NULL,
                           weather_var = NULL,
                           irr_type = NULL)
 {
+  country_name <- iso <- NULL
+
   d <- data.table::fread( file, skip = 0, stringsAsFactors = FALSE, header = TRUE )
   d <- data.table::melt( d, id.vars = c('year', 'month'), variable.name = 'country_id' )
   d$country_id <- as.numeric( as.character( gsub( "X", "", d$country_id ) ) )
@@ -128,6 +133,9 @@ crop_month <- function(climate_data = NULL,
                        crop_name = NULL,
                        crop_calendar = NULL)
 {
+
+  year <- year2 <- NULL
+
   d <- subset( crop_calendar, crop_calendar[[crop_name]] == 1 )
   d <- subset( d, select = c( "iso", crop_name, "plant", "harvest"))
   d$year1 <- ifelse( d$harvest - d$plant > 0, 1, 0 )
@@ -195,6 +203,9 @@ data_merge <- function(data = NULL,
                        co2_hist = co2_historical,
                        gdp_hist = gdp )
 {
+
+  co2_historical <- crop <- co2_projection <- grow_season <- var <- NULL
+
   yield <- subset( yield, crop == crop_name )
   d <- merge( data, yield, by = c( "iso", "year", "crop" ) )
   d <- subset( d, !is.na( yield ) )
@@ -238,6 +249,8 @@ data_trans <- function( data = NULL,
                         output_dir = NULL,
                         co2_proj = co2_projection )
 {
+  co2_projection <- grow_season <- var <- NULL
+
   d <- subset( data, grow_season == 1 )
   d$grow_season <- NULL
   d <- data.table::melt( d, id.vars = c( "iso", "year", "crop", "irr_rf", "grow_month" ) )
@@ -289,7 +302,9 @@ data_trans <- function( data = NULL,
 #' @keywords internal
 #' @export
 
-prep_regression <- function(data = NULL) {
+prep_regression <- function(data = NULL)
+{
+  grow_season <- variable <- NULL
 
   d <- subset( data, grow_season == 1 )
   d$grow_season <- NULL
@@ -363,24 +378,29 @@ prep_regression <- function(data = NULL) {
 #' @param data Default = NULL. data frame for crop data
 #' @param crop_name Default = NULL. string for crop name
 #' @param formula Default = NULL. string for regression fomular. Default is waldhoff_formula
+#' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @keywords internal
 #' @export
 
 regression_fixed_effects <- function(data = NULL,
                                      crop_name = NULL,
-                                     formula = NULL, ...) {
+                                     formula = NULL,
+                                     output_dir = file.path(getwd(), 'output'))
+{
+
+  iso <- NULL
 
   d <- subset( data, select = reg_vars)
-  d <- d[ complete.cases( d ), ]
+  d <- d[ stats::complete.cases( d ), ]
   # print( crop_name )
   # print( paste( "Regression:", formula, sep = " " ) )
   n1 <- nrow( d )
   # print( paste( n1, "observations", sep = " " ) )
-  f <- as.formula( formula )
-  n_vars <- length(attr(terms(f), 'term.labels'))
-  reg <- lm( f, data = d, weights = d[[weight_var]] )
-  sum <- summary.lm( reg )
-  d[[fit_name]]<- predict.lm( reg, level = (1 - n_sig) )
+  f <- stats::as.formula( formula )
+  n_vars <- length(attr(stats::terms(f), 'term.labels'))
+  reg <- stats::lm( f, data = d, weights = d[[weight_var]] )
+  sum <- stats::summary.lm( reg )
+  d[[fit_name]]<- stats::predict.lm( reg, level = (1 - n_sig) )
   sum$coefficients <- sum$coefficients[ 1:n_vars, ]
   # print( sum$coefficients )
   print( lmtest::bptest( f, data = d ), studentize = TRUE )
@@ -398,7 +418,7 @@ regression_fixed_effects <- function(data = NULL,
     save_path = file.path(output_dir, 'data_processed'),
     file_name =  paste( "reg_out_", crop_name, "_", fit_name, ".csv", sep = "" ))
 
-  print( paste0("Statistics for regression analysis saved to: ", file.path(save_path, file_name)) )
+  # print( paste0("Statistics for regression analysis saved to: ", file.path(save_path, file_name)) )
 
   # save weather file
   gaea::output_data(
@@ -425,6 +445,9 @@ regression_fixed_effects <- function(data = NULL,
 plot_fit <- function(data = NULL,
                      crop_name = NULL)
 {
+  output_dir <- NULL
+
+
   d <- data
 
   p <- ggplot2::ggplot( d, ggplot2::aes_string( "yield", fit_name, size = "area_harvest", color = "GCAM_region_name" ) ) +
@@ -490,6 +513,7 @@ z_estimate <- function(climate_model = NULL,
   # Function to create coefficient values used for analysis (based on p value)
   est_fn <- function( x, n_sig )
   {
+    term <- NULL
     value <- subset( coef, term == x )
     x <- ifelse( value$p.value < n_sig, value$estimate, 0 )
     return( x )
@@ -638,6 +662,7 @@ climate_impact <- function(climate_model = NULL,
 #' @param crop_name Default = NULL. string for crop name
 #' @param base_year Default = NULL. integer for the base year (for GCAM)
 #' @param smooth_window Default = 20. integer for smoothing window in years
+#' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @keywords internal
 #' @export
 
@@ -646,8 +671,11 @@ smooth_impacts <- function(data = NULL,
                            climate_scenario = NULL,
                            crop_name = NULL,
                            base_year = NULL,
-                           smooth_window = 20)
+                           smooth_window = 20,
+                           output_dir = file.path(getwd(), 'output'))
 {
+  start_year <- end_year <- GCAM_region_name <- iso <- variable <- NULL
+
   d <- data
 
   d$year <- paste( "X", d$year, sep = "" )
@@ -674,7 +702,7 @@ smooth_impacts <- function(data = NULL,
     } else {
       window <- paste0("X", seq(max(start_year, (y - window_pre)), min(end_year, (y + window_post)), 1)) # 20 year window
       Year <- paste0("X", y)
-      d[[Year]] <- rowMeans(d[, ..window])
+      d[[Year]] <- rowMeans(d[, window])
     }
 
   }
@@ -694,7 +722,7 @@ smooth_impacts <- function(data = NULL,
                     iso == group$iso) %>%
       dplyr::mutate(year = as.numeric(gsub("X", '', variable)))
 
-    interp <- approx(x = df$year, y = df$value, method = 'linear',
+    interp <- stats::approx(x = df$year, y = df$value, method = 'linear',
                      xout = seq(base_year, period_last, 1))
 
     append <- data.frame(GCAM_region_name = group$GCAM_region_name,
@@ -743,7 +771,11 @@ smooth_impacts <- function(data = NULL,
 format_projection <- function(data = NULL,
                               base_year = NULL,
                               select_years = NULL,
-                              output_dir = NULL){
+                              output_dir = NULL)
+{
+
+  year <- cropmodel <- model <- scenario <- iso <- crop <- irrtype <-
+    harvested_area <- yield_impact <- NULL
 
   # get the harvest area (ha) from FAO data
   d_ha <- subset(fao_yield, year == 2014)
@@ -807,6 +839,8 @@ plot_projection <- function(data = NULL,
                             output_dir = NULL)
 {
 
+  year <- yield_impact <- iso <- NULL
+
   p <- ggplot2::ggplot( data, ggplot2::aes( year, yield_impact, color = iso ) ) +
     ggplot2::geom_line( ) +
     ggplot2::facet_wrap( ~ GCAM_region_name, scales = 'free_y' ) +
@@ -854,6 +888,8 @@ plot_projection_smooth <- function(data = NULL,
                                    output_dir = NULL)
 {
 
+  year <- yield_impact <- iso <- NULL
+
   p <- ggplot2::ggplot( data, ggplot2::aes( year, yield_impact, color = iso ) ) +
     ggplot2::geom_line( size = 1 ) +
     ggplot2::facet_wrap( ~ GCAM_region_name ) +
@@ -890,8 +926,10 @@ plot_projection_smooth <- function(data = NULL,
 
 plot_map <- function(data = NULL,
                      plot_years = NULL,
-                     output_dir = NULL){
+                     output_dir = NULL)
+{
 
+  model <- rcp <- year <- crop <- iso <- yield_impact <- yield_impact_group <- NULL
 
   data$iso <- gsub('rom', 'rou', data$iso)
   data$iso <- toupper(data$iso)
@@ -994,7 +1032,12 @@ plot_map <- function(data = NULL,
 plot_yield_impact <- function(data = NULL,
                               commodity = NULL,
                               crop_type = NULL,
-                              output_dir = NULL){
+                              output_dir = NULL)
+{
+
+  X2020 <- X2030 <- X2040 <- X2050 <- X2060 <- X2070 <- X2080 <- X2090 <-
+    GCAM_commod <- year <- glu <- irrtype <- yield_multiplier <- region_name <-
+    AgProductionTechnology <- NULL
 
   print(paste0('Plotting ', commodity, crop_type))
 
@@ -1009,7 +1052,7 @@ plot_yield_impact <- function(data = NULL,
                   X2085 = ((X2080 + X2090) / 2),
                   X2095 = X2090,
                   X2100 = X2090) %>%
-    tidyr::pivot_longer(cols = all_of(paste0('X', seq(2015, 2100, 5))),
+    tidyr::pivot_longer(cols = dplyr::all_of(paste0('X', seq(2015, 2100, 5))),
                         names_to = 'year', values_to = 'yield_multiplier') %>%
     dplyr::mutate(year = as.integer(gsub('X', '', year)),
                   AgProductionTechnology = paste(glu, paste0(GCAM_commod, crop_type), irrtype, sep = '_'))
@@ -1050,7 +1093,12 @@ plot_yield_impact <- function(data = NULL,
 
 plot_agprodchange <- function(data = NULL,
                               commodity = NULL,
-                              output_dir = NULL){
+                              output_dir = NULL)
+{
+
+  AgProductionTechnology <- crop <- mgmt <- year <- AgProdChange <- region <-
+    irrtype <- NULL
+
 
   print(paste0('Plotting ', commodity))
 

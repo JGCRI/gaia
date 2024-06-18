@@ -3,7 +3,6 @@
 #' Generate planting months for each country
 #' Data from SAGE
 #'
-#' @param data_sage Default = NULL. Data frame for raw SAGE data
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @importFrom magrittr %>%
 #' @importFrom data.table :=
@@ -34,7 +33,7 @@ crop_calendars <- function(output_dir = file.path(getwd(), 'output')){
   d$harvest <- ifelse( d$crop == "sugarcane", 12, d$harvest ) # Sugarcane is a multiyear crop, will assume that 12 months preceding annual value equals growing season.
 
   # Country codes
-  d <- merge( d, mapping_iso, by = "country_name", all.x = TRUE )
+  d <- merge( d, mapping_gcam_iso, by = "country_name", all.x = TRUE )
   d <- gaea::iso_replace( d )
 
   # Indicators for crops

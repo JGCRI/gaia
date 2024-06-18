@@ -20,11 +20,17 @@ gcam_agprodchange(
 \arguments{
 \item{data}{Default = NULL. output data from function yield_projections, or similar format of data}
 
-\item{climate_model}{Default = NULL. string for climate model (e.g., 'CanESM5')}
+\item{climate_model}{Default = 'gcm'. string for climate model name (e.g., 'CanESM5')}
 
-\item{climate_scenario}{Default = NULL. string for climate scenario (e.g., 'ssp245')}
+\item{climate_scenario}{Default = 'rcp'. string for climate scenario name (e.g., 'ssp245')}
+
+\item{member}{Default = 'member'. string for the ensemble member name}
+
+\item{bias_adj}{Default = 'ba'. string for the dataset used for climate data bias adjustment}
 
 \item{gcam_version}{Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7}
+
+\item{cfe}{Default = 'no-cfe'. string for whether the yield impact formula implimented CO2 fertilization effect.}
 
 \item{diagnostics}{Default = TRUE. Logical for performing diagnostic plot}
 

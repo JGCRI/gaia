@@ -221,6 +221,21 @@ mapping_gcam_iso <- gaea::input_data(
   skip_number = 0)
 
 
+#-------------------------------------------------------------------------------
+# rmap Mapping
+#-------------------------------------------------------------------------------
+
+# mapping from rmap [lon, lat, region_id, region_name, glu_id, glu_nm, ctry_id, ctry_nm]
+mapping_rmap_grid <- rmap::mapping_tethys_grid_basin_region_country %>%
+  dplyr::select(lon, lat,
+                region_id = regionID, region_name = regionName,
+                glu_id = basinID, glu_name = basinName,
+                country_id = countryID, country_name = countryName)
+
+mapping_rmap_gcambasins <- rmap::mapping_gcambasins
+
+mapping_rmap_gcamregions <- rmap::mapping_country_gcam32 %>% dplyr::select(region_code, region) %>% dplyr::distinct()
+
 
 #-------------------------------------------------------------------------------
 # SAGE Data
@@ -492,6 +507,7 @@ mirca_ras_brick <- raster::stack(crop_area_list)
 #'=========================
 usethis::use_data(country_id, mapping_country, grid_fao_glu, mapping_fao_glu, mapping_gcam_iso,
                   crop_mirca, gcam_commod, mapping_mirca_sage,
+                  mapping_rmap_grid, mapping_rmap_gcambasins, mapping_rmap_gcamregions,
                   mirca_harvest_area, sage, fao_yield, fao_irr_equip, gdp,
                   waldhoff_formula, y_hat, reg_vars, weight_var, n_sig, fit_name,
                   col_scale_region, col_fill_region, theme_basic,

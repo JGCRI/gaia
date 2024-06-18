@@ -171,7 +171,7 @@ output_data <- function(data = NULL,
 
   if(!is_figure){
 
-    write.csv( data, file.path(save_path, file_name) )
+    utils::write.csv( data, file.path(save_path, file_name) )
 
   } else {
 
@@ -242,7 +242,10 @@ merge_data <- function( d1, d2, x1, x2 )
 #' @export
 
 agprodchange_ref <- function(gcam_version = 'gcam7',
-                             gcamdata_dir = NULL){
+                             gcamdata_dir = NULL)
+{
+
+  year <- AgProdChange <- AgProdChange_ni <- NULL
 
   if(!is.null(gcamdata_dir)){
 
@@ -265,11 +268,11 @@ agprodchange_ref <- function(gcam_version = 'gcam7',
   } else {
 
     if(gcam_version == 'gcam6'){
-      agprodchange_ni <- agprodchange_ni_gcam6
+      agprodchange_ni <- gaea::agprodchange_ni_gcam6
     }
 
     if(gcam_version == 'gcam7'){
-      agprodchange_ni <- agprodchange_ni_gcam7
+      agprodchange_ni <- gaea::agprodchange_ni_gcam7
     }
 
   }
