@@ -191,7 +191,7 @@ crop_month <- function(climate_data = NULL,
 #' @param crop_name Default = NULL. string for crop name
 #' @param yield Default = NULL. data table for yield data
 #' @param out_dir Default = NULL. string for path to output folder
-#' @param co2_hist Default = co2_historical. data table for historical CO2 concentration [year, co2_conc]
+#' @param co2_hist Default = NULL data table for historical CO2 concentration [year, co2_conc]
 #' @param gdp Default = gdp. data table for historical GDP by ISO [iso, year, gdp_pcap_ppp]
 #' @keywords internal
 #' @export
@@ -200,11 +200,15 @@ data_merge <- function(data = NULL,
                        crop_name = NULL,
                        yield = NULL,
                        output_dir = NULL,
-                       co2_hist = co2_historical,
+                       co2_hist = NULL,
                        gdp_hist = gdp )
 {
 
-  co2_historical <- crop <- co2_projection <- grow_season <- var <- NULL
+  crop <- co2_projection <- grow_season <- var <- NULL
+
+  if(is.null(co2_hist)){
+    co2_hist <- gaea::co2_historical
+  }
 
   yield <- subset( yield, crop == crop_name )
   d <- merge( data, yield, by = c( "iso", "year", "crop" ) )
@@ -247,9 +251,13 @@ data_trans <- function( data = NULL,
                         climate_scenario = NULL,
                         crop_name = NULL,
                         output_dir = NULL,
-                        co2_proj = co2_projection )
+                        co2_proj = NULL )
 {
-  co2_projection <- grow_season <- var <- NULL
+  grow_season <- var <- NULL
+
+  if(is.null(co2_proj)){
+    co2_proj <- gaea::co2_projection
+  }
 
   d <- subset( data, grow_season == 1 )
   d$grow_season <- NULL

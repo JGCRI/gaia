@@ -10,7 +10,7 @@ data_trans(
   climate_scenario = NULL,
   crop_name = NULL,
   output_dir = NULL,
-  co2_proj = co2_projection
+  co2_proj = NULL
 )
 }
 \arguments{
