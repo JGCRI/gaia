@@ -3,7 +3,7 @@
 #' Yield regressions and create figures
 #' using average growing season temperature and precipitation, max and min months
 #'
-#' @param formula string for regression formula
+#' @param formula Default = NULL. string for regression formula
 #' @param diagnostics Default = TRUE. Logical for performing diagnostic plot
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @export
@@ -44,7 +44,9 @@ yield_regression <- function(formula = NULL,
 
     # plot
     if(diagnostics == TRUE){
-      gaea::plot_fit(d_crop_reg_fe, crop_name = crop_i)
+      gaea::plot_fit(data = d_crop_reg_fe,
+                     crop_name = crop_i,
+                     output_dir = output_dir)
     }
 
 

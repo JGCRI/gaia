@@ -20,7 +20,8 @@ yield_projections <- function(climate_model = 'gcm',
                               end_year = NULL,
                               smooth_window = 20,
                               diagnostics = TRUE,
-                              output_dir = file.path(getwd(), 'output')){
+                              output_dir = file.path(getwd(), 'output'))
+{
 
 
   message('Starting Step: yield_projections')
@@ -37,6 +38,7 @@ yield_projections <- function(climate_model = 'gcm',
 
 
   for( crop_i in mapping_mirca_sage$crop_mirca ) {
+
     print( paste( climate_model, climate_scenario, crop_i, sep = " " ) )
 
     # calculate yield impact for each crop and country
@@ -61,22 +63,24 @@ yield_projections <- function(climate_model = 'gcm',
 
 
     # smooth annual impacts using moving average and output certain time step
-    d <- gaea::smooth_impacts(data = d,
-                              climate_model = climate_model,
-                              climate_scenario = climate_scenario,
-                              crop_name = crop_i,
-                              base_year = base_year,
-                              smooth_window = smooth_window,
-                              output_dir = output_dir)
+    d_smooth <- gaea::smooth_impacts(data = d,
+                                     climate_model = climate_model,
+                                     climate_scenario = climate_scenario,
+                                     crop_name = crop_i,
+                                     base_year = base_year,
+                                     start_year = start_year,
+                                     end_year = end_year,
+                                     smooth_window = smooth_window,
+                                     output_dir = output_dir)
 
     # bind crops
-    d_bind <- rbind( d_bind, d )
+    d_bind <- rbind( d_bind, d_smooth )
 
 
     if(diagnostics == TRUE){
 
       # plot smoothed projected yield impact
-      gaea::plot_projection_smooth(data = d,
+      gaea::plot_projection_smooth(data = d_smooth,
                                    climate_model = climate_model,
                                    climate_scenario = climate_scenario,
                                    crop_name = crop_i,
@@ -84,7 +88,7 @@ yield_projections <- function(climate_model = 'gcm',
                                    output_dir = output_dir)
 
       # plot spatial map
-      gaea::plot_map(data = d,
+      gaea::plot_map(data = d_smooth,
                      plot_years = NULL,
                      output_dir = output_dir)
 

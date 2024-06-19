@@ -4,14 +4,18 @@
 \alias{plot_map}
 \title{plot_map}
 \usage{
-plot_map(data = NULL, plot_years = NULL, output_dir = NULL)
+plot_map(
+  data = NULL,
+  plot_years = NULL,
+  output_dir = file.path(getwd(), "output")
+)
 }
 \arguments{
 \item{data}{Default = NULL. data frame for the data to plot}
 
 \item{plot_years}{Default = NULL. integer for the years to plot}
 
-\item{output_dir}{Default = NULL. string for path to the output folder}
+\item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
 }
 \description{
 Plot maps by year, model, scenari, and crop

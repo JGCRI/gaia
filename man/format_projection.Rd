@@ -8,7 +8,7 @@ format_projection(
   data = NULL,
   base_year = NULL,
   select_years = NULL,
-  output_dir = NULL
+  output_dir = file.path(getwd(), "output")
 )
 }
 \arguments{
@@ -18,7 +18,7 @@ format_projection(
 
 \item{select_years}{Default = NULL. vector of integers of selected years to format}
 
-\item{output_dir}{Default = NULL. string for path to the output folder}
+\item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
 }
 \description{
 Format smoothed yield impact projection to wider

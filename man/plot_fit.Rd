@@ -4,10 +4,16 @@
 \alias{plot_fit}
 \title{plot_fit}
 \usage{
-plot_fit(data = NULL, crop_name = NULL)
+plot_fit(
+  data = NULL,
+  crop_name = NULL,
+  output_dir = file.path(getwd(), "output")
+)
 }
 \arguments{
 \item{crop_name}{Default = NULL. string for crop name}
+
+\item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
 
 \item{d}{Default = NULL. data frame for crop data}
 }

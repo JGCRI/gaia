@@ -7,8 +7,6 @@
 #' @param climate_model Default = NULL. string for climate model (e.g., 'CanESM5')
 #' @param climate_scenario Default = NULL. string for climate scenario (e.g., 'ssp245')
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
-#' @importFrom magrittr %>%
-#' @importFrom data.table :=
 #' @importFrom utils glob2rx
 #' @export
 

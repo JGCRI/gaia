@@ -11,7 +11,7 @@ climate_impact(
   base_year = NULL,
   start_year = NULL,
   end_year = NULL,
-  output_dir = NULL
+  output_dir = file.path(getwd(), "output")
 )
 }
 \arguments{
@@ -27,7 +27,7 @@ climate_impact(
 
 \item{end_year}{Default = NULL. integer for the end year of the data}
 
-\item{output_dir}{Default = NULL. string for path to the output folder}
+\item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
 }
 \description{
 Estimate climate impacts (ratio future to each base year, then average)

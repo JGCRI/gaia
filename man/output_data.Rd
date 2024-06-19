@@ -6,7 +6,7 @@
 \usage{
 output_data(
   data = NULL,
-  save_path = NULL,
+  save_path = file.path(getwd(), "output"),
   file_name = NULL,
   is_figure = FALSE,
   data_info = "Data"

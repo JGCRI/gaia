@@ -10,8 +10,6 @@
 #' @param climate_scenario Default = NULL. string for climate scenario (e.g., 'ssp245')
 #' @param time_periods Default = NULL. vector for years to input in the output
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
-#' @importFrom magrittr %>%
-#' @importFrom data.table :=
 #' @export
 
 
@@ -263,7 +261,6 @@ weighted_climate <- function(pr_files = NULL,
 #' @param nc_file Default = NULL. string for paths for precipitation
 #' @param var Default = NULL. string for climate variable
 #' @param timestep Default = 'monthly'. string for input climate data time step (e.g., 'monthly', 'daily')
-#' @importFrom magrittr %>%
 #' @noRd
 nc_to_tbl <- function(nc_file = NULL, var = NULL, time_periods = NULL, timestep = 'monthly'){
 
@@ -303,7 +300,6 @@ nc_to_tbl <- function(nc_file = NULL, var = NULL, time_periods = NULL, timestep 
 #'
 #' @param tbl Default = NULL. tibble for gridded monthly climate data, with columns like [lon, lat, 2010-01-01, 2010-02-01, ...]
 #' @param crop Default = NULL. string for crop name (e.g., 'irr_crop01')
-#' @importFrom magrittr %>%
 #' @noRd
 weight_by_crop_area <- function(tbl = NULL, crop = NULL, crop_area_weight = NULL){
 

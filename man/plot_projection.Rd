@@ -10,7 +10,7 @@ plot_projection(
   climate_scenario = NULL,
   crop_name = NULL,
   base_year = NULL,
-  output_dir = NULL
+  output_dir = file.path(getwd(), "output")
 )
 }
 \arguments{
@@ -24,7 +24,7 @@ plot_projection(
 
 \item{base_year}{Default = NULL. integer for the base year (for GCAM)}
 
-\item{output_dir}{Default = NULL. string for path to the output folder}
+\item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
 }
 \description{
 Figure of (raw) annual predicted values (shows interannual variability)

@@ -4,8 +4,6 @@
 #' Data from SAGE
 #'
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
-#' @importFrom magrittr %>%
-#' @importFrom data.table :=
 #' @export
 
 crop_calendars <- function(output_dir = file.path(getwd(), 'output')){

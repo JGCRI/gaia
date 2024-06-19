@@ -424,7 +424,8 @@ regression_fixed_effects <- function(data = NULL,
   gaea::output_data(
     data = sum.fit,
     save_path = file.path(output_dir, 'data_processed'),
-    file_name =  paste( "reg_out_", crop_name, "_", fit_name, ".csv", sep = "" ))
+    file_name = paste( "reg_out_", crop_name, "_", fit_name, ".csv", sep = "" ),
+    data_info = 'Summary for the regression analysis')
 
   # print( paste0("Statistics for regression analysis saved to: ", file.path(save_path, file_name)) )
 
@@ -447,14 +448,14 @@ regression_fixed_effects <- function(data = NULL,
 #'
 #' @param d Default = NULL. data frame for crop data
 #' @param crop_name Default = NULL. string for crop name
+#' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @keywords internal
 #' @export
 
 plot_fit <- function(data = NULL,
-                     crop_name = NULL)
+                     crop_name = NULL,
+                     output_dir = file.path(getwd(), 'output'))
 {
-  output_dir <- NULL
-
 
   d <- data
 
@@ -502,14 +503,14 @@ plot_fit <- function(data = NULL,
 #' @param climate_model Default = NULL. string for climate model name
 #' @param climate_scenario Default = NULL. string for RCP
 #' @param crop_name Default = NULL. string for crop name
-#' @param output_dir Default = NULL. string for path to the output folder
+#' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @keywords internal
 #' @export
 
 z_estimate <- function(climate_model = NULL,
                        climate_scenario = NULL,
                        crop_name = NULL,
-                       output_dir = NULL)
+                       output_dir = file.path(getwd(), 'output'))
 {
   print( paste( "Extract coefficient values", n_sig, sep = " " ) )
 
@@ -593,7 +594,7 @@ z_estimate <- function(climate_model = NULL,
 #' @param base_year Default = NULL. integer for the base year (for GCAM)
 #' @param start_year Default = NULL. integer for the  start year of the data
 #' @param end_year Default = NULL. integer for the end year of the data
-#' @param output_dir Default = NULL. string for path to the output folder
+#' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @keywords internal
 #' @export
 
@@ -603,13 +604,13 @@ climate_impact <- function(climate_model = NULL,
                            base_year = NULL,
                            start_year = NULL,
                            end_year = NULL,
-                           output_dir = NULL)
+                           output_dir = file.path(getwd(), 'output'))
 {
   # estimate z hat
-  d <- gaea::z_estimate(climate_model,
-                        climate_scenario,
-                        crop_name,
-                        output_dir)
+  d <- gaea::z_estimate(climate_model = climate_model,
+                        climate_scenario = climate_scenario,
+                        crop_name = crop_name,
+                        output_dir = output_dir)
 
   # create base year vector
   baseYears <- c( paste( "X", (start_year:end_year), sep = "" ) )
@@ -669,6 +670,8 @@ climate_impact <- function(climate_model = NULL,
 #' @param climate_scenario Default = NULL. string for RCP
 #' @param crop_name Default = NULL. string for crop name
 #' @param base_year Default = NULL. integer for the base year (for GCAM)
+#' @param start_year Default = NULL. integer for the  start year of the data
+#' @param end_year Default = NULL. integer for the end year of the data
 #' @param smooth_window Default = 20. integer for smoothing window in years
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @keywords internal
@@ -679,10 +682,12 @@ smooth_impacts <- function(data = NULL,
                            climate_scenario = NULL,
                            crop_name = NULL,
                            base_year = NULL,
+                           start_year = NULL,
+                           end_year = NULL,
                            smooth_window = 20,
                            output_dir = file.path(getwd(), 'output'))
 {
-  start_year <- end_year <- GCAM_region_name <- iso <- variable <- NULL
+  GCAM_region_name <- iso <- variable <- NULL
 
   d <- data
 
@@ -731,7 +736,7 @@ smooth_impacts <- function(data = NULL,
       dplyr::mutate(year = as.numeric(gsub("X", '', variable)))
 
     interp <- stats::approx(x = df$year, y = df$value, method = 'linear',
-                     xout = seq(base_year, period_last, 1))
+                            xout = seq(base_year, period_last, 1))
 
     append <- data.frame(GCAM_region_name = group$GCAM_region_name,
                          iso = group$iso,
@@ -771,7 +776,7 @@ smooth_impacts <- function(data = NULL,
 #' @param data Default = NULL. data frame from yield_projections with columns [crop, model, iso, years]
 #' @param base_year Default = NULL. integer for the base year (for GCAM)
 #' @param select_years Default = NULL. vector of integers of selected years to format
-#' @param output_dir Default = NULL. string for path to the output folder
+#' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #'
 #' @keywords internal
 #' @export
@@ -779,7 +784,7 @@ smooth_impacts <- function(data = NULL,
 format_projection <- function(data = NULL,
                               base_year = NULL,
                               select_years = NULL,
-                              output_dir = NULL)
+                              output_dir = file.path(getwd(), 'output'))
 {
 
   year <- cropmodel <- model <- scenario <- iso <- crop <- irrtype <-
@@ -835,7 +840,7 @@ format_projection <- function(data = NULL,
 #' @param climate_scenario Default = NULL. string for RCP
 #' @param crop_name Default = NULL. string for crop name
 #' @param base_year Default = NULL. integer for the base year (for GCAM)
-#' @param output_dir Default = NULL. string for path to the output folder
+#' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @keywords internal
 #' @export
 
@@ -844,12 +849,12 @@ plot_projection <- function(data = NULL,
                             climate_scenario = NULL,
                             crop_name = NULL,
                             base_year = NULL,
-                            output_dir = NULL)
+                            output_dir =  file.path(getwd(), 'output'))
 {
 
-  year <- yield_impact <- iso <- NULL
+  # year <- yield_impact <- iso <- NULL
 
-  p <- ggplot2::ggplot( data, ggplot2::aes( year, yield_impact, color = iso ) ) +
+  p <- ggplot2::ggplot( data, ggplot2::aes( x = year, y = yield_impact, color = iso ) ) +
     ggplot2::geom_line( ) +
     ggplot2::facet_wrap( ~ GCAM_region_name, scales = 'free_y' ) +
     ggplot2::guides( col = ggplot2::guide_legend( ncol = 3 ) ) +
@@ -866,7 +871,7 @@ plot_projection <- function(data = NULL,
   gaea::output_data(
     data = p,
     save_path = file.path(output_dir, 'figures'),
-    file_name = paste0( paste("annual_projected_climate_impacts_", climate_model, climate_scenario, crop_name, fit_name, sep = "_"), ".pdf" ),
+    file_name = paste0( paste("annual_projected_climate_impacts", climate_model, climate_scenario, crop_name, fit_name, sep = "_"), ".pdf" ),
     is_figure = T,
     data_info = 'Projected annual yield figure')
 
@@ -884,7 +889,7 @@ plot_projection <- function(data = NULL,
 #' @param climate_scenario Default = NULL. string for RCP
 #' @param crop_name Default = NULL. string for crop name
 #' @param base_year Default = NULL. integer for the base year (for GCAM)
-#' @param output_dir Default = NULL. string for path to the output folder
+#' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @keywords internal
 #' @export
 
@@ -893,12 +898,12 @@ plot_projection_smooth <- function(data = NULL,
                                    climate_scenario = NULL,
                                    crop_name = NULL,
                                    base_year = NULL,
-                                   output_dir = NULL)
+                                   output_dir = file.path(getwd(), 'output'))
 {
 
   year <- yield_impact <- iso <- NULL
 
-  p <- ggplot2::ggplot( data, ggplot2::aes( year, yield_impact, color = iso ) ) +
+  p <- ggplot2::ggplot( data, ggplot2::aes( x = year, y = yield_impact, color = iso ) ) +
     ggplot2::geom_line( size = 1 ) +
     ggplot2::facet_wrap( ~ GCAM_region_name ) +
     ggplot2::guides( col = ggplot2::guide_legend( ncol = 3 ) ) +
@@ -928,13 +933,13 @@ plot_projection_smooth <- function(data = NULL,
 #'
 #' @param data Default = NULL. data frame for the data to plot
 #' @param plot_years Default = NULL. integer for the years to plot
-#' @param output_dir Default = NULL. string for path to the output folder
+#' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @keywords internal
 #' @export
 
 plot_map <- function(data = NULL,
                      plot_years = NULL,
-                     output_dir = NULL)
+                     output_dir = file.path(getwd(), 'output'))
 {
 
   model <- rcp <- year <- crop <- iso <- yield_impact <- yield_impact_group <- NULL

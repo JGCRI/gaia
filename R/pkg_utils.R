@@ -6,8 +6,6 @@
 #' list example file paths
 #'
 #' @param path Default = NULL. String for path to example files
-#' @importFrom magrittr %>%
-#' @importFrom data.table :=
 #' @export
 
 pkg_example <- function(path = NULL) {
@@ -68,8 +66,6 @@ path_check <- function(path = NULL, file_type = NULL) {
 #' get the netcdf file time series
 #'
 #' @param nc_file Path to the nc file
-#' @importFrom magrittr %>%
-#' @importFrom data.table :=
 #' @export
 
 get_nc_time <- function(nc_file = NULL) {
@@ -159,7 +155,7 @@ input_data <- function(folder_path = NULL,
 #' @keywords internal
 #' @export
 output_data <- function(data = NULL,
-                        save_path = NULL,
+                        save_path = file.path(getwd(), 'output'),
                         file_name = NULL,
                         is_figure = FALSE,
                         data_info = 'Data')

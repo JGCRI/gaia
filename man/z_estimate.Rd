@@ -8,7 +8,7 @@ z_estimate(
   climate_model = NULL,
   climate_scenario = NULL,
   crop_name = NULL,
-  output_dir = NULL
+  output_dir = file.path(getwd(), "output")
 )
 }
 \arguments{
@@ -18,7 +18,7 @@ z_estimate(
 
 \item{crop_name}{Default = NULL. string for crop name}
 
-\item{output_dir}{Default = NULL. string for path to the output folder}
+\item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
 }
 \description{
 Estimate Z_t = ln(Y_t) w/o constants

@@ -10,6 +10,8 @@ smooth_impacts(
   climate_scenario = NULL,
   crop_name = NULL,
   base_year = NULL,
+  start_year = NULL,
+  end_year = NULL,
   smooth_window = 20,
   output_dir = file.path(getwd(), "output")
 )
@@ -22,6 +24,10 @@ smooth_impacts(
 \item{crop_name}{Default = NULL. string for crop name}
 
 \item{base_year}{Default = NULL. integer for the base year (for GCAM)}
+
+\item{start_year}{Default = NULL. integer for the  start year of the data}
+
+\item{end_year}{Default = NULL. integer for the end year of the data}
 
 \item{smooth_window}{Default = 20. integer for smoothing window in years}
 
