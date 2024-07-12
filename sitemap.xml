@@ -1,165 +1,59 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/CITATION.html</loc>
-  </url>
-  <url>
-    <loc>/CONTRIBUTE.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>/SUPPORT.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/articles/vignette.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/agprodchange_ni_gcam6.html</loc>
-  </url>
-  <url>
-    <loc>/reference/agprodchange_ni_gcam7.html</loc>
-  </url>
-  <url>
-    <loc>/reference/agprodchange_ref.html</loc>
-  </url>
-  <url>
-    <loc>/reference/clean_yield.html</loc>
-  </url>
-  <url>
-    <loc>/reference/climate_impact.html</loc>
-  </url>
-  <url>
-    <loc>/reference/co2_historical.html</loc>
-  </url>
-  <url>
-    <loc>/reference/co2_projection.html</loc>
-  </url>
-  <url>
-    <loc>/reference/colname_replace.html</loc>
-  </url>
-  <url>
-    <loc>/reference/crop_calendars.html</loc>
-  </url>
-  <url>
-    <loc>/reference/crop_month.html</loc>
-  </url>
-  <url>
-    <loc>/reference/data_aggregation.html</loc>
-  </url>
-  <url>
-    <loc>/reference/data_merge.html</loc>
-  </url>
-  <url>
-    <loc>/reference/data_trans.html</loc>
-  </url>
-  <url>
-    <loc>/reference/format_projection.html</loc>
-  </url>
-  <url>
-    <loc>/reference/gaea-package.html</loc>
-  </url>
-  <url>
-    <loc>/reference/gcam_agprodchange.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_agprodchange.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_cropland_weight.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_mirca_cropland.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_nc_time.html</loc>
-  </url>
-  <url>
-    <loc>/reference/get_weighted_yield_impact.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/input_data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/iso_replace.html</loc>
-  </url>
-  <url>
-    <loc>/reference/merge_data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mirca_to_gcam.html</loc>
-  </url>
-  <url>
-    <loc>/reference/output_data.html</loc>
-  </url>
-  <url>
-    <loc>/reference/path_check.html</loc>
-  </url>
-  <url>
-    <loc>/reference/pkg_example.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot_agprodchange.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot_fit.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot_map.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot_projection.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot_projection_smooth.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot_yield_impact.html</loc>
-  </url>
-  <url>
-    <loc>/reference/prep_regression.html</loc>
-  </url>
-  <url>
-    <loc>/reference/regression_fixed_effects.html</loc>
-  </url>
-  <url>
-    <loc>/reference/smooth_impacts.html</loc>
-  </url>
-  <url>
-    <loc>/reference/weather_agg.html</loc>
-  </url>
-  <url>
-    <loc>/reference/weather_clean.html</loc>
-  </url>
-  <url>
-    <loc>/reference/weighted_climate.html</loc>
-  </url>
-  <url>
-    <loc>/reference/yield_projections.html</loc>
-  </url>
-  <url>
-    <loc>/reference/yield_regression.html</loc>
-  </url>
-  <url>
-    <loc>/reference/z_estimate.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/CITATION.html</loc></url>
+<url><loc>/CONTRIBUTE.html</loc></url>
+<url><loc>/LICENSE-text.html</loc></url>
+<url><loc>/SUPPORT.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/articles/vignette.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/news/index.html</loc></url>
+<url><loc>/reference/agprodchange_ni_gcam6.html</loc></url>
+<url><loc>/reference/agprodchange_ni_gcam7.html</loc></url>
+<url><loc>/reference/agprodchange_ref.html</loc></url>
+<url><loc>/reference/clean_yield.html</loc></url>
+<url><loc>/reference/climate_impact.html</loc></url>
+<url><loc>/reference/co2_historical.html</loc></url>
+<url><loc>/reference/co2_projection.html</loc></url>
+<url><loc>/reference/coef_default.html</loc></url>
+<url><loc>/reference/colname_replace.html</loc></url>
+<url><loc>/reference/crop_calendars.html</loc></url>
+<url><loc>/reference/crop_month.html</loc></url>
+<url><loc>/reference/data_aggregation.html</loc></url>
+<url><loc>/reference/data_merge.html</loc></url>
+<url><loc>/reference/data_trans.html</loc></url>
+<url><loc>/reference/format_projection.html</loc></url>
+<url><loc>/reference/gaea-package.html</loc></url>
+<url><loc>/reference/gcam_agprodchange.html</loc></url>
+<url><loc>/reference/get_agprodchange.html</loc></url>
+<url><loc>/reference/get_cropland_weight.html</loc></url>
+<url><loc>/reference/get_mirca_cropland.html</loc></url>
+<url><loc>/reference/get_nc_time.html</loc></url>
+<url><loc>/reference/get_weighted_yield_impact.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/input_data.html</loc></url>
+<url><loc>/reference/iso_replace.html</loc></url>
+<url><loc>/reference/merge_data.html</loc></url>
+<url><loc>/reference/mirca_to_gcam.html</loc></url>
+<url><loc>/reference/output_data.html</loc></url>
+<url><loc>/reference/path_check.html</loc></url>
+<url><loc>/reference/pkg_example.html</loc></url>
+<url><loc>/reference/plot_agprodchange.html</loc></url>
+<url><loc>/reference/plot_fit.html</loc></url>
+<url><loc>/reference/plot_map.html</loc></url>
+<url><loc>/reference/plot_projection.html</loc></url>
+<url><loc>/reference/plot_projection_smooth.html</loc></url>
+<url><loc>/reference/plot_yield_impact.html</loc></url>
+<url><loc>/reference/prep_regression.html</loc></url>
+<url><loc>/reference/regression_fixed_effects.html</loc></url>
+<url><loc>/reference/smooth_impacts.html</loc></url>
+<url><loc>/reference/weather_agg.html</loc></url>
+<url><loc>/reference/weather_clean.html</loc></url>
+<url><loc>/reference/weighted_climate.html</loc></url>
+<url><loc>/reference/yield_impact.html</loc></url>
+<url><loc>/reference/yield_projections.html</loc></url>
+<url><loc>/reference/yield_regression.html</loc></url>
+<url><loc>/reference/z_estimate.html</loc></url>
 </urlset>
+
