@@ -5,6 +5,7 @@
 \title{climate_impact}
 \usage{
 climate_impact(
+  use_default_coeff = FALSE,
   climate_model = NULL,
   climate_scenario = NULL,
   crop_name = NULL,
@@ -15,6 +16,8 @@ climate_impact(
 )
 }
 \arguments{
+\item{use_default_coeff}{Default = FALSE. binary for using default regression coefficients. Set to TRUE will use the default coefficients instead of calculating coefficients from the historical climate data.}
+
 \item{climate_model}{Default = NULL. string for climate model name}
 
 \item{climate_scenario}{Default = NULL. string for RCP}

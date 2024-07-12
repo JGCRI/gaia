@@ -2,7 +2,9 @@
 #' This script includes the following functions:
 #' mirca_to_gcam
 #' get_mirca_cropland
-#' weight_calc
+#' get_cropland_weight
+#' get_weighted_yield_impact
+#' get_agprodchange
 #' gcam_agprodchange
 
 
@@ -398,8 +400,8 @@ get_weighted_yield_impact <- function(data = NULL,
 #' Calculate agricultural productivity change based on yield impact multiplier and no impact yield
 #'
 #' @param data Default = NULL. output data from function yield_projections, or similar format of data
-#' @param gcam_version Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7
-#' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
+#' @param from_year Default = NULL. integer for 'from' year to calculate agricultural productivity change
+#' @param to_year Default = NULL. integer for 'to' year to calculate agricultural productivity change
 #'
 #' @keywords internal
 #' @export
@@ -463,6 +465,7 @@ gcam_agprodchange <- function(data = NULL,
     yield_multiplier <- region_name <- region <- AgProdChange <-
     AgProductionTechnology <- AgSupplySubsector <- AgSupplySector <- NULL
 
+  message(paste0('Starting step: gcam_agprodchange'))
 
   output_dir <- file.path(output_dir, paste(gcam_version, 'agprodchange', cfe, sep = '_'))
   if(!dir.exists(output_dir)){

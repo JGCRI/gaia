@@ -44,3 +44,14 @@
 #'  agprodchange_ni_gcam6 <- gaea::agprodchange_ni_gcam6
 #' }
 "agprodchange_ni_gcam6"
+
+#' coef_default
+#'
+#' @source Regression coefficients derived from the default historical climate data
+#' @format R data frame
+#' @examples
+#' \dontrun{
+#'  library(gaea);
+#'  coef_default <- gaea::coef_default
+#' }
+"coef_default"

@@ -91,6 +91,26 @@ agprodchange_ni_gcam6 <- dplyr::bind_rows(
 usethis::use_data(agprodchange_ni_gcam6, overwrite = TRUE)
 
 
+#-------------------------------------------------------------------------------
+# Regression output from the default country level historical climate data
+#-------------------------------------------------------------------------------
+
+# This serves as the default regression relationship if no historical climate data
+# is provided
+coef_default <- data.table::data.table()
+for(crop_name in mapping_mirca_sage$crop_mirca){
+  coef_crop <- gaea::input_data(folder_path = 'C:/WorkSpace/github/test_scripts/gaea/output/data_processed',
+                                input_file =  paste("reg_out_", crop_name, "_", fit_name, ".csv", sep = ""),
+                                skip_number = 0 )
+  coef_default <- dplyr::bind_rows(
+    coef_default,
+    coef_crop %>% dplyr::mutate(crop = crop_name)
+  )
+
+}
+
+usethis::use_data(coef_default, overwrite = TRUE)
+
 #===============================================================================
 #'* Internal Data *
 #===============================================================================
@@ -453,12 +473,12 @@ col_fill_region <- ggplot2::scale_fill_manual( name = "gcam_region", values = re
 # define theme
 theme_basic <- ggplot2::theme_bw() +
   ggplot2::theme(
-    legend.text = element_text( size = 16, vjust = .5 ),
-    legend.title = element_text( size = 16, vjust = 2 ),
-    axis.text = element_text( size = 16 ),
-    axis.title = element_text( size = 20, face = "bold" ),
-    plot.title = element_text( size = 24, face = "bold", vjust = 1 ),
-    strip.text = element_text( size = 14 ) )
+    legend.text = ggplot2::element_text( size = 16, vjust = .5 ),
+    legend.title = ggplot2::element_text( size = 16, vjust = 2 ),
+    axis.text = ggplot2::element_text( size = 16 ),
+    axis.title = ggplot2::element_text( size = 20, face = "bold" ),
+    plot.title = ggplot2::element_text( size = 24, face = "bold", vjust = 1 ),
+    strip.text = ggplot2::element_text( size = 14 ) )
 
 
 #-------------------------------------------------------------------------------

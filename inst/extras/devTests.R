@@ -3,30 +3,53 @@ library(gaea); library(dplyr);library(tibble)
 
 # Test Script
 
-output_dir <- 'C:/WorkSpace/github/test_scripts/gaea/output'
-# gaea::weighted_climate(pr_files = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/pr_mon_basd_CanESM5_W5E5v2_GCAM_ref_2015-2100.nc',
-#                        tas_file = NULL,
-#                        # tas_files = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/tas_mon_basd_CanESM5_W5E5v2_GCAM_ref_2015-2100.nc',
-#                        timestep = 'monthly',
-#                        climate_model = 'canesm5',
-#                        climate_scenario = 'gcam-ref',
-#                        time_periods = seq(2015, 2020, 1),
-#                        output_dir = output_dir)
+output_dir <- 'C:/WorkSpace/github/test_scripts/gaea/output_test'
+gaea::weighted_climate(pr_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/pr_mon_basd_CanESM5_W5E5v2_GCAM_ref_2015-2100.nc',
+                       tas_ncdf = NULL,
+                       # tas_files = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/tas_mon_basd_CanESM5_W5E5v2_GCAM_ref_2015-2100.nc',
+                       timestep = 'monthly',
+                       climate_model = 'canesm5',
+                       climate_scenario = 'gcam-ref',
+                       time_periods = seq(2015, 2020, 1),
+                       output_dir = output_dir,
+                       name_append = NULL)
 
-pr_files = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/pr_mon_basd_CanESM5_W5E5v2_GCAM_ref_2015-2100.nc'
-tas_files = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/tas_mon_basd_CanESM5_W5E5v2_GCAM_ref_2015-2100.nc'
-timestep = 'monthly'
-climate_model = 'canesm5'
-climate_scenario = 'gcam-ref'
-member = 'r1i1p1f1'
-bias_adj = 'W5E5v2'
-cfe = 'no-cfe'
-time_periods = seq(2015, 2020, 1)
-start_year = 2015
-end_year = 2100
-base_year = 2015
-diagnostics <- TRUE
-output_dir = output_dir
+# for historical climate
+gaea::weighted_climate(pr_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/CanESM5_r1i1p1f1_W5E5v2_historical_pr_global_monthly_1950_2014.nc',
+                       tas_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/CanESM5_r1i1p1f1_W5E5v2_historical_tas_global_monthly_1950_2014.nc',
+                       timestep = 'monthly',
+                       climate_model = 'canesm5',
+                       climate_scenario = 'historical',
+                       time_periods = seq(1950, 2014, 1),
+                       output_dir = 'C:/WorkSpace/github/test_scripts/gaea/output_test',
+                       name_append = '_hist')
+
+if(T){
+
+  pr_proj_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/pr_mon_basd_CanESM5_W5E5v2_GCAM_ref_2015-2100.nc'
+  tas_proj_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/tas_mon_basd_CanESM5_W5E5v2_GCAM_ref_2015-2100.nc'
+  timestep = 'monthly'
+  climate_model = 'canesm5'
+  climate_scenario = 'gcam-ref'
+  member = 'r1i1p1f1'
+  bias_adj = 'W5E5v2'
+  cfe = 'no-cfe'
+  gcam_version = 'gcam7'
+  use_default_coeff = TRUE
+  climate_hist_dir = NULL
+  climate_impact_dir = 'C:/WorkSpace/github/test_scripts/gaea/output/climate/canesm5'
+  time_periods = seq(2015, 2020, 1)
+  start_year = 2015
+  end_year = 2100
+  base_year = 2015
+  smooth_window = 20
+  co2_hist = NULL
+  co2_proj = NULL
+  diagnostics <- TRUE
+  output_dir = 'C:/WorkSpace/github/test_scripts/gaea/output_test'
+
+}
+
 
 # crops <- tibble::tibble(
 #   crop_mirca = c('wheat', 'sorghum', 'maize', 'rice', 'soybean', 'sugarcane', 'sugarbeet', 'cotton', 'cassava', 'root_tuber', 'sunflower'),
@@ -52,7 +75,7 @@ crop_cal <- gaea::crop_calendars(output_dir = output_dir)
 
 # Step 5:
 # test data_aggregation
-climate_hist_dir <- file.path(output_dir, 'climate', 'country_climate_txt')
+climate_hist_dir <- file.path(output_dir, 'climate', 'country_climate_hist')
 climate_impact_dir <- file.path(output_dir, 'climate')
 
 crop <- gaea::data_aggregation(climate_hist_dir = climate_hist_dir,
@@ -68,14 +91,16 @@ gaea::yield_regression(diagnostics = diagnostics,
 
 
 # test z_estimate
-t <- gaea::z_estimate(climate_model = climate_model,
+t <- gaea::z_estimate(use_default_coeff = FALSE,
+                      climate_model = climate_model,
                       climate_scenario = climate_scenario,
                       crop_name = 'maize',
                       output_dir = output_dir)
 
 # Step 7:
 # test yield_projections
-t_yield_projection <- gaea::yield_projections(climate_model = climate_model,
+t_yield_projection <- gaea::yield_projections(use_default_coeff = FALSE,
+                                              climate_model = climate_model,
                                               climate_scenario = climate_scenario,
                                               base_year = base_year,
                                               start_year = start_year,
@@ -106,3 +131,34 @@ t <- gaea::gcam_agprodchange(data = t_yield_projection,
                              gcam_version = 'gcam7',
                              diagnostics = T,
                              output_dir = output_dir)
+
+
+# Step all:
+# Test all the steps including climate data weighting
+start.time <- Sys.time()
+gaea::yield_impact(pr_hist_ncdf = NULL,
+                   tas_hist_ncdf = NULL,
+                   pr_proj_ncdf = NULL,
+                   tas_proj_ncdf = NULL,
+                   timestep = timestep,
+                   historical_periods = time_periods,
+                   climate_hist_dir = NULL,
+                   climate_impact_dir = 'C:/WorkSpace/github/test_scripts/gaea/output/climate/canesm5',
+                   climate_model = climate_model,
+                   climate_scenario = climate_scenario,
+                   member = member,
+                   bias_adj = bias_adj,
+                   cfe = cfe,
+                   gcam_version = gcam_version,
+                   use_default_coeff = TRUE,
+                   base_year = base_year,
+                   start_year = start_year,
+                   end_year = end_year,
+                   smooth_window = smooth_window,
+                   co2_hist = NULL,
+                   co2_proj = NULL,
+                   diagnostics = TRUE,
+                   output_dir = 'C:/WorkSpace/github/test_scripts/gaea/output_test')
+end.time <- Sys.time()
+time.taken <- round(end.time - start.time,2)
+time.taken

@@ -7,7 +7,7 @@
 get_nc_time(nc_file = NULL)
 }
 \arguments{
-\item{nc_file}{Path to the nc file}
+\item{nc_file}{string for path to the nc file}
 }
 \description{
 get the netcdf file time series

@@ -3,6 +3,7 @@
 #' Project yields for future climate scenarios using regression analysis
 #' Using average growing season temperature and precipitation, max and min months
 #'
+#' @param use_default_coeff Default = FALSE. binary for using default regression coefficients. Set to TRUE will use the default coefficients instead of calculating coefficients from the historical climate data.
 #' @param climate_model Default = NULL. string for climate model (e.g., 'CanESM5')
 #' @param climate_scenario Default = NULL. string for climate scenario (e.g., 'ssp245')
 #' @param base_year Default = NULL. integer for the base year (for GCAM)
@@ -13,7 +14,8 @@
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @export
 
-yield_projections <- function(climate_model = 'gcm',
+yield_projections <- function(use_default_coeff = FALSE,
+                              climate_model = 'gcm',
                               climate_scenario = 'rcp',
                               base_year = NULL,
                               start_year = NULL,
@@ -42,7 +44,8 @@ yield_projections <- function(climate_model = 'gcm',
     print( paste( climate_model, climate_scenario, crop_i, sep = " " ) )
 
     # calculate yield impact for each crop and country
-    d <- gaea::climate_impact(climate_model = climate_model,
+    d <- gaea::climate_impact(use_default_coeff = use_default_coeff,
+                              climate_model = climate_model,
                               climate_scenario = climate_scenario,
                               crop_name = crop_i,
                               base_year = base_year,

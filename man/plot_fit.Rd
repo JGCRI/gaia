@@ -11,11 +11,11 @@ plot_fit(
 )
 }
 \arguments{
+\item{data}{Default = NULL. data frame for crop data}
+
 \item{crop_name}{Default = NULL. string for crop name}
 
 \item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
-
-\item{d}{Default = NULL. data frame for crop data}
 }
 \description{
 Figure of fitted regression estimates compared to FAO yields

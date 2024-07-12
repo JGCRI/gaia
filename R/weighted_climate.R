@@ -3,23 +3,25 @@
 #' Process standard NetCDF files from ISIMIP to country level climate
 #' based on crop harvested area from MIRCA2000
 #'
-#' @param pr_files Default = NULL. list of paths for precipitation
-#' @param tas_files Default = NULL. list of paths for temperature
+#' @param pr_ncdf Default = NULL. list of paths for precipitation NetCDF files from ISIMIP
+#' @param tas_ncdf Default = NULL. list of paths for temperature NetCDF files from ISIMIP
 #' @param timestep Default = 'monthly'. string for input climate data time step (e.g., 'monthly', 'daily')
 #' @param climate_model Default = NULL. string for climate model (e.g., 'CanESM5')
 #' @param climate_scenario Default = NULL. string for climate scenario (e.g., 'ssp245')
-#' @param time_periods Default = NULL. vector for years to input in the output
+#' @param time_periods Default = NULL. vector for years to subset from the climate data. If NULL, use the default climate data period
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
+#' @param name_append Default = NULL. string for name append to the output folder
 #' @export
 
 
-weighted_climate <- function(pr_files = NULL,
-                             tas_files = NULL,
+weighted_climate <- function(pr_ncdf = NULL,
+                             tas_ncdf = NULL,
                              timestep = 'monthly',
                              climate_model = 'gcm',
                              climate_scenario = 'rcp',
                              time_periods = NULL,
-                             output_dir = file.path(getwd(), 'output')){
+                             output_dir = file.path(getwd(), 'output'),
+                             name_append = NULL){
 
 
   # ----------------------------------------------------------------------------
@@ -30,22 +32,22 @@ weighted_climate <- function(pr_files = NULL,
     country_name.final -> year -> month -> value
 
   # create output folder
-  save_dir <- file.path(output_dir, 'climate', climate_model)
+  save_dir <- file.path(output_dir, 'climate', paste0(climate_model, name_append))
   if(!dir.exists(save_dir)){ dir.create(save_dir, recursive = TRUE) }
 
   crop_names <- names(mirca_harvest_area)
   crop_names <- crop_names[!(crop_names %in% c('lon', 'lat'))]
 
-  # check if pr_files is provided
-  if(!is.null(pr_files)){
+  # check if pr_ncdf is provided
+  if(!is.null(pr_ncdf)){
     pr_exists <- TRUE
   } else {
     pr_exists <- FALSE
     message('No precipitation files provided. Skipping.')
   }
 
-  # check if tas_files is provided
-  if(!is.null(tas_files)){
+  # check if tas_ncdf is provided
+  if(!is.null(tas_ncdf)){
     tas_exists <- TRUE
   } else {
     tas_exists <- FALSE
@@ -113,10 +115,10 @@ weighted_climate <- function(pr_files = NULL,
     all_periods <- c()
 
     # loop through all pr files
-    for(pr_file in pr_files) {
+    for(pr_file in pr_ncdf) {
 
       # check if pr file is valid
-      gaea::path_check(file = pr_file, file_type = 'nc')
+      gaea::path_check(path = pr_file, file_type = 'nc')
 
       # precipitation
       message(paste0('Processing: ', pr_file))
@@ -152,7 +154,7 @@ weighted_climate <- function(pr_files = NULL,
     # get final start and end year
     pr_period <- paste0(min(all_periods), '_', max(all_periods))
 
-  } # end of if(is.null(pr_files))
+  } # end of if(is.null(pr_ncdf))
 
 
   # process temperature
@@ -164,10 +166,10 @@ weighted_climate <- function(pr_files = NULL,
     all_periods <- c()
 
     # loop through all tas files
-    for(tas_file in tas_files) {
+    for(tas_file in tas_ncdf) {
 
       # check if pr file is valid
-      gaea::path_check(file = tas_file, file_type = 'nc')
+      gaea::path_check(path = tas_file, file_type = 'nc')
 
       # precipitation
       message(paste0('Processing: ', tas_file))
@@ -188,7 +190,7 @@ weighted_climate <- function(pr_files = NULL,
       tas <- dplyr::bind_rows(tas, tas_temp)
       all_periods <- c(all_periods, nc_time_subset)
 
-    } # end of for(i in nrow(tas_files))
+    } # end of for(i in nrow(tas_ncdf))
 
     # convert temperature from K to C
     tas <- tas %>%
@@ -262,7 +264,11 @@ weighted_climate <- function(pr_files = NULL,
 #' @param var Default = NULL. string for climate variable
 #' @param timestep Default = 'monthly'. string for input climate data time step (e.g., 'monthly', 'daily')
 #' @noRd
-nc_to_tbl <- function(nc_file = NULL, var = NULL, time_periods = NULL, timestep = 'monthly'){
+nc_to_tbl <- function(nc_file = NULL,
+                      var = NULL,
+                      time_periods = NULL,
+                      timestep = 'monthly')
+{
 
   lon <- lat <- year <- month <- value <- NULL
 
@@ -300,8 +306,12 @@ nc_to_tbl <- function(nc_file = NULL, var = NULL, time_periods = NULL, timestep 
 #'
 #' @param tbl Default = NULL. tibble for gridded monthly climate data, with columns like [lon, lat, 2010-01-01, 2010-02-01, ...]
 #' @param crop Default = NULL. string for crop name (e.g., 'irr_crop01')
+#' @param crop_area_weight Default = NULL. table for weight of crop harvest area within country
 #' @noRd
-weight_by_crop_area <- function(tbl = NULL, crop = NULL, crop_area_weight = NULL){
+weight_by_crop_area <- function(tbl = NULL,
+                                crop = NULL,
+                                crop_area_weight = NULL)
+{
 
   lon <- lat <- country_id <- country_name <- value <- NULL
 

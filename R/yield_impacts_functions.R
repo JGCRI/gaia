@@ -6,7 +6,7 @@
 #'
 #' Function to clean FAO yield data
 #'
-#' @param fao_yieldDefault = NULL.  data frame for the fao yield table
+#' @param fao_yield Default = NULL.  data frame for the fao yield table
 #' @keywords internal
 #' @export
 
@@ -190,9 +190,9 @@ crop_month <- function(climate_data = NULL,
 #' @param data Default = NULL. data table for crop data created by crop_month
 #' @param crop_name Default = NULL. string for crop name
 #' @param yield Default = NULL. data table for yield data
-#' @param out_dir Default = NULL. string for path to output folder
+#' @param output_dir Default = NULL. string for path to output folder
 #' @param co2_hist Default = NULL data table for historical CO2 concentration [year, co2_conc]
-#' @param gdp Default = gdp. data table for historical GDP by ISO [iso, year, gdp_pcap_ppp]
+#' @param gdp_hist Default = gdp. data table for historical GDP by ISO [iso, year, gdp_pcap_ppp]
 #' @keywords internal
 #' @export
 
@@ -204,7 +204,7 @@ data_merge <- function(data = NULL,
                        gdp_hist = gdp )
 {
 
-  crop <- co2_projection <- grow_season <- var <- NULL
+  crop <- grow_season <- var <- NULL
 
   if(is.null(co2_hist)){
     co2_hist <- gaea::co2_historical
@@ -446,7 +446,7 @@ regression_fixed_effects <- function(data = NULL,
 #'
 #' Figure of fitted regression estimates compared to FAO yields
 #'
-#' @param d Default = NULL. data frame for crop data
+#' @param data Default = NULL. data frame for crop data
 #' @param crop_name Default = NULL. string for crop name
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @keywords internal
@@ -500,6 +500,7 @@ plot_fit <- function(data = NULL,
 #'
 #' Estimate Z_t = ln(Y_t) w/o constants
 #'
+#' @param use_default_coeff Default = FALSE. binary for using default regression coefficients. Set to TRUE will use the default coefficients instead of calculating coefficients from the historical climate data.
 #' @param climate_model Default = NULL. string for climate model name
 #' @param climate_scenario Default = NULL. string for RCP
 #' @param crop_name Default = NULL. string for crop name
@@ -507,17 +508,41 @@ plot_fit <- function(data = NULL,
 #' @keywords internal
 #' @export
 
-z_estimate <- function(climate_model = NULL,
+z_estimate <- function(use_default_coeff = FALSE,
+                       climate_model = NULL,
                        climate_scenario = NULL,
                        crop_name = NULL,
                        output_dir = file.path(getwd(), 'output'))
 {
+
+  crop <- NULL
+
   print( paste( "Extract coefficient values", n_sig, sep = " " ) )
 
+  if(!use_default_coeff){
+
+    check_reg_out <- list.files(
+      path = file.path( output_dir, "data_processed" ),
+      pattern = 'reg_out_'
+    )
+
+    if(length(check_reg_out) == 0){
+      use_default_coeff <- TRUE
+    }
+  }
+
+
   # Extract significant coefficient values
-  coef <- gaea::input_data(folder_path = file.path( output_dir, "data_processed" ),
-                           input_file =  paste( "reg_out_", crop_name, "_", fit_name, ".csv", sep = "" ),
-                           skip_number = 0 )
+  if(use_default_coeff){
+    coef <- gaea::coef_default %>%
+      dplyr::filter(crop == crop_name) %>%
+      dplyr::select(-crop)
+  } else {
+    coef <- gaea::input_data(folder_path = file.path( output_dir, "data_processed" ),
+                             input_file = paste( "reg_out_", crop_name, "_", fit_name, ".csv", sep = "" ),
+                             skip_number = 0 )
+  }
+
 
   # Function to create coefficient values used for analysis (based on p value)
   est_fn <- function( x, n_sig )
@@ -588,6 +613,7 @@ z_estimate <- function(climate_model = NULL,
 #'
 #' Estimate climate impacts (ratio future to each base year, then average)
 #'
+#' @param use_default_coeff Default = FALSE. binary for using default regression coefficients. Set to TRUE will use the default coefficients instead of calculating coefficients from the historical climate data.
 #' @param climate_model Default = NULL. string for climate model name
 #' @param climate_scenario Default = NULL. string for RCP
 #' @param crop_name Default = NULL. string for crop name
@@ -598,7 +624,8 @@ z_estimate <- function(climate_model = NULL,
 #' @keywords internal
 #' @export
 
-climate_impact <- function(climate_model = NULL,
+climate_impact <- function(use_default_coeff = FALSE,
+                           climate_model = NULL,
                            climate_scenario = NULL,
                            crop_name = NULL,
                            base_year = NULL,
@@ -607,7 +634,8 @@ climate_impact <- function(climate_model = NULL,
                            output_dir = file.path(getwd(), 'output'))
 {
   # estimate z hat
-  d <- gaea::z_estimate(climate_model = climate_model,
+  d <- gaea::z_estimate(use_default_coeff = use_default_coeff,
+                        climate_model = climate_model,
                         climate_scenario = climate_scenario,
                         crop_name = crop_name,
                         output_dir = output_dir)
@@ -755,6 +783,7 @@ smooth_impacts <- function(data = NULL,
   d.out <- d
 
   d <- d[ order( d$iso, d$year ), ]
+  d <- d %>% data.table::as.data.table()
   d <- data.table::dcast( d, crop + model + scenario + iso ~ year, value.var = "yield_impact" )
 
   # save smoothed output
@@ -852,7 +881,7 @@ plot_projection <- function(data = NULL,
                             output_dir =  file.path(getwd(), 'output'))
 {
 
-  # year <- yield_impact <- iso <- NULL
+  year <- iso <- NULL
 
   p <- ggplot2::ggplot( data, ggplot2::aes( x = year, y = yield_impact, color = iso ) ) +
     ggplot2::geom_line( ) +
@@ -942,7 +971,7 @@ plot_map <- function(data = NULL,
                      output_dir = file.path(getwd(), 'output'))
 {
 
-  model <- rcp <- year <- crop <- iso <- yield_impact <- yield_impact_group <- NULL
+  model <- scenario <- year <- crop <- iso <- yield_impact <- yield_impact_group <- NULL
 
   data$iso <- gsub('rom', 'rou', data$iso)
   data$iso <- toupper(data$iso)
@@ -957,7 +986,7 @@ plot_map <- function(data = NULL,
 
   for (m in unique(data$model))
   {
-    for (r in unique(data$rcp))
+    for (r in unique(data$scenario))
     {
       for(y in plot_years)
       {
@@ -969,10 +998,10 @@ plot_map <- function(data = NULL,
           # filter by model, rcp, and year
           df_plot <- data %>%
             dplyr::filter(model == m,
-                          rcp == r,
+                          scenario == r,
                           year == y,
                           crop == cp) %>%
-            dplyr::select(model, rcp, iso, crop, year, yield_impact)
+            dplyr::select(model, scenario, iso, crop, year, yield_impact)
 
           # breaks for the data
           breaks <- c(-Inf, seq(0.5,1.5,0.1), Inf)
@@ -1086,8 +1115,13 @@ plot_yield_impact <- function(data = NULL,
                                            'RFD' = '#5773CC')) +
     ggplot2::theme_bw()
 
+  save_path <- file.path(output_dir, 'figures_yield_impacts')
+  if(!dir.exists(save_path)){
+    dir.create(save_path, recursive = TRUE)
+  }
+
   ggplot2::ggsave(p,
-                  filename = file.path(output_dir, 'figures_yield_impacts', paste0(commodity, crop_type, '.png')),
+                  filename = file.path(save_path, paste0(commodity, crop_type, '.png')),
                   height = 10, width = 10, dpi = 300)
 
 }
@@ -1139,7 +1173,12 @@ plot_agprodchange <- function(data = NULL,
                                              'RFD' = '#5773CC')) +
       ggplot2::theme_bw()
 
-    ggplot2::ggsave(filename = file.path(output_dir, 'figures_agprodchange', paste0(commodity, '.png')),
+    save_path <- file.path(output_dir, 'figures_agprodchange')
+    if(!dir.exists(save_path)){
+      dir.create(save_path, recursive = TRUE)
+    }
+
+    ggplot2::ggsave(filename = file.path(save_path, paste0(commodity, '.png')),
                     height = 10, width = 10, dpi = 300)
   } else {
     print(paste0('No data for ', commodity))

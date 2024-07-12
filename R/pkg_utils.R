@@ -65,10 +65,11 @@ path_check <- function(path = NULL, file_type = NULL) {
 #'
 #' get the netcdf file time series
 #'
-#' @param nc_file Path to the nc file
+#' @param nc_file string for path to the nc file
 #' @export
 
-get_nc_time <- function(nc_file = NULL) {
+get_nc_time <- function(nc_file = NULL)
+{
   nc <- ncdf4::nc_open(nc_file)
 
   # get netcdf dimensions
@@ -90,8 +91,8 @@ get_nc_time <- function(nc_file = NULL) {
   )
 
   # get start and end year
-  start_yr <- min(cf@time$year)
-  end_yr <- max(cf@time$year)
+  start_yr <- range(cf, '%Y')[1]
+  end_yr <- range(cf, '%Y')[2]
 
   # time period
   time_period <- seq(start_yr, end_yr, 1)

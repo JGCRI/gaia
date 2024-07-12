@@ -20,11 +20,11 @@ data_merge(
 
 \item{yield}{Default = NULL. data table for yield data}
 
+\item{output_dir}{Default = NULL. string for path to output folder}
+
 \item{co2_hist}{Default = NULL data table for historical CO2 concentration [year, co2_conc]}
 
-\item{out_dir}{Default = NULL. string for path to output folder}
-
-\item{gdp}{Default = gdp. data table for historical GDP by ISO [iso, year, gdp_pcap_ppp]}
+\item{gdp_hist}{Default = gdp. data table for historical GDP by ISO [iso, year, gdp_pcap_ppp]}
 }
 \description{
 Function to merge the iso codes, FAO yield (historic), crop calendar, and weather variables

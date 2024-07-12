@@ -5,19 +5,20 @@
 \title{weighted_climate}
 \usage{
 weighted_climate(
-  pr_files = NULL,
-  tas_files = NULL,
+  pr_ncdf = NULL,
+  tas_ncdf = NULL,
   timestep = "monthly",
   climate_model = "gcm",
   climate_scenario = "rcp",
   time_periods = NULL,
-  output_dir = file.path(getwd(), "output")
+  output_dir = file.path(getwd(), "output"),
+  name_append = NULL
 )
 }
 \arguments{
-\item{pr_files}{Default = NULL. list of paths for precipitation}
+\item{pr_ncdf}{Default = NULL. list of paths for precipitation NetCDF files from ISIMIP}
 
-\item{tas_files}{Default = NULL. list of paths for temperature}
+\item{tas_ncdf}{Default = NULL. list of paths for temperature NetCDF files from ISIMIP}
 
 \item{timestep}{Default = 'monthly'. string for input climate data time step (e.g., 'monthly', 'daily')}
 
@@ -25,9 +26,11 @@ weighted_climate(
 
 \item{climate_scenario}{Default = NULL. string for climate scenario (e.g., 'ssp245')}
 
-\item{time_periods}{Default = NULL. vector for years to input in the output}
+\item{time_periods}{Default = NULL. vector for years to subset from the climate data. If NULL, use the default climate data period}
 
 \item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
+
+\item{name_append}{Default = NULL. string for name append to the output folder}
 }
 \description{
 Process standard NetCDF files from ISIMIP to country level climate

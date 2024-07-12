@@ -5,7 +5,9 @@
 \title{This script includes the following functions:
 mirca_to_gcam
 get_mirca_cropland
-weight_calc
+get_cropland_weight
+get_weighted_yield_impact
+get_agprodchange
 gcam_agprodchange
 -----------------------------------------------------------------------------
 mirca_to_gcam}

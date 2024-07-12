@@ -10,9 +10,9 @@ get_agprodchange(data = NULL, from_year = NULL, to_year = NULL)
 \arguments{
 \item{data}{Default = NULL. output data from function yield_projections, or similar format of data}
 
-\item{gcam_version}{Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7}
+\item{from_year}{Default = NULL. integer for 'from' year to calculate agricultural productivity change}
 
-\item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
+\item{to_year}{Default = NULL. integer for 'to' year to calculate agricultural productivity change}
 }
 \description{
 Calculate agricultural productivity change based on yield impact multiplier and no impact yield

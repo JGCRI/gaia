@@ -5,6 +5,7 @@
 \title{yield_projections}
 \usage{
 yield_projections(
+  use_default_coeff = FALSE,
   climate_model = "gcm",
   climate_scenario = "rcp",
   base_year = NULL,
@@ -16,6 +17,8 @@ yield_projections(
 )
 }
 \arguments{
+\item{use_default_coeff}{Default = FALSE. binary for using default regression coefficients. Set to TRUE will use the default coefficients instead of calculating coefficients from the historical climate data.}
+
 \item{climate_model}{Default = NULL. string for climate model (e.g., 'CanESM5')}
 
 \item{climate_scenario}{Default = NULL. string for climate scenario (e.g., 'ssp245')}
