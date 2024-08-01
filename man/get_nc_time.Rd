@@ -12,3 +12,4 @@ get_nc_time(nc_file = NULL)
 \description{
 get the netcdf file time series
 }
+\keyword{internal}

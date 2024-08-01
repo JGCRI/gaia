@@ -2,8 +2,7 @@
 % Please edit documentation in R/gcam_agprodchange.R
 \name{get_cropland_weight}
 \alias{get_cropland_weight}
-\title{-----------------------------------------------------------------------------
-get_cropland_weight}
+\title{get_cropland_weight}
 \usage{
 get_cropland_weight(gcam_version = "gcam7")
 }
@@ -14,3 +13,4 @@ get_cropland_weight(gcam_version = "gcam7")
 Calculate the weight of cropland area within the intersected region-glu-country to
 cropland area within intersected region-glu
 }
+\keyword{internal}

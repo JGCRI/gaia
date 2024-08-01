@@ -2,8 +2,7 @@
 % Please edit documentation in R/yield_impact.R
 \name{yield_impact}
 \alias{yield_impact}
-\title{-----------------------------------------------------------------------------
-yield_impact}
+\title{yield_impact}
 \usage{
 yield_impact(
   pr_hist_ncdf = NULL,

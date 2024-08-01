@@ -2,8 +2,7 @@
 % Please edit documentation in R/gcam_agprodchange.R
 \name{gcam_agprodchange}
 \alias{gcam_agprodchange}
-\title{-----------------------------------------------------------------------------
-gcam_agprodchange}
+\title{gcam_agprodchange}
 \usage{
 gcam_agprodchange(
   data = NULL,

@@ -9,7 +9,6 @@ get_cropland_weight
 get_weighted_yield_impact
 get_agprodchange
 gcam_agprodchange
------------------------------------------------------------------------------
 mirca_to_gcam}
 \usage{
 mirca_to_gcam(gcam_version = "gcam7")

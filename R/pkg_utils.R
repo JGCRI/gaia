@@ -66,6 +66,7 @@ path_check <- function(path = NULL, file_type = NULL) {
 #' get the netcdf file time series
 #'
 #' @param nc_file string for path to the nc file
+#' @keywords internal
 #' @export
 
 get_nc_time <- function(nc_file = NULL)

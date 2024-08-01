@@ -8,7 +8,7 @@
 #' gcam_agprodchange
 
 
-#' -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #' mirca_to_gcam
 #'
 #' Mapping between GCAM region, GLU, country
@@ -135,7 +135,7 @@ mirca_to_gcam <- function(gcam_version = 'gcam7')
 }
 
 
-#' -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #' get_mirca_cropland
 #'
 #' Calculate cropland fraction within country and glu intersection
@@ -181,14 +181,14 @@ get_mirca_cropland <- function(raster_brick = NULL,
 
 
 
-#' -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #' get_cropland_weight
 #'
 #' Calculate the weight of cropland area within the intersected region-glu-country to
 #' cropland area within intersected region-glu
 #'
 #' @param gcam_version Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7
-#'
+#' @keywords internal
 #' @export
 
 get_cropland_weight <- function(gcam_version = 'gcam7')
@@ -271,7 +271,7 @@ get_cropland_weight <- function(gcam_version = 'gcam7')
 
 
 
-#' -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #' get_weighted_yield_impact
 #'
 #' Calculate weighted yield impact by region-glu scale for each GCAM commodity
@@ -430,7 +430,7 @@ get_agprodchange <- function(data = NULL,
 
 
 
-#' -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #' gcam_agprodchange
 #'
 #' Map country level yield impacts to GCAM region-GLU level

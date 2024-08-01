@@ -2,8 +2,7 @@
 % Please edit documentation in R/gcam_agprodchange.R
 \name{get_mirca_cropland}
 \alias{get_mirca_cropland}
-\title{-----------------------------------------------------------------------------
-get_mirca_cropland}
+\title{get_mirca_cropland}
 \usage{
 get_mirca_cropland(raster_brick = NULL, mapping = NULL)
 }

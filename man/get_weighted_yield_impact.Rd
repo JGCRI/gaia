@@ -2,8 +2,7 @@
 % Please edit documentation in R/gcam_agprodchange.R
 \name{get_weighted_yield_impact}
 \alias{get_weighted_yield_impact}
-\title{-----------------------------------------------------------------------------
-get_weighted_yield_impact}
+\title{get_weighted_yield_impact}
 \usage{
 get_weighted_yield_impact(
   data = NULL,
