@@ -41,3 +41,5 @@ vignettes/*.pdf
 # outputs from testing
 tests/testthat/output/
 tests/testthat/_snaps
+docs/
+output*
