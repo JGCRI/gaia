@@ -54,7 +54,7 @@ The primary functionality of `gaea` is encapsulated in the `yield_impact` wrappe
 6. `gcam_agprodchange`: Remaps country-level yield shocks to GCAM-required spatial scales (i.e., region and basin intersections) based on harvest area and converts crops to GCAM commodities. This function calculates agricultural productivity growth (a key parameter for GCAM to estimate future yield) and creates ready-to-use XML outputs for GCAM.
 
 
-![The gaea workflow showing the functions and the steps of modeling crop yield shocks to climate variations using empritical econometric model. \label{fig:workflow}](workflow.png)
+![The gaea workflow showing the functions and the steps of modeling crop yield shocks to climate variations using empritical econometric model. \label{fig:workflow}](workflow.jpg)
 
 
 # Acknowledgements
