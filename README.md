@@ -13,7 +13,7 @@
 <!-- ------------------------>
 <!-- ------------------------>
 
-`gaea` is an empirical model to estimate annual crop yield responses to temperature and precipitation.
+`gaea` is an open-source R package designed to estimate crop yield shocks in response to annual climate variations and CO2 concentrations at the country scale for 12 major crops. `gaea` streamlines the workflow from raw climate data processing to the production of different forms of yield shock, such as agricultural productivity changes at the region-basin level, which can be directly integrated into the latest Global Change Analysis Model (GCAM).
 
 <br>
 
@@ -53,14 +53,7 @@ or
 install.packages("remotes")
 remotes::install_github("JGCRI/gaea")
 ```
-
-
-<!-- ------------------------>
-<!-- ------------------------>
-# <a name="GettingStarted"></a>Getting Started
-<!-- ------------------------>
-<!-- ------------------------>
-
+<br/>
 
 
 <!-- ------------------------>
@@ -69,7 +62,7 @@ remotes::install_github("JGCRI/gaea")
 <!-- ------------------------>
 <!-- ------------------------>
 
-- Waldhoff, S.T., Wing, I.S., Edmonds, J., Leng, G. and Zhang, X., 2020. Future climate impacts on global agricultural yields over the 21st century. Environmental Research Letters, 15(11), p.114010. https://doi.org/10.1088/1748-9326/abadcb
+> Waldhoff, S.T., Wing, I.S., Edmonds, J., Leng, G. and Zhang, X., 2020. Future climate impacts on global agricultural yields over the 21st century. Environmental Research Letters, 15(11), p.114010. https://doi.org/10.1088/1748-9326/abadcb
 
 
 
