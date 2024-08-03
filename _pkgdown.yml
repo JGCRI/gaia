@@ -19,7 +19,7 @@ navbar:
       text: "News"
       href: news/index.html
     - text: "Contribute"
-      href: CONTRIBUTE.html
+      href: CONTRIBUTING.html
     - icon: fas fa-quote-left
       text: Citation
       href: CITATION.html
