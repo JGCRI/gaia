@@ -21,9 +21,9 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Stephanie Waldhoff \email{Stephanie.Waldhoff@pnnl.gov}
-  \item Claudia Tebaldi \email{claudia.tebaldi@pnnl.gov}
-  \item Abigail Snyder \email{abigail.snyder@pnnl.gov}
+  \item Stephanie Waldhoff \email{Stephanie.Waldhoff@pnnl.gov} (\href{https://orcid.org/0000-0002-8073-0868}{ORCID})
+  \item Claudia Tebaldi \email{claudia.tebaldi@pnnl.gov} (\href{https://orcid.org/0000-0001-9233-8903}{ORCID})
+  \item Abigail Snyder \email{abigail.snyder@pnnl.gov} (\href{https://orcid.org/0000-0002-9034-9948}{ORCID})
 }
 
 }

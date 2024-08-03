@@ -459,12 +459,12 @@ plot_fit <- function(data = NULL,
 
   d <- data
 
-  p <- ggplot2::ggplot( d, ggplot2::aes_string( "yield", fit_name, size = "area_harvest", color = "GCAM_region_name" ) ) +
+  p <- ggplot2::ggplot( d, ggplot2::aes( "yield", fit_name, size = "area_harvest", color = "GCAM_region_name" ) ) +
     ggplot2::geom_point( shape = 21, stroke = 0.5 ) +
     ggplot2::scale_size_area( max_size = 20 ) +
     ggplot2::guides( color = ggplot2::guide_legend( ncol = 1 ) ) +
     col_scale_region +
-    ggplot2::geom_abline( slope = 1, intercept = 0, color = "black", size = 1 ) +
+    ggplot2::geom_abline( slope = 1, intercept = 0, color = "black", linewidth = 1 ) +
     theme_basic +
     ggplot2::xlab( "FAO yield" ) +
     ggplot2::ylab( "model fitted yield" ) +
@@ -743,7 +743,8 @@ smooth_impacts <- function(data = NULL,
     } else {
       window <- paste0("X", seq(max(start_year, (y - window_pre)), min(end_year, (y + window_post)), 1)) # 20 year window
       Year <- paste0("X", y)
-      d[[Year]] <- rowMeans(d[, window])
+      # d[[Year]] <- rowMeans(d[, window])
+      d[[Year]] <- d[, rowMeans(.SD), .SDcols = window]
     }
 
   }
@@ -933,7 +934,7 @@ plot_projection_smooth <- function(data = NULL,
   year <- yield_impact <- iso <- NULL
 
   p <- ggplot2::ggplot( data, ggplot2::aes( x = year, y = yield_impact, color = iso ) ) +
-    ggplot2::geom_line( size = 1 ) +
+    ggplot2::geom_line( linewidth = 1 ) +
     ggplot2::facet_wrap( ~ GCAM_region_name ) +
     ggplot2::guides( col = ggplot2::guide_legend( ncol = 3 ) ) +
     ggplot2::labs(x = "year",

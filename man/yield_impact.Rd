@@ -55,7 +55,7 @@ yield_impact(
 
 \item{bias_adj}{Default = 'ba'. string for the dataset used for climate data bias adjustment}
 
-\item{cfe}{Default = 'no-cfe'. string for whether the yield impact formula implimented CO2 fertilization effect}
+\item{cfe}{Default = 'no-cfe'. string for whether the yield impact formula implemented CO2 fertilization effect}
 
 \item{gcam_version}{Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7}
 

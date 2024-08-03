@@ -14,7 +14,7 @@
 #' @param climate_scenario Default = 'rcp'. string for climate scenario name (e.g., 'ssp245')
 #' @param member Default = 'member'. string for the ensemble member name
 #' @param bias_adj Default = 'ba'. string for the dataset used for climate data bias adjustment
-#' @param cfe Default = 'no-cfe'. string for whether the yield impact formula implimented CO2 fertilization effect
+#' @param cfe Default = 'no-cfe'. string for whether the yield impact formula implemented CO2 fertilization effect
 #' @param gcam_version Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7
 #' @param use_default_coeff Default = FALSE. binary for using default regression coefficients. Set to TRUE will use the default coefficients instead of calculating coefficients from the historical climate data.
 #' @param base_year Default = NULL. integer for the base year (for GCAM)
@@ -89,13 +89,13 @@ yield_impact <- function(pr_hist_ncdf = NULL,
   if(all(is.null(climate_hist_dir),
          !is.null(pr_hist_ncdf),
          !is.null(tas_hist_ncdf))){
-    climate_hist_dir <- file.path(output_dir, 'climate', paste0(climate_model, '_hist'))
+    climate_hist_dir <- file.path(output_dir, 'weighted_climate', paste0(climate_model, '_hist'))
   }
 
   if(all(is.null(climate_impact_dir),
          !is.null(pr_proj_ncdf),
          !is.null(tas_proj_ncdf))){
-    climate_impact_dir <- file.path(output_dir, 'climate', climate_model)
+    climate_impact_dir <- file.path(output_dir, 'weighted_climate', climate_model)
   }
 
 

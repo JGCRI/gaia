@@ -40,7 +40,7 @@ data_aggregation <- function(climate_hist_dir = NULL,
   # check the historical climate data folder
   if(is.null(climate_hist_dir)){
 
-    warning('No climate_hist_dir provided. Will use the default regression coefficients.')
+    message('No climate_hist_dir provided. Will use the default regression coefficients.')
 
     crop_historic <- NULL
 

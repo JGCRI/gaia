@@ -75,8 +75,8 @@ crop_cal <- gaea::crop_calendars(output_dir = output_dir)
 
 # Step 5:
 # test data_aggregation
-climate_hist_dir <- file.path(output_dir, 'climate', 'country_climate_hist')
-climate_impact_dir <- file.path(output_dir, 'climate')
+climate_hist_dir <- file.path(output_dir, 'weighted_climate', 'country_climate_hist')
+climate_impact_dir <- file.path(output_dir, 'weighted_climate')
 
 crop <- gaea::data_aggregation(climate_hist_dir = climate_hist_dir,
                                climate_impact_dir = climate_impact_dir,
@@ -162,3 +162,58 @@ gaea::yield_impact(pr_hist_ncdf = NULL,
 end.time <- Sys.time()
 time.taken <- round(end.time - start.time,2)
 time.taken
+
+# if there is climate NetCDF available
+
+start.time <- Sys.time()
+gaea::yield_impact(pr_hist_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/gaea_example_climate/pr_monthly_canesm5_w5e5_rcp7_1950_2014.nc',
+                   tas_hist_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/gaea_example_climate/tas_monthly_canesm5_w5e5_rcp7_1950_2014.nc',
+                   pr_proj_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/gaea_example_climate/pr_monthly_canesm5_w5e5_rcp7_2015_2100.nc',
+                   tas_proj_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/gaea_example_climate/tas_monthly_canesm5_w5e5_rcp7_2015_2100.nc',
+                   timestep = timestep,
+                   historical_periods = c(1950:2014),
+                   climate_hist_dir = NULL,
+                   climate_impact_dir = NULL,
+                   climate_model = climate_model,
+                   climate_scenario = climate_scenario,
+                   member = member,
+                   bias_adj = bias_adj,
+                   cfe = cfe,
+                   gcam_version = gcam_version,
+                   use_default_coeff = F,
+                   base_year = base_year,
+                   start_year = start_year,
+                   end_year = end_year,
+                   smooth_window = smooth_window,
+                   co2_hist = NULL,
+                   co2_proj = NULL,
+                   diagnostics = TRUE,
+                   output_dir = 'C:/WorkSpace/github/test_scripts/gaea/output_joss_test')
+end.time <- Sys.time()
+time.taken <- round(end.time - start.time,2)
+time.taken
+
+# if climate data is already created
+gaea::yield_impact(pr_hist_ncdf = NULL,
+                   tas_hist_ncdf = NULL,
+                   pr_proj_ncdf = NULL,
+                   tas_proj_ncdf = NULL,
+                   timestep = timestep,
+                   historical_periods = time_periods,
+                   climate_hist_dir = NULL,
+                   climate_impact_dir = 'C:/WorkSpace/github/test_scripts/gaea/output_joss_test/climate/canesm5',
+                   climate_model = climate_model,
+                   climate_scenario = climate_scenario,
+                   member = member,
+                   bias_adj = bias_adj,
+                   cfe = cfe,
+                   gcam_version = gcam_version,
+                   use_default_coeff = F,
+                   base_year = base_year,
+                   start_year = start_year,
+                   end_year = end_year,
+                   smooth_window = smooth_window,
+                   co2_hist = NULL,
+                   co2_proj = NULL,
+                   diagnostics = TRUE,
+                   output_dir = 'C:/WorkSpace/github/test_scripts/gaea/output_joss_test')

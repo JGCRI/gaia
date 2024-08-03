@@ -32,7 +32,7 @@ weighted_climate <- function(pr_ncdf = NULL,
     country_name.final -> year -> month -> value
 
   # create output folder
-  save_dir <- file.path(output_dir, 'climate', paste0(climate_model, name_append))
+  save_dir <- file.path(output_dir, 'weighted_climate', paste0(climate_model, name_append))
   if(!dir.exists(save_dir)){ dir.create(save_dir, recursive = TRUE) }
 
   crop_names <- names(mirca_harvest_area)
@@ -126,9 +126,15 @@ weighted_climate <- function(pr_ncdf = NULL,
       # get time periods of the nc file
       nc_time <- gaea::get_nc_time(pr_file)
 
+      # check if the data periods is within the selected periods
       if (!is.null(time_periods)){
         # check if the data periods is within the selected periods
         nc_time_subset <- nc_time[nc_time %in% time_periods]
+
+        if(is.null(nc_time_subset)){
+          stop('Selected time periods are not within the available historical data.')
+        }
+
       } else {
         nc_time_subset <- nc_time
       }
@@ -178,7 +184,17 @@ weighted_climate <- function(pr_ncdf = NULL,
       nc_time <- gaea::get_nc_time(tas_file)
 
       # check if the data periods is within the selected periods
-      nc_time_subset <- nc_time[nc_time %in% time_periods]
+      if (!is.null(time_periods)){
+        # check if the data periods is within the selected periods
+        nc_time_subset <- nc_time[nc_time %in% time_periods]
+
+        if(is.null(nc_time_subset)){
+          stop('Selected time periods are not within the available historical data.')
+        }
+
+      } else {
+        nc_time_subset <- nc_time
+      }
 
       # convert ncdf to table
       tas_temp <- nc_to_tbl(nc_file = tas_file,
@@ -262,6 +278,7 @@ weighted_climate <- function(pr_ncdf = NULL,
 #'
 #' @param nc_file Default = NULL. string for paths for precipitation
 #' @param var Default = NULL. string for climate variable
+#' @param time_periods Default = NULL. vector for years to subset from the climate data. If NULL, use the default climate data period
 #' @param timestep Default = 'monthly'. string for input climate data time step (e.g., 'monthly', 'daily')
 #' @noRd
 nc_to_tbl <- function(nc_file = NULL,

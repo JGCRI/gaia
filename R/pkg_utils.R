@@ -442,3 +442,59 @@ iso_replace <- function( d ){
   d <- iso( d, "Romania", "rou" )
   return ( d )
 }
+
+
+# ------------------------------------------------------------------------------
+#' get_example_data
+#'
+#' @param download_url Link to the downloadable dataset
+#' @param data_dir Path of desired location to download data
+#'
+#' @export
+
+get_example_data <- function(download_url = '',
+                             file_extension = 'zip',
+                             data_dir = file.path(getwd(), 'example')){
+
+
+  # Download
+  message('Starting download.')
+
+  # seek and construct filename from extension
+  base_filename <- basename(download_url) %>%
+    tolower()
+
+  fname <- strsplit(base_filename, split = tolower(file_extension))[[1]][1] %>%
+    paste0(file_extension)
+
+  dest_file <- file.path(data_dir, fname)
+  out_dir <- file.path(data_dir, strsplit(fname, split = paste0('.', file_extension)))[[1]][1]
+
+  if(!dir.exists(file.path(out_dir))){
+
+    utils::download.file(url = download_url,
+                         destfile = dest_file,
+                         mode = 'wb')
+
+    message('Download complete.')
+
+    # Unzip
+    message('Starting unzip.')
+
+    utils::unzip(zipfile = file.path(data_dir, fname),
+                 exdir = out_dir)
+
+    file.remove(dest_file)
+
+    message(paste0('Data unzipped to: ', out_dir))
+
+  } else {
+
+    message('Example data already exists.')
+
+  }
+
+  return(out_dir)
+
+
+}
