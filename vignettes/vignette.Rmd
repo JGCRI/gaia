@@ -98,7 +98,7 @@ The primary functionality of `gaea` is encapsulated in the `yield_impact` wrappe
 
 ## Example Climate Data
 
-`gaea` requires global climate data from the Inter-Sectoral Impact Model Intercomparison Project ([ISIMIP](https://www.isimip.org/)) or data with the same format of ISIMIP data. In addition, `gaea` also allows climate data that has been aggregated to monthly time step. Given the large size of the climate data at daily time step, we have provided an example climate data at monthly time step from 2015 to 2100 ((download link)[]). Please download the data and make sure to unzip the data to your desired location.
+`gaea` requires global climate data from the Inter-Sectoral Impact Model Intercomparison Project ([ISIMIP](https://www.isimip.org/)) or data with the same format of ISIMIP data. In addition, `gaea` also allows climate data that has been aggregated to monthly time step. Given the large size of the climate data at daily time step, we have provided an example climate data at monthly time step from 2015 to 2100. Please download the data following the example below.
 
 <div class="alert alert-info">
 <strong>NOTE:</strong> In the case where there is no available historical climate data, `gaea` will use the default fitted model that has already been fitted with WATCH historical climate forcing data ([Weedon et al., (2011)](https://doi.org/10.1175/2011JHM1369.1)).
