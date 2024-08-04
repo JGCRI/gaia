@@ -29,7 +29,7 @@ start_year_i = 2015
 end_year_i = 2100
 smooth_window_i = 20
 
-diagnostics_i <- T
+diagnostics_i <- F
 use_default_coeff_i <- F
 
 
@@ -112,7 +112,7 @@ run_gcam_agprodchange <- function(data = NULL,
                                   diagnostics = diagnostics_i,
                                   output_dir = output_dir_i){
 
-  output <- gaea::gcam_agprodchange(data = df_yield_projection,
+  output <- gaea::gcam_agprodchange(data = data,
                                     climate_model = climate_model,
                                     climate_scenario = climate_scenario,
                                     member = member,

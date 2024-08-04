@@ -26,8 +26,13 @@ gaea::weighted_climate(pr_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process
 
 if(T){
 
-  pr_proj_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/pr_mon_basd_CanESM5_W5E5v2_GCAM_ref_2015-2100.nc'
-  tas_proj_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/tas_mon_basd_CanESM5_W5E5v2_GCAM_ref_2015-2100.nc'
+  # pr_proj_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/pr_mon_basd_CanESM5_W5E5v2_GCAM_ref_2015-2100.nc'
+  # tas_proj_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/tas_mon_basd_CanESM5_W5E5v2_GCAM_ref_2015-2100.nc'
+
+  pr_hist_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/gaea_example_climate/pr_monthly_canesm5_w5e5_rcp7_1950_2014.nc'
+  tas_hist_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/gaea_example_climate/tas_monthly_canesm5_w5e5_rcp7_1950_2014.nc'
+  pr_proj_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/gaea_example_climate/pr_monthly_canesm5_w5e5_rcp7_2015_2100.nc'
+  tas_proj_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/gaea_example_climate/tas_monthly_canesm5_w5e5_rcp7_2015_2100.nc'
   timestep = 'monthly'
   climate_model = 'canesm5'
   climate_scenario = 'gcam-ref'
@@ -46,7 +51,7 @@ if(T){
   co2_hist = NULL
   co2_proj = NULL
   diagnostics <- TRUE
-  output_dir = 'C:/WorkSpace/github/test_scripts/gaea/output_test'
+  output_dir = 'C:/WorkSpace/github/test_scripts/gaea/output_joss_test'
 
 }
 

@@ -19,7 +19,7 @@
 
 <p align="center">
 <a href="https://jgcri.github.io/gaea/" target="_blank"><img src="https://github.com/JGCRI/jgcricolors/blob/main/vignettes/button_user_guide.PNG?raw=true" 
-alt="https://jgcri.github.io/gaea/" height="60"/></a>
+alt="https://jgcri.github.io/gaea/articles/vignette.html" height="60"/></a>
 <img src="https://github.com/JGCRI/jgcricolors/blob/main/vignettes/button_divider.PNG?raw=true" height="40"/>
 </p>
 
@@ -50,11 +50,29 @@ alt="https://jgcri.github.io/gaea/" height="60"/></a>
 install.packages("devtools")
 devtools::install_github("JGCRI/gaea")
 ```
+
 or
+
 ```r
 install.packages("remotes")
 remotes::install_github("JGCRI/gaea")
 ```
+
+Additional steps for UBUNTU from a terminal
+
+```
+sudo add-apt-repository ppa:ubuntugis/ppa
+sudo apt-get update
+sudo apt-get install libudunits2-dev libgdal-dev libgeos-dev libproj-dev libmagick++-dev
+```
+
+Additional steps for MACOSX from a terminal
+
+```
+brew install pkg-config
+brew install gdal
+```
+
 <br/>
 
 
