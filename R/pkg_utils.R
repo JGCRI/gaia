@@ -448,6 +448,7 @@ iso_replace <- function( d ){
 #' get_example_data
 #'
 #' @param download_url Link to the downloadable dataset
+#' @param file_extension String of file extension without "."
 #' @param data_dir Path of desired location to download data
 #'
 #' @export

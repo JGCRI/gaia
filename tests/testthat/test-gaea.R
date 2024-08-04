@@ -3,6 +3,13 @@ library(sf)
 testthat::skip_on_cran()
 testthat::skip_on_travis()
 
+# download data
+output_dir_i <- file.path(getwd(), 'output')
+
+data_dir_i <- gaea::get_example_data(
+  download_url = 'https://zenodo.org/records/13179630/files/weighted_climate.zip?download=1',
+  data_dir = output_dir_i)
+
 
 # ------------------------------------
 # Testing Outputs from Major Functions
@@ -21,7 +28,7 @@ test_that("crop_calendars runs correctly", {
 
 test_that("data_aggregation runs correctly", {
 
-  out_data_aggregation <- run_data_aggregation()
+  out_data_aggregation <- run_data_aggregation(data_dir = data_dir_i)
 
   testthat::expect_snapshot(out_data_aggregation)
 

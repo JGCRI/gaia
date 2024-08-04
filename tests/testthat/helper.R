@@ -7,15 +7,7 @@ library(dplyr)
 # output directory
 output_dir_i <- file.path(getwd(), 'output')
 
-# download data
-data_dir <- gaea::get_example_data(
-  download_url = 'https://zenodo.org/records/13179630/files/weighted_climate.zip?download=1',
-  data_dir = output_dir_i)
-
 # setup variables
-climate_hist_dir_i <- file.path(data_dir, 'canesm5_hist')
-climate_impact_dir_i <- file.path(data_dir, 'canesm5')
-
 climate_model_i <- 'canesm5'
 climate_scenario_i <- 'gcam-ref'
 member_i = 'r1i1p1f1'
@@ -48,14 +40,16 @@ run_crop_calendars <- function(output_dir = output_dir_i){
 }
 
 # Step 3: data_aggregation
-run_data_aggregation <- function(climate_hist_dir = climate_hist_dir_i,
-                                 climate_impact_dir = climate_impact_dir_i,
+run_data_aggregation <- function(data_dir = NULL,
                                  climate_model = climate_model_i,
                                  climate_scenario = climate_scenario_i,
                                  output_dir = output_dir_i){
 
-  output <- gaea::data_aggregation(climate_hist_dir = climate_hist_dir,
-                                   climate_impact_dir = climate_impact_dir,
+  climate_hist_dir_i <- file.path(data_dir, 'canesm5_hist')
+  climate_impact_dir_i <- file.path(data_dir, 'canesm5')
+
+  output <- gaea::data_aggregation(climate_hist_dir = climate_hist_dir_i,
+                                   climate_impact_dir = climate_impact_dir_i,
                                    climate_model = climate_model,
                                    climate_scenario = climate_scenario,
                                    output_dir = output_dir)

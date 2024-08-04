@@ -715,7 +715,7 @@ smooth_impacts <- function(data = NULL,
                            smooth_window = 20,
                            output_dir = file.path(getwd(), 'output'))
 {
-  GCAM_region_name <- iso <- variable <- NULL
+  GCAM_region_name <- iso <- variable <- .SD <-  NULL
 
   d <- data
 

@@ -39,8 +39,7 @@ Imports:
     stringr (>= 1.5.0),
     tibble (>= 3.2.1),
     tidyr (>= 1.3.0),
-    utils,
-    xml2 (>= 1.3.6)
+    utils
 Suggests: 
     knitr,
     rmarkdown (>= 2.16),
