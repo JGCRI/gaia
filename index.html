@@ -116,7 +116,7 @@
 <p><code>gaea</code> is an open-source R package designed to estimate crop yield shocks in response to annual climate variations and CO2 concentrations at the country scale for 12 major crops. <code>gaea</code> streamlines the workflow from raw climate data processing to the production of different forms of yield shock, such as agricultural productivity changes at the region-basin level, which can be directly integrated into the latest Global Change Analysis Model (GCAM).</p>
 <p><br></p>
 <p align="center">
-<a href="https://jgcri.github.io/gaea/" target="_blank" class="external-link"><img src="https://github.com/JGCRI/jgcricolors/blob/main/vignettes/button_user_guide.PNG?raw=true" alt="https://jgcri.github.io/gaea/" height="60"></a> <img src="https://github.com/JGCRI/jgcricolors/blob/main/vignettes/button_divider.PNG?raw=true" height="40"></p>
+<a href="https://jgcri.github.io/gaea/" target="_blank" class="external-link"><img src="https://github.com/JGCRI/jgcricolors/blob/main/vignettes/button_user_guide.PNG?raw=true" alt="https://jgcri.github.io/gaea/articles/vignette.html" height="60"></a> <img src="https://github.com/JGCRI/jgcricolors/blob/main/vignettes/button_divider.PNG?raw=true" height="40"></p>
 <!-- ------------------------>
 <!-- ------------------------>
 </div>
@@ -155,6 +155,13 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"JGCRI/gaea"</span><span class="op">)</span></span></code></pre></div>
+<p>Additional steps for UBUNTU from a terminal</p>
+<pre><code>sudo add-apt-repository ppa:ubuntugis/ppa
+sudo apt-get update
+sudo apt-get install libudunits2-dev libgdal-dev libgeos-dev libproj-dev libmagick++-dev</code></pre>
+<p>Additional steps for MACOSX from a terminal</p>
+<pre><code>brew install pkg-config
+brew install gdal</code></pre>
 <p><br></p>
 <!-- ------------------------>
 <!-- ------------------------>
