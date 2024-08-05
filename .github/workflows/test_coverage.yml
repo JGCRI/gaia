@@ -40,6 +40,10 @@ jobs:
           remotes::install_deps(dependencies = TRUE, upgrade = "never")
         shell: Rscript {0}
 
+      - name: Download example data
+        run: |
+          Rscript tests/download_example_data.R
+
       - name: Test coverage
         run: |
           remotes::install_cran("covr")

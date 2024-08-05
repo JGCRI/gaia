@@ -13,6 +13,8 @@ get_example_data(
 \arguments{
 \item{download_url}{Link to the downloadable dataset}
 
+\item{file_extension}{String of file extension without "."}
+
 \item{data_dir}{Path of desired location to download data}
 }
 \description{
