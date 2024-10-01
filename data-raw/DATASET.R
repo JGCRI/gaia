@@ -16,6 +16,8 @@ model_data.dir <- 'C:/WorkSpace/GCIMS/GCIMS_Yield/regression_analysis/data'
 mirca.dir <- file.path(climate_data.dir, 'MIRCA2000')
 gcam_boundary.dir <- file.path(climate_data.dir, 'gcam_boundaries_moirai_3p1_0p5arcmin_wgs84')
 agprodchange.dir <- file.path(model_data.dir, 'data_ext')
+gcam6.dir <- 'C:/WorkSpace/GCAM-Models/gcam-v6.0/input/gcamdata/outputs'
+gcam7.dir <- 'C:/WorkSpace/github/gcam-core/input/gcamdata/outputs'
 
 #===============================================================================
 #'* External Data *
@@ -54,41 +56,92 @@ usethis::use_data(co2_projection, overwrite = TRUE)
 # Reference Agricultural Producticvity Change
 #-------------------------------------------------------------------------------
 
-# for GCAM 7
-agprodchange_ni_gcam7 <- dplyr::bind_rows(
-  data.table::fread(file.path(agprodchange.dir, 'gcam7', 'L2052.AgProdChange_bio_irr_ref.csv')),
-  data.table::fread(file.path(agprodchange.dir, 'gcam7', 'L2052.AgProdChange_ag_irr_ref.csv'))) %>%
-  dplyr::mutate(year = paste0('X', year)) %>%
-  dplyr::rename(AgProdChange_ni = AgProdChange)
+# for GCAM 6 and 7
+for(gcam_version in c('gcam6', 'gcam7')){
 
-agprodchange_ni_gcam7 <- dplyr::bind_rows(
-  agprodchange_ni_gcam7,
-  agprodchange_ni_gcam7 %>%
-    dplyr::select(-year, -AgProdChange_ni) %>%
-    dplyr::distinct() %>%
-    dplyr::mutate(year = 'X2015',
-                  AgProdChange_ni = 0)
-)
+  if(gcam_version == 'gcam6'){
+    gcamdata.dir <- gcam6.dir
+  }
 
-usethis::use_data(agprodchange_ni_gcam7, overwrite = TRUE)
+  if(gcam_version == 'gcam7'){
+    gcamdata.dir <- gcam7.dir
+  }
 
-# For GCAM6
-agprodchange_ni_gcam6 <- dplyr::bind_rows(
-  data.table::fread(file.path(agprodchange.dir, 'gcam6', 'L2052.AgProdChange_bio_irr_ref.csv')),
-  data.table::fread(file.path(agprodchange.dir, 'gcam6', 'L2052.AgProdChange_ag_irr_ref.csv'))) %>%
-  dplyr::mutate(year = paste0('X', year)) %>%
-  dplyr::rename(AgProdChange_ni = AgProdChange)
+  agprodchange_ni_gcam <- dplyr::bind_rows(
+    data.table::fread(file.path(gcamdata.dir, 'L2052.AgProdChange_irr_high.csv')) %>%
+      mutate(group = 'high'),
+    data.table::fread(file.path(gcamdata.dir, 'L2052.AgProdChange_irr_low.csv')) %>%
+      mutate(group = 'low'),
+    data.table::fread(file.path(gcamdata.dir, 'L2052.AgProdChange_irr_ssp4.csv')) %>%
+      mutate(group = 'ssp4'),
+    data.table::fread(file.path(gcamdata.dir, 'L2052.AgProdChange_ag_irr_ref.csv')) %>%
+      mutate(group = 'ref')
+  ) %>%
+    tidyr::pivot_wider(names_from = 'group', values_from = 'AgProdChange') %>%
+    dplyr::bind_rows(
+      data.table::fread(file.path(gcamdata.dir, 'L2052.AgProdChange_bio_irr_ref.csv')) %>%
+        dplyr::mutate(high = AgProdChange,
+                      low = AgProdChange,
+                      ssp4 = AgProdChange,
+                      ref = AgProdChange) %>%
+        dplyr::select(-AgProdChange)
+    )
 
-agprodchange_ni_gcam6 <- dplyr::bind_rows(
-  agprodchange_ni_gcam6,
-  agprodchange_ni_gcam6 %>%
-    dplyr::select(-year, -AgProdChange_ni) %>%
-    dplyr::distinct() %>%
-    dplyr::mutate(year = 'X2015',
-                  AgProdChange_ni = 0)
-)
+  agprodchange_ni_gcam <- agprodchange_ni_gcam %>%
+    tidyr::expand(tidyr::nesting(region, AgSupplySector, AgSupplySubsector, AgProductionTechnology),
+                  year = seq(2015, 2100, 5)) %>%
+    dplyr::left_join(agprodchange_ni_gcam) %>%
+    dplyr::mutate(dplyr::across(where(is.numeric), ~tidyr::replace_na(.x, 0))) %>%
+    dplyr::mutate(year = paste0('X', year))
+
+  if(gcam_version == 'gcam6'){
+    agprodchange_ni_gcam6 <- agprodchange_ni_gcam
+  }
+
+  if(gcam_version == 'gcam7'){
+    agprodchange_ni_gcam7 <- agprodchange_ni_gcam
+  }
+
+}
 
 usethis::use_data(agprodchange_ni_gcam6, overwrite = TRUE)
+usethis::use_data(agprodchange_ni_gcam7, overwrite = TRUE)
+
+# For GCAM7
+# agprodchange_ni_gcam7 <- dplyr::bind_rows(
+#   data.table::fread(file.path(agprodchange.dir, 'gcam7', 'L2052.AgProdChange_bio_irr_ref.csv')),
+#   data.table::fread(file.path(agprodchange.dir, 'gcam7', 'L2052.AgProdChange_ag_irr_ref.csv'))) %>%
+#   dplyr::mutate(year = paste0('X', year)) %>%
+#   dplyr::rename(AgProdChange_ni = AgProdChange)
+#
+# agprodchange_ni_gcam7 <- dplyr::bind_rows(
+#   agprodchange_ni_gcam7,
+#   agprodchange_ni_gcam7 %>%
+#     dplyr::select(-year, -AgProdChange_ni) %>%
+#     dplyr::distinct() %>%
+#     dplyr::mutate(year = 'X2015',
+#                   AgProdChange_ni = 0)
+# )
+#
+# usethis::use_data(agprodchange_ni_gcam7, overwrite = TRUE)
+#
+# # For GCAM6
+# agprodchange_ni_gcam6 <- dplyr::bind_rows(
+#   data.table::fread(file.path(agprodchange.dir, 'gcam6', 'L2052.AgProdChange_bio_irr_ref.csv')),
+#   data.table::fread(file.path(agprodchange.dir, 'gcam6', 'L2052.AgProdChange_ag_irr_ref.csv'))) %>%
+#   dplyr::mutate(year = paste0('X', year)) %>%
+#   dplyr::rename(AgProdChange_ni = AgProdChange)
+#
+# agprodchange_ni_gcam6 <- dplyr::bind_rows(
+#   agprodchange_ni_gcam6,
+#   agprodchange_ni_gcam6 %>%
+#     dplyr::select(-year, -AgProdChange_ni) %>%
+#     dplyr::distinct() %>%
+#     dplyr::mutate(year = 'X2015',
+#                   AgProdChange_ni = 0)
+# )
+#
+# usethis::use_data(agprodchange_ni_gcam6, overwrite = TRUE)
 
 
 #-------------------------------------------------------------------------------

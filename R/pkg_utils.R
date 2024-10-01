@@ -235,11 +235,13 @@ merge_data <- function( d1, d2, x1, x2 )
 #' Get the reference agricultural productivity change based GCAM version
 #'
 #' @param gcam_version Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7
+#' @param climate_scenario Default = NULL. string for climate scenario (e.g., 'ssp245')
 #' @param gcamdata_dir Default = NULL. string for directory to the gcamdata folder within the specific GCAM version. The gcamdata need to be run with drake to have the CSV outputs beforehand.
 #' @keywords internal
 #' @export
 
 agprodchange_ref <- function(gcam_version = 'gcam7',
+                             climate_scenario = NULL,
                              gcamdata_dir = NULL)
 {
 
@@ -247,11 +249,23 @@ agprodchange_ref <- function(gcam_version = 'gcam7',
 
   if(!is.null(gcamdata_dir)){
 
+    # If user provide their own gcamdata dirctory, then use user provided data
     gaea::path_check(gcamdata_dir)
+
+    if(grepl('ssp1|ssp5', climate_scenario)){
+      agprodchange_ag <- data.table::fread(file.path(gcamdata_dir, 'outputs', 'L2052.AgProdChange_irr_high.csv'))
+    }else if(grepl('ssp3', climate_scenario)){
+      agprodchange_ag <- data.table::fread(file.path(gcamdata_dir, 'outputs', 'L2052.AgProdChange_irr_low.csv'))
+    }else if(grepl('ssp4', climate_scenario)){
+      agprodchange_ag <- data.table::fread(file.path(gcamdata_dir, 'outputs', 'L2052.AgProdChange_irr_ssp4.csv'))
+    }else{
+      agprodchange_ag <- data.table::fread(file.path(gcamdata_dir, 'outputs', 'L2052.AgProdChange_ag_irr_ref.csv'))
+    }
 
     agprodchange_ni <- dplyr::bind_rows(
       data.table::fread(file.path(gcamdata_dir, 'outputs', 'L2052.AgProdChange_bio_irr_ref.csv')),
-      data.table::fread(file.path(gcamdata_dir, 'outputs', 'L2052.AgProdChange_ag_irr_ref.csv'))) %>%
+      agprodchange_ag
+      ) %>%
       dplyr::mutate(year = paste0('X', year)) %>%
       dplyr::rename(AgProdChange_ni = AgProdChange)
 
@@ -263,14 +277,38 @@ agprodchange_ref <- function(gcam_version = 'gcam7',
         dplyr::mutate(year = 'X2015',
                       AgProdChange_ni = 0)
     )
+
   } else {
 
+    # if user doesn't provide any gcamdata, then use default
     if(gcam_version == 'gcam6'){
       agprodchange_ni <- gaea::agprodchange_ni_gcam6
     }
 
     if(gcam_version == 'gcam7'){
       agprodchange_ni <- gaea::agprodchange_ni_gcam7
+    }
+
+    # filter based on the scenario
+    if(grepl('ssp1|ssp5', climate_scenario)){
+      # for ssp1 and ssp5
+      agprodchange_ni <- agprodchange_ni %>%
+        dplyr::select(region, AgSupplySector, AgSupplySubsector, AgProductionTechnology, year, AgProdChange_ni = high)
+
+    }else if(grepl('ssp3', climate_scenario)){
+      # for ssp3
+      agprodchange_ni <- agprodchange_ni %>%
+        dplyr::select(region, AgSupplySector, AgSupplySubsector, AgProductionTechnology, year, AgProdChange_ni = low)
+
+    }else if(grepl('ssp4', climate_scenario)){
+      # for ssp4
+      agprodchange_ni <-agprodchange_ni %>%
+        dplyr::select(region, AgSupplySector, AgSupplySubsector, AgProductionTechnology, year, AgProdChange_ni = ssp4)
+
+    }else{
+      # for both ssp2 and other non-ssp related climate scenarios (e.g., rcp45)
+      agprodchange_ni <- agprodchange_ni %>%
+        dplyr::select(region, AgSupplySector, AgSupplySubsector, AgProductionTechnology, year, AgProdChange_ni = ref)
     }
 
   }

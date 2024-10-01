@@ -239,7 +239,7 @@ data_merge <- function(data = NULL,
 #'
 #' @param data Default = NULL. data table for crop data created by crop_month
 #' @param climate_model Default = NULL. string for climate model
-#' @param climate_scenario Default = NULL. string for climate scenario
+#' @param climate_scenario Default = NULL. string for climate scenario (e.g., 'ssp245')
 #' @param crop_name Default = NULL. string for crop name
 #' @param output_dir Default = NULL. string for path to the output folder
 #' @param co2_proj Default = NULL. data table for future CO2 concentration [year, co2_conc]
@@ -459,7 +459,7 @@ plot_fit <- function(data = NULL,
 
   d <- data
 
-  p <- ggplot2::ggplot( d, ggplot2::aes( "yield", fit_name, size = "area_harvest", color = "GCAM_region_name" ) ) +
+  p <- ggplot2::ggplot( d, ggplot2::aes_string( x = 'yield', y = fit_name, size = 'area_harvest', color = 'GCAM_region_name' ) ) +
     ggplot2::geom_point( shape = 21, stroke = 0.5 ) +
     ggplot2::scale_size_area( max_size = 20 ) +
     ggplot2::guides( color = ggplot2::guide_legend( ncol = 1 ) ) +
@@ -502,7 +502,7 @@ plot_fit <- function(data = NULL,
 #'
 #' @param use_default_coeff Default = FALSE. binary for using default regression coefficients. Set to TRUE will use the default coefficients instead of calculating coefficients from the historical climate data.
 #' @param climate_model Default = NULL. string for climate model name
-#' @param climate_scenario Default = NULL. string for RCP
+#' @param climate_scenario Default = NULL. string for climate scenario (e.g., 'ssp245')
 #' @param crop_name Default = NULL. string for crop name
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @keywords internal
@@ -615,7 +615,7 @@ z_estimate <- function(use_default_coeff = FALSE,
 #'
 #' @param use_default_coeff Default = FALSE. binary for using default regression coefficients. Set to TRUE will use the default coefficients instead of calculating coefficients from the historical climate data.
 #' @param climate_model Default = NULL. string for climate model name
-#' @param climate_scenario Default = NULL. string for RCP
+#' @param climate_scenario Default = NULL. string for climate scenario (e.g., 'ssp245')
 #' @param crop_name Default = NULL. string for crop name
 #' @param base_year Default = NULL. integer for the base year (for GCAM)
 #' @param start_year Default = NULL. integer for the  start year of the data
@@ -695,7 +695,7 @@ climate_impact <- function(use_default_coeff = FALSE,
 #' E.g., 2020_avg = mean(2011:2030)
 #'
 #' @param climate_model Default = NULL. string for climate model name
-#' @param climate_scenario Default = NULL. string for RCP
+#' @param climate_scenario Default = NULL. string for climate scenario (e.g., 'ssp245')
 #' @param crop_name Default = NULL. string for crop name
 #' @param base_year Default = NULL. integer for the base year (for GCAM)
 #' @param start_year Default = NULL. integer for the  start year of the data
@@ -803,7 +803,7 @@ smooth_impacts <- function(data = NULL,
 #'
 #' Format smoothed yield impact projection to wider
 #'
-#' @param data Default = NULL. data frame from yield_projections with columns [crop, model, iso, years]
+#' @param data Default = NULL. data frame from yield_shock_projection with columns [crop, model, iso, years]
 #' @param base_year Default = NULL. integer for the base year (for GCAM)
 #' @param select_years Default = NULL. vector of integers of selected years to format
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
@@ -867,7 +867,7 @@ format_projection <- function(data = NULL,
 #'
 #' @param data Default = NULL. data frame for the data to plot
 #' @param climate_model Default = NULL. string for climate model name
-#' @param climate_scenario Default = NULL. string for RCP
+#' @param climate_scenario Default = NULL. string for climate scenario (e.g., 'ssp245')
 #' @param crop_name Default = NULL. string for crop name
 #' @param base_year Default = NULL. integer for the base year (for GCAM)
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
@@ -916,7 +916,7 @@ plot_projection <- function(data = NULL,
 #'
 #' @param data Default = NULL. data frame for the data to plot
 #' @param climate_model Default = NULL. string for climate model name
-#' @param climate_scenario Default = NULL. string for RCP
+#' @param climate_scenario Default = NULL. string for climate scenario (e.g., 'ssp245')
 #' @param crop_name Default = NULL. string for crop name
 #' @param base_year Default = NULL. integer for the base year (for GCAM)
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
@@ -1082,7 +1082,14 @@ plot_yield_impact <- function(data = NULL,
     GCAM_commod <- year <- glu <- irrtype <- yield_multiplier <- region_name <-
     AgProductionTechnology <- NULL
 
-  print(paste0('Plotting ', commodity, crop_type))
+  save_path <- file.path(output_dir, 'figures_yield_impacts')
+  if(!dir.exists(save_path)){
+    dir.create(save_path, recursive = TRUE)
+  }
+
+
+  print(paste0('Plotting Yield Shock for ', commodity, crop_type, ' to: ',
+               file.path(save_path, paste0(commodity, crop_type, '.png'))))
 
   df_plot <- data %>%
     dplyr::filter(GCAM_commod == commodity, crop_type %in% crop_type) %>%
@@ -1116,14 +1123,10 @@ plot_yield_impact <- function(data = NULL,
                                            'RFD' = '#5773CC')) +
     ggplot2::theme_bw()
 
-  save_path <- file.path(output_dir, 'figures_yield_impacts')
-  if(!dir.exists(save_path)){
-    dir.create(save_path, recursive = TRUE)
-  }
 
   ggplot2::ggsave(p,
                   filename = file.path(save_path, paste0(commodity, crop_type, '.png')),
-                  height = 10, width = 10, dpi = 300)
+                  height = 10, width = 10, dpi = 150)
 
 }
 
@@ -1147,8 +1150,12 @@ plot_agprodchange <- function(data = NULL,
   AgProductionTechnology <- crop <- mgmt <- year <- AgProdChange <- region <-
     irrtype <- NULL
 
+  save_path <- file.path(output_dir, 'figures_agprodchange')
+  if(!dir.exists(save_path)){
+    dir.create(save_path, recursive = TRUE)
+  }
 
-  print(paste0('Plotting ', commodity))
+  print(paste0('Plotting Productivity Change for ', commodity, ' to: ', file.path(save_path, paste0(commodity, '.png'))))
 
   df_plot <- data %>%
     tidyr::separate(col = AgProductionTechnology, sep = '_',
@@ -1162,7 +1169,8 @@ plot_agprodchange <- function(data = NULL,
 
 
   if(nrow(df_plot > 0)){
-    ggplot2::ggplot(data = df_plot,
+
+    p <- ggplot2::ggplot(data = df_plot,
                     ggplot2::aes(x = year, y = AgProdChange,
                                  group = interaction(region, AgProductionTechnology, irrtype))) +
       ggplot2::geom_line(ggplot2::aes(color = irrtype), show.legend = T) +
@@ -1174,13 +1182,10 @@ plot_agprodchange <- function(data = NULL,
                                              'RFD' = '#5773CC')) +
       ggplot2::theme_bw()
 
-    save_path <- file.path(output_dir, 'figures_agprodchange')
-    if(!dir.exists(save_path)){
-      dir.create(save_path, recursive = TRUE)
-    }
 
-    ggplot2::ggsave(filename = file.path(save_path, paste0(commodity, '.png')),
-                    height = 10, width = 10, dpi = 300)
+    ggplot2::ggsave(p,
+                    filename = file.path(save_path, paste0(commodity, '.png')),
+                    height = 10, width = 10, dpi = 150)
   } else {
     print(paste0('No data for ', commodity))
   }

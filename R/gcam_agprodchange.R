@@ -15,10 +15,12 @@
 #' Mapping from mirca crop to GCAM commodities
 #'
 #' @param gcam_version Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7
+#' @param climate_scenario Default = NULL. string for climate scenario (e.g., 'ssp245')
 #' @keywords internal
 #' @export
 
-mirca_to_gcam <- function(gcam_version = 'gcam7')
+mirca_to_gcam <- function(gcam_version = 'gcam7',
+                          climate_scenario= NULL)
 {
 
   subRegionMap <- country_name <- AgSupplySector <- crop_type <- GCAM_commod <-
@@ -32,7 +34,8 @@ mirca_to_gcam <- function(gcam_version = 'gcam7')
   # ----------------------------------------------------------------------------
   # input reference ag productivity change
   # note that different GCAM versions will have different agprodchange structure
-  agprodchange_ni <- agprodchange_ref(gcam_version = gcam_version)
+  agprodchange_ni <- agprodchange_ref(gcam_version = gcam_version,
+                                      climate_scenario = climate_scenario)
 
 
   # ----------------------------------------------------------------------------
@@ -188,17 +191,20 @@ get_mirca_cropland <- function(raster_brick = NULL,
 #' cropland area within intersected region-glu
 #'
 #' @param gcam_version Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7
+#' @param climate_scenario Default = NULL. string for climate scenario (e.g., 'ssp245')
 #' @keywords internal
 #' @export
 
-get_cropland_weight <- function(gcam_version = 'gcam7')
+get_cropland_weight <- function(gcam_version = 'gcam7',
+                                climate_scenario = NULL)
 {
 
   region_name <- basin_name <- glu <- region_id <- glu_id <- glu_name <- crop <-
     croparea_to <- croparea_from <- country_name <- irr <- irrtype <- iso <- NULL
 
   # get mapping
-  mp <- mirca_to_gcam(gcam_version = gcam_version)
+  mp <- mirca_to_gcam(gcam_version = gcam_version,
+                      climate_scenario = climate_scenario)
 
   mp_iso <- mp$mp_iso
   mp_rmap <- mp$mp_rmap
@@ -278,6 +284,7 @@ get_cropland_weight <- function(gcam_version = 'gcam7')
 #'
 #' @param data Default = NULL. output data from function yield_shock_projection, or similar format of data
 #' @param gcam_version Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7
+#' @param climate_scenario Default = NULL. string for climate scenario (e.g., 'ssp245')
 #' @param diagnostics Default = TRUE. Logical for performing diagnostic plot
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #'
@@ -286,6 +293,7 @@ get_cropland_weight <- function(gcam_version = 'gcam7')
 
 get_weighted_yield_impact <- function(data = NULL,
                                       gcam_version = 'gcam7',
+                                      climate_scenario = NULL,
                                       diagnostics = TRUE,
                                       output_dir = file.path(getwd(), 'output'))
 {
@@ -296,7 +304,8 @@ get_weighted_yield_impact <- function(data = NULL,
 
   # get weight of cropland area within the intersected region-glu-country to
   # cropland area within intersected region-glu
-  out_list <- get_cropland_weight(gcam_version = gcam_version)
+  out_list <- get_cropland_weight(gcam_version = gcam_version,
+                                  climate_scenario = climate_scenario)
 
   weight <- out_list$weight
   cropland_glu_region <- out_list$cropland_glu_region
@@ -474,12 +483,14 @@ gcam_agprodchange <- function(data = NULL,
 
   yield_impact_clean <- get_weighted_yield_impact(data = data,
                                                   gcam_version = gcam_version,
+                                                  climate_scenario = climate_scenario,
                                                   diagnostics = diagnostics,
                                                   output_dir = output_dir)
 
   # input reference ag productivity change without climate impact
   # note that different GCAM versions will have different agprodchange structure
-  agprodchange_ni <- agprodchange_ref(gcam_version = gcam_version)
+  agprodchange_ni <- agprodchange_ref(gcam_version = gcam_version,
+                                      climate_scenario = climate_scenario)
 
   # linear interpolate at 5 year interval
   yield_impact <- dplyr::bind_rows(

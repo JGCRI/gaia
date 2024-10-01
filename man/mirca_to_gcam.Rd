@@ -11,10 +11,12 @@ get_agprodchange
 gcam_agprodchange
 mirca_to_gcam}
 \usage{
-mirca_to_gcam(gcam_version = "gcam7")
+mirca_to_gcam(gcam_version = "gcam7", climate_scenario = NULL)
 }
 \arguments{
 \item{gcam_version}{Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7}
+
+\item{climate_scenario}{Default = NULL. string for climate scenario (e.g., 'ssp245')}
 }
 \description{
 Mapping between GCAM region, GLU, country

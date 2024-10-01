@@ -18,7 +18,7 @@ plot_projection(
 
 \item{climate_model}{Default = NULL. string for climate model name}
 
-\item{climate_scenario}{Default = NULL. string for RCP}
+\item{climate_scenario}{Default = NULL. string for climate scenario (e.g., 'ssp245')}
 
 \item{crop_name}{Default = NULL. string for crop name}
 

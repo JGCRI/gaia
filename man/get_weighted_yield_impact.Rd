@@ -7,6 +7,7 @@
 get_weighted_yield_impact(
   data = NULL,
   gcam_version = "gcam7",
+  climate_scenario = NULL,
   diagnostics = TRUE,
   output_dir = file.path(getwd(), "output")
 )
@@ -15,6 +16,8 @@ get_weighted_yield_impact(
 \item{data}{Default = NULL. output data from function yield_shock_projection, or similar format of data}
 
 \item{gcam_version}{Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7}
+
+\item{climate_scenario}{Default = NULL. string for climate scenario (e.g., 'ssp245')}
 
 \item{diagnostics}{Default = TRUE. Logical for performing diagnostic plot}
 

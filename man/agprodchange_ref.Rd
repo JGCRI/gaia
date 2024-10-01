@@ -4,10 +4,16 @@
 \alias{agprodchange_ref}
 \title{agprodchange_ref}
 \usage{
-agprodchange_ref(gcam_version = "gcam7", gcamdata_dir = NULL)
+agprodchange_ref(
+  gcam_version = "gcam7",
+  climate_scenario = NULL,
+  gcamdata_dir = NULL
+)
 }
 \arguments{
 \item{gcam_version}{Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7}
+
+\item{climate_scenario}{Default = NULL. string for climate scenario (e.g., 'ssp245')}
 
 \item{gcamdata_dir}{Default = NULL. string for directory to the gcamdata folder within the specific GCAM version. The gcamdata need to be run with drake to have the CSV outputs beforehand.}
 }

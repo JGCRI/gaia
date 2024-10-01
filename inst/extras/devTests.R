@@ -124,7 +124,8 @@ gaea::plot_map(data = t_yield_projection,
                output_dir = output_dir)
 
 # test agprodchange_ref
-gaea::agprodchange_ref(gcam_version = 'gcam7')
+gaea::agprodchange_ref(gcam_version = 'gcam7',
+                       climate_scenario = climate_scenario)
 # gaea::agprodchange_ref(gcamdata_dir = 'C:/WorkSpace/GCAM-Models/gcam-v6.0/input/gcamdata')
 
 
