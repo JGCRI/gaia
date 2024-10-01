@@ -113,15 +113,16 @@ yield_impact <- function(pr_hist_ncdf = NULL,
 
 
   # Step 5: Project yields for future climate scenarios using regression analysis
-  df_yield_projection <- gaea::yield_projections(use_default_coeff = use_default_coeff,
-                                                 climate_model = climate_model,
-                                                 climate_scenario = climate_scenario,
-                                                 base_year = base_year,
-                                                 start_year = start_year,
-                                                 end_year = end_year,
-                                                 smooth_window = smooth_window,
-                                                 diagnostics = diagnostics,
-                                                 output_dir = output_dir)
+  df_yield_projection <- gaea::yield_shock_projection(use_default_coeff = use_default_coeff,
+                                                      climate_model = climate_model,
+                                                      climate_scenario = climate_scenario,
+                                                      base_year = base_year,
+                                                      start_year = start_year,
+                                                      end_year = end_year,
+                                                      smooth_window = smooth_window,
+                                                      diagnostics = diagnostics,
+                                                      output_dir = output_dir
+  )
 
   # Step 6:
   df_yield_impact_gcam <- gaea::gcam_agprodchange(data = df_yield_projection,

@@ -80,8 +80,11 @@ crop_cal <- gaea::crop_calendars(output_dir = output_dir)
 
 # Step 5:
 # test data_aggregation
-climate_hist_dir <- file.path(output_dir, 'weighted_climate', 'country_climate_hist')
-climate_impact_dir <- file.path(output_dir, 'weighted_climate')
+# climate_hist_dir <- file.path(output_dir, 'weighted_climate', 'country_climate_hist')
+
+climate_hist_dir <- file.path('C:/WorkSpace/github/test_scripts/gaea/output/climate/country_climate_txt')
+# climate_hist_dir <- file.path(output_dir, 'weighted_climate', 'canesm5_hist')
+climate_impact_dir <- file.path(output_dir, 'weighted_climate', 'canesm5')
 
 crop <- gaea::data_aggregation(climate_hist_dir = climate_hist_dir,
                                climate_impact_dir = climate_impact_dir,
@@ -103,16 +106,16 @@ t <- gaea::z_estimate(use_default_coeff = FALSE,
                       output_dir = output_dir)
 
 # Step 7:
-# test yield_projections
-t_yield_projection <- gaea::yield_projections(use_default_coeff = FALSE,
-                                              climate_model = climate_model,
-                                              climate_scenario = climate_scenario,
-                                              base_year = base_year,
-                                              start_year = start_year,
-                                              end_year = end_year,
-                                              smooth_window = 20,
-                                              diagnostics = T,
-                                              output_dir = output_dir)
+# test yield_shock_projection
+t_yield_projection <- gaea::yield_shock_projection(use_default_coeff = FALSE,
+                                                   climate_model = climate_model,
+                                                   climate_scenario = climate_scenario,
+                                                   base_year = base_year,
+                                                   start_year = start_year,
+                                                   end_year = end_year,
+                                                   smooth_window = 20,
+                                                   diagnostics = T,
+                                                   output_dir = output_dir)
 
 
 # test plot_map

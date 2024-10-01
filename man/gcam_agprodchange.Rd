@@ -17,7 +17,7 @@ gcam_agprodchange(
 )
 }
 \arguments{
-\item{data}{Default = NULL. output data from function yield_projections, or similar format of data}
+\item{data}{Default = NULL. output data from function yield_shock_projection, or similar format of data}
 
 \item{climate_model}{Default = 'gcm'. string for climate model name (e.g., 'CanESM5')}
 

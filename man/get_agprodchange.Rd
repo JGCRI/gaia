@@ -8,7 +8,7 @@ get_agprodchange}
 get_agprodchange(data = NULL, from_year = NULL, to_year = NULL)
 }
 \arguments{
-\item{data}{Default = NULL. output data from function yield_projections, or similar format of data}
+\item{data}{Default = NULL. output data from function yield_shock_projection, or similar format of data}
 
 \item{from_year}{Default = NULL. integer for 'from' year to calculate agricultural productivity change}
 

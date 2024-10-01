@@ -12,7 +12,7 @@ format_projection(
 )
 }
 \arguments{
-\item{data}{Default = NULL. data frame from yield_projections with columns [crop, model, iso, years]}
+\item{data}{Default = NULL. data frame from yield_shock_projection with columns [crop, model, iso, years]}
 
 \item{base_year}{Default = NULL. integer for the base year (for GCAM)}
 

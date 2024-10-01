@@ -276,7 +276,7 @@ get_cropland_weight <- function(gcam_version = 'gcam7')
 #'
 #' Calculate weighted yield impact by region-glu scale for each GCAM commodity
 #'
-#' @param data Default = NULL. output data from function yield_projections, or similar format of data
+#' @param data Default = NULL. output data from function yield_shock_projection, or similar format of data
 #' @param gcam_version Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7
 #' @param diagnostics Default = TRUE. Logical for performing diagnostic plot
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
@@ -399,7 +399,7 @@ get_weighted_yield_impact <- function(data = NULL,
 #'
 #' Calculate agricultural productivity change based on yield impact multiplier and no impact yield
 #'
-#' @param data Default = NULL. output data from function yield_projections, or similar format of data
+#' @param data Default = NULL. output data from function yield_shock_projection, or similar format of data
 #' @param from_year Default = NULL. integer for 'from' year to calculate agricultural productivity change
 #' @param to_year Default = NULL. integer for 'to' year to calculate agricultural productivity change
 #'
@@ -437,7 +437,7 @@ get_agprodchange <- function(data = NULL,
 #' Calculate agricultural productivity change by region GLU
 #' Output agprodchange XML
 #'
-#' @param data Default = NULL. output data from function yield_projections, or similar format of data
+#' @param data Default = NULL. output data from function yield_shock_projection, or similar format of data
 #' @param climate_model Default = 'gcm'. string for climate model name (e.g., 'CanESM5')
 #' @param climate_scenario Default = 'rcp'. string for climate scenario name (e.g., 'ssp245')
 #' @param member Default = 'member'. string for the ensemble member name

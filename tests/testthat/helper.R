@@ -68,27 +68,28 @@ run_yield_regression <- function(diagnostics = diagnostics_i,
 }
 
 
-# Step 5: yield_projections
+# Step 5: yield_shock_projection
 
-run_yield_projections <- function(use_default_coeff = use_default_coeff_i,
-                                  climate_model = climate_model_i,
-                                  climate_scenario = climate_scenario_i,
-                                  base_year = base_year_i,
-                                  start_year = start_year_i,
-                                  end_year = end_year_i,
-                                  smooth_window = smooth_window_i,
-                                  diagnostics = diagnostics_i,
-                                  output_dir = output_dir_i){
+run_yield_shock_projection <- function(use_default_coeff = use_default_coeff_i,
+                                       climate_model = climate_model_i,
+                                       climate_scenario = climate_scenario_i,
+                                       base_year = base_year_i,
+                                       start_year = start_year_i,
+                                       end_year = end_year_i,
+                                       smooth_window = smooth_window_i,
+                                       diagnostics = diagnostics_i,
+                                       output_dir = output_dir_i
+){
 
-  output <- gaea::yield_projections(use_default_coeff = use_default_coeff,
-                                    climate_model = climate_model,
-                                    climate_scenario = climate_scenario,
-                                    base_year = base_year,
-                                    start_year = start_year,
-                                    end_year = end_year,
-                                    smooth_window = smooth_window,
-                                    diagnostics = diagnostics,
-                                    output_dir = output_dir)
+  output <- gaea::yield_shock_projection(use_default_coeff = use_default_coeff,
+                                         climate_model = climate_model,
+                                         climate_scenario = climate_scenario,
+                                         base_year = base_year,
+                                         start_year = start_year,
+                                         end_year = end_year,
+                                         smooth_window = smooth_window,
+                                         diagnostics = diagnostics,
+                                         output_dir = output_dir)
 
   return(output)
 

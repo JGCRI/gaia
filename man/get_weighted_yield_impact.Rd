@@ -12,7 +12,7 @@ get_weighted_yield_impact(
 )
 }
 \arguments{
-\item{data}{Default = NULL. output data from function yield_projections, or similar format of data}
+\item{data}{Default = NULL. output data from function yield_shock_projection, or similar format of data}
 
 \item{gcam_version}{Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7}
 

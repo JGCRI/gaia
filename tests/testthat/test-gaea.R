@@ -55,9 +55,9 @@ test_that("yield_regression runs correctly", {
   #   testthat::test_path('output', 'figures', 'model_wheat_fit_lnyield_mmm_quad_noco2_nogdp.pdf'))
 })
 
-test_that("yield_projections runs correctly", {
+test_that("yield_shock_projection runs correctly", {
 
-  out_yield_projections <- run_yield_projections()
+  out_yield_projections <- run_yield_shock_projection()
 
   testthat::expect_snapshot(out_yield_projections)
 
@@ -78,7 +78,7 @@ test_that("yield_projections runs correctly", {
 
 test_that("gcam_agprodchange runs correctly", {
 
-  out_yield_projections <- run_yield_projections()
+  out_yield_projections <- run_yield_shock_projection()
   out_gcam_agprodchange <- run_gcam_agprodchange(data = out_yield_projections)
 
   testthat::expect_snapshot(out_gcam_agprodchange)

@@ -1,4 +1,4 @@
-#' yield_projections
+#' yield_shock_projection
 #'
 #' Project yields for future climate scenarios using regression analysis
 #' Using average growing season temperature and precipitation, max and min months
@@ -14,19 +14,20 @@
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @export
 
-yield_projections <- function(use_default_coeff = FALSE,
-                              climate_model = 'gcm',
-                              climate_scenario = 'rcp',
-                              base_year = NULL,
-                              start_year = NULL,
-                              end_year = NULL,
-                              smooth_window = 20,
-                              diagnostics = TRUE,
-                              output_dir = file.path(getwd(), 'output'))
+yield_shock_projection <- function(use_default_coeff = FALSE,
+                                   climate_model = 'gcm',
+                                   climate_scenario = 'rcp',
+                                   base_year = NULL,
+                                   start_year = NULL,
+                                   end_year = NULL,
+                                   smooth_window = 20,
+                                   diagnostics = TRUE,
+                                   output_dir = file.path(getwd(), 'output')
+)
 {
 
 
-  message('Starting Step: yield_projections')
+  message('Starting Step: yield_shock_projection')
 
   ## Create empty dataframe for binding other files
   d_bind <- data.frame(iso = character(),
