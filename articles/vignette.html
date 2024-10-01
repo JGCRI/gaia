@@ -155,7 +155,7 @@ font-style: italic;
 <!-------------------------->
 <!-------------------------->
 <p align="center">
-<img src="vignetteFigs/divider.png"></p>
+<img src="vignetteFigs%2Fdivider.png"></p>
 <p><code>gaea</code> is designed with a climate-driven empirical model
 at its core, integrated into an efficient modular structure. This
 architecture streamlines the entire workflow, from initial climate and
@@ -173,32 +173,36 @@ the process (<a href="#figure1">Figure 1</a>).</p>
 <li><p><code>weighted_climate</code>: Processes CMIP-ISIMIP climate
 NetCDF data and calculates cropland-weighted precipitation and
 temperature at the country level, differentiated by crop type and
-irrigation type. The function accepts both daily or monthly climate
-data.</p></li>
+irrigation type . The function accepts both daily or monthly climate
+data that are consistent with the CMIP-ISIMIP NetCDF data
+format.</p></li>
 <li><p><code>crop_calenders</code>: Generates crop planting months for
-each country based on crop calendar data from <a href="https:/doi/org/10.1111/j.1466-8238.2010.00551.x">Sacks et al.,
+each country and crop based on crop calendar data <a href="https:/doi/org/10.1111/j.1466-8238.2010.00551.x">Sacks et al.,
 (2020)</a>.</p></li>
 <li><p><code>data_aggregation</code>: Calculates crop growing seasons
 using climate variables processed by <code>weighted_climate</code> and
 crop calendars for both historical and projected periods. This function
 prepares climate and yield data for subsequent model fitting.</p></li>
-<li><p><code>yield_regression</code>: Performs regression analysis based
-on historical crop yields and climate variations. The default
-econometric model applied in <code>gaea</code> is from <a href="https://doi.org/10.1088/1748-9326/abadcb" class="external-link">Waldhoff et al.,
-(2020)</a>. User can provide other formulas as long as it is using the
-same data from <code>data_aggregation</code>.</p></li>
-<li><p><code>yield_projections</code>: Projects yield shocks for future
-climate scenarios using the fitted model.</p></li>
+<li><p><code>yield_regression</code>: Performs regression analysis
+fitted with historical annual crop yields, monthly growing season
+temperature and precipitation, CO2 concentrations, GDP per capita, and
+year. The default econometric model applied in <code>gaea</code> is from
+<a href="https://doi.org/10.1088/1748-9326/abadcb" class="external-link">Waldhoff et al.,
+(2020)</a>. User can specify alternative formulas that are consistent
+with the data processed in <code>data_aggregation.</code></p></li>
+<li><p><code>yield_shock_projection</code>: Projects yield shocks for
+future climate scenarios using the fitted model and temperature,
+precipitation, and CO2 projections from the climate scenario.</p></li>
 <li><p><code>gcam_agprodchange</code>: Remaps country-level yield shocks
-to GCAM-required spatial scales (i.e., region and basin intersections)
-based on harvest area and converts crops to GCAM commodities. This
-function calculates agricultural productivity growth (a key parameter
-for GCAM to estimate future yield) and creates ready-to-use XML outputs
-for GCAM.</p></li>
+to GCAM-required spatial scales (i.e., region, basin, technology
+intersections), based on harvested areas, and aggregates crops to GCAM
+commodities. This function applies the projected shocks to GCAM scenario
+agricultural productivity growth rates (the unit used to project future
+yields in GCAM) and creates ready-to-use XML outputs for GCAM.</p></li>
 </ol>
 <p><br></p>
 <p align="center">
-<img src="vignetteFigs/workflow.jpg"></p>
+<img src="vignetteFigs%2Fworkflow.jpg"></p>
 <a name="figure1"></a>
 <p align="left" style="font-size:14px;">
 <strong>Figure 1:</strong> The gaea workflow showing the functions and
@@ -215,7 +219,7 @@ variations using empritical econometric model.
 <!-------------------------->
 <!-------------------------->
 <p align="center">
-<img src="vignetteFigs/divider.png"></p>
+<img src="vignetteFigs%2Fdivider.png"></p>
 <div class="section level3">
 <h3 id="example-climate-data">Example Climate Data<a class="anchor" aria-label="anchor" href="#example-climate-data"></a>
 </h3>
@@ -385,7 +389,7 @@ takes a few minutes!</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>
