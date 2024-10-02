@@ -91,7 +91,11 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">agprodchange_ref</span><span class="op">(</span>gcam_version <span class="op">=</span> <span class="st">"gcam7"</span>, gcamdata_dir <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">agprodchange_ref</span><span class="op">(</span></span>
+<span>  gcam_version <span class="op">=</span> <span class="st">"gcam7"</span>,</span>
+<span>  climate_scenario <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  gcamdata_dir <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -100,6 +104,10 @@
 
 <dl><dt id="arg-gcam-version">gcam_version<a class="anchor" aria-label="anchor" href="#arg-gcam-version"></a></dt>
 <dd><p>Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7</p></dd>
+
+
+<dt id="arg-climate-scenario">climate_scenario<a class="anchor" aria-label="anchor" href="#arg-climate-scenario"></a></dt>
+<dd><p>Default = NULL. string for climate scenario (e.g., 'ssp245')</p></dd>
 
 
 <dt id="arg-gcamdata-dir">gcamdata_dir<a class="anchor" aria-label="anchor" href="#arg-gcamdata-dir"></a></dt>
