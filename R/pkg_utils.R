@@ -245,7 +245,8 @@ agprodchange_ref <- function(gcam_version = 'gcam7',
                              gcamdata_dir = NULL)
 {
 
-  year <- AgProdChange <- AgProdChange_ni <- NULL
+  year <- AgProdChange <- AgProdChange_ni <- region <- AgSupplySector <-
+    AgSupplySubsector <- AgProductionTechnology <- high <- low <- ssp4 <- ref <- NULL
 
   if(!is.null(gcamdata_dir)){
 

@@ -362,7 +362,7 @@ get_weighted_yield_impact <- function(data = NULL,
 
   # calculate yield shocks for each GCAM commodity based on the weighted crop areas within the Region-basin intersection
   yield_impact_clean <- yield_impact_clean %>%
-    dplyr::left_join(gcam_commod, by = 'crop') %>%
+    dplyr::left_join(gcam_commod, by = 'crop', relationship = 'many-to-many') %>%
     dplyr::left_join(cropland_glu_region %>%
                        tidyr::separate(crop, into = c('irrtype', 'crop_id'), sep = '_') %>%
                        dplyr::left_join(crop_mirca, by = c('crop_id')) %>%
