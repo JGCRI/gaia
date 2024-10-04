@@ -512,6 +512,10 @@ get_example_data <- function(download_url = '',
 
   if(!dir.exists(file.path(out_dir))){
 
+    # create the base location for data to be downloaded
+    dir.create(data_dir)
+
+    # download data
     utils::download.file(url = download_url,
                          destfile = dest_file,
                          mode = 'wb')
@@ -521,9 +525,11 @@ get_example_data <- function(download_url = '',
     # Unzip
     message('Starting unzip.')
 
+    # unzip data
     utils::unzip(zipfile = file.path(data_dir, fname),
                  exdir = out_dir)
 
+    # remove the zip file
     file.remove(dest_file)
 
     message(paste0('Data unzipped to: ', out_dir))
