@@ -18,8 +18,8 @@ crop_calendars <- function(output_dir = file.path(getwd(), 'output')){
   # format, subset data and replace location name
   d$Location <- ifelse( d$Location == "Georgia" & d$Source == "USDA UPHD", "Georgia_USA", d$Location )
   d <- subset( d, select = c( "Data.ID", "Location", "Crop", "Qualifier", "Plant.start", "Plant.end", "Harvest.start", "Harvest.end" ) )
-  d <- gaea::colname_replace( d, "Location", "country_name" )
-  d <- gaea::colname_replace( d, "Crop", "crop" )
+  d <- gaia::colname_replace( d, "Location", "country_name" )
+  d <- gaia::colname_replace( d, "Crop", "crop" )
   d$crop <- tolower( d$crop )
 
   # Average plant and harvest month
@@ -32,7 +32,7 @@ crop_calendars <- function(output_dir = file.path(getwd(), 'output')){
 
   # Country codes
   d <- merge( d, mapping_gcam_iso, by = "country_name", all.x = TRUE )
-  d <- gaea::iso_replace( d )
+  d <- gaia::iso_replace( d )
 
   # Indicators for crops
   crops <- tibble::tibble(

@@ -45,7 +45,7 @@ yield_shock_projection <- function(use_default_coeff = FALSE,
     print( paste( climate_model, climate_scenario, crop_i, sep = " " ) )
 
     # calculate yield impact for each crop and country
-    d <- gaea::climate_impact(use_default_coeff = use_default_coeff,
+    d <- gaia::climate_impact(use_default_coeff = use_default_coeff,
                               climate_model = climate_model,
                               climate_scenario = climate_scenario,
                               crop_name = crop_i,
@@ -57,7 +57,7 @@ yield_shock_projection <- function(use_default_coeff = FALSE,
     # plot projected yield impact
     if(diagnostics == TRUE){
 
-      gaea::plot_projection(data = d,
+      gaia::plot_projection(data = d,
                             climate_model = climate_model,
                             climate_scenario = climate_scenario,
                             crop_name = crop_i,
@@ -67,7 +67,7 @@ yield_shock_projection <- function(use_default_coeff = FALSE,
 
 
     # smooth annual impacts using moving average and output certain time step
-    d_smooth <- gaea::smooth_impacts(data = d,
+    d_smooth <- gaia::smooth_impacts(data = d,
                                      climate_model = climate_model,
                                      climate_scenario = climate_scenario,
                                      crop_name = crop_i,
@@ -84,7 +84,7 @@ yield_shock_projection <- function(use_default_coeff = FALSE,
     if(diagnostics == TRUE){
 
       # plot smoothed projected yield impact
-      gaea::plot_projection_smooth(data = d_smooth,
+      gaia::plot_projection_smooth(data = d_smooth,
                                    climate_model = climate_model,
                                    climate_scenario = climate_scenario,
                                    crop_name = crop_i,
@@ -92,7 +92,7 @@ yield_shock_projection <- function(use_default_coeff = FALSE,
                                    output_dir = output_dir)
 
       # plot spatial map
-      gaea::plot_map(data = d_smooth,
+      gaia::plot_map(data = d_smooth,
                      plot_years = NULL,
                      output_dir = output_dir)
 
@@ -101,7 +101,7 @@ yield_shock_projection <- function(use_default_coeff = FALSE,
   }
 
   # format the smoothed yield
-  d_format <- gaea::format_projection(data = d_bind,
+  d_format <- gaia::format_projection(data = d_bind,
                                       base_year = base_year,
                                       output_dir = output_dir)
 

@@ -18,8 +18,8 @@ co2_historical
 }
 \examples{
 \dontrun{
- library(gaea);
- co2_historical <- gaea::co2_historical
+ library(gaia);
+ co2_historical <- gaia::co2_historical
 }
 }
 \keyword{datasets}

@@ -18,8 +18,8 @@ co2_projection
 }
 \examples{
 \dontrun{
- library(gaea);
- co2_projection <- gaea::co2_projection
+ library(gaia);
+ co2_projection <- gaia::co2_projection
 }
 }
 \keyword{datasets}

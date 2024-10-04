@@ -1,10 +1,10 @@
 ## ----eval=F-------------------------------------------------------------------
 #  
-#  # load gaea
-#  library(gaea)
+#  # load gaia
+#  library(gaia)
 #  
 #  # NOTE: please change `data_dir` to your desired location for downloaded data
-#  data_dir <- gaea::get_example_data(
+#  data_dir <- gaia::get_example_data(
 #    download_url = 'https://zenodo.org/records/13179630/files/gaea_example_climate.zip?download=1',
 #    data_dir = 'path/to/desired/location'
 #  )
@@ -22,12 +22,12 @@
 
 ## ----eval=FALSE---------------------------------------------------------------
 #  
-#  # load gaea
-#  library(gaea)
+#  # load gaia
+#  library(gaia)
 #  
-#  # Run gaea
+#  # Run gaia
 #  # The full run with raw climate data can take up to an hour
-#  gaea::yield_impact(
+#  gaia::yield_impact(
 #    pr_hist_ncdf = pr_historical_file,
 #    tas_hist_ncdf = tas_historical_file,
 #    pr_proj_ncdf = pr_projection_file,
@@ -54,11 +54,11 @@
 
 ## ----eval=FALSE---------------------------------------------------------------
 #  
-#  # load gaea
-#  library(gaea)
+#  # load gaia
+#  library(gaia)
 #  
 #  # NOTE: please change `data_dir` to your desired location for downloaded data
-#  data_dir <- gaea::get_example_data(
+#  data_dir <- gaia::get_example_data(
 #    download_url = 'https://zenodo.org/records/13179630/files/weighted_climate.zip?download=1',
 #    data_dir = 'path/to/desired/location'
 #  )
@@ -74,11 +74,11 @@
 
 ## ----eval=FALSE---------------------------------------------------------------
 #  
-#  # load gaea
-#  library(gaea)
+#  # load gaia
+#  library(gaia)
 #  
-#  # Run gaea
-#  gaea::yield_impact(
+#  # Run gaia
+#  gaia::yield_impact(
 #    climate_hist_dir = climate_hist_dir,
 #    climate_impact_dir = climate_impact_dir,
 #    timestep = 'monthly',                   # specify the time step of the NetCDF data (monthly or daily)

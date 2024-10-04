@@ -56,7 +56,7 @@ yield_impact <- function(pr_hist_ncdf = NULL,
   # Step 1b: Process standard NetCDF files from ISIMIP to country level historical climate
   if(any(!is.null(pr_hist_ncdf), !is.null(tas_hist_ncdf))){
 
-    gaea::weighted_climate(pr_ncdf = pr_hist_ncdf,
+    gaia::weighted_climate(pr_ncdf = pr_hist_ncdf,
                            tas_ncdf = tas_hist_ncdf,
                            timestep = timestep,
                            climate_model = climate_model,
@@ -70,7 +70,7 @@ yield_impact <- function(pr_hist_ncdf = NULL,
   # Step 1b: Process standard NetCDF files from ISIMIP to country level projected climate
   if(any(!is.null(pr_proj_ncdf), !is.null(tas_proj_ncdf))){
 
-    gaea::weighted_climate(pr_ncdf = pr_proj_ncdf,
+    gaia::weighted_climate(pr_ncdf = pr_proj_ncdf,
                            tas_ncdf = tas_proj_ncdf,
                            timestep = timestep,
                            climate_model = climate_model,
@@ -83,7 +83,7 @@ yield_impact <- function(pr_hist_ncdf = NULL,
 
 
   # Step 2: Generate planting months for each country
-  gaea::crop_calendars(output_dir = output_dir)
+  gaia::crop_calendars(output_dir = output_dir)
 
   # Step 3: Process multiple models to analyze historical weather variables and crop yields
   if(all(is.null(climate_hist_dir),
@@ -99,7 +99,7 @@ yield_impact <- function(pr_hist_ncdf = NULL,
   }
 
 
-  gaea::data_aggregation(climate_hist_dir = climate_hist_dir,
+  gaia::data_aggregation(climate_hist_dir = climate_hist_dir,
                          climate_impact_dir = climate_impact_dir,
                          climate_model = climate_model,
                          climate_scenario = climate_scenario,
@@ -107,13 +107,13 @@ yield_impact <- function(pr_hist_ncdf = NULL,
 
   # Step 4: Yield regressions and create figures
   if(!use_default_coeff){
-    gaea::yield_regression(diagnostics = diagnostics,
+    gaia::yield_regression(diagnostics = diagnostics,
                            output_dir = output_dir)
   }
 
 
   # Step 5: Project yields for future climate scenarios using regression analysis
-  df_yield_projection <- gaea::yield_shock_projection(use_default_coeff = use_default_coeff,
+  df_yield_projection <- gaia::yield_shock_projection(use_default_coeff = use_default_coeff,
                                                       climate_model = climate_model,
                                                       climate_scenario = climate_scenario,
                                                       base_year = base_year,
@@ -125,7 +125,7 @@ yield_impact <- function(pr_hist_ncdf = NULL,
   )
 
   # Step 6:
-  df_yield_impact_gcam <- gaea::gcam_agprodchange(data = df_yield_projection,
+  df_yield_impact_gcam <- gaia::gcam_agprodchange(data = df_yield_projection,
                                                   climate_model = climate_model,
                                                   climate_scenario = climate_scenario,
                                                   member = member,

@@ -34,7 +34,7 @@ use_default_coeff_i <- F
 # Step 2: crop_calendar
 run_crop_calendars <- function(output_dir = output_dir_i){
 
-  output <- gaea::crop_calendars(output_dir = output_dir)
+  output <- gaia::crop_calendars(output_dir = output_dir)
 
   return(output)
 }
@@ -48,7 +48,7 @@ run_data_aggregation <- function(data_dir = NULL,
   climate_hist_dir_i <- file.path(data_dir, 'canesm5_hist')
   climate_impact_dir_i <- file.path(data_dir, 'canesm5')
 
-  output <- gaea::data_aggregation(climate_hist_dir = climate_hist_dir_i,
+  output <- gaia::data_aggregation(climate_hist_dir = climate_hist_dir_i,
                                    climate_impact_dir = climate_impact_dir_i,
                                    climate_model = climate_model,
                                    climate_scenario = climate_scenario,
@@ -62,7 +62,7 @@ run_data_aggregation <- function(data_dir = NULL,
 run_yield_regression <- function(diagnostics = diagnostics_i,
                                  output_dir = output_dir_i){
 
-  gaea::yield_regression(diagnostics = diagnostics,
+  gaia::yield_regression(diagnostics = diagnostics,
                          output_dir = output_dir)
 
 }
@@ -81,7 +81,7 @@ run_yield_shock_projection <- function(use_default_coeff = use_default_coeff_i,
                                        output_dir = output_dir_i
 ){
 
-  output <- gaea::yield_shock_projection(use_default_coeff = use_default_coeff,
+  output <- gaia::yield_shock_projection(use_default_coeff = use_default_coeff,
                                          climate_model = climate_model,
                                          climate_scenario = climate_scenario,
                                          base_year = base_year,
@@ -107,7 +107,7 @@ run_gcam_agprodchange <- function(data = NULL,
                                   diagnostics = diagnostics_i,
                                   output_dir = output_dir_i){
 
-  output <- gaea::gcam_agprodchange(data = data,
+  output <- gaia::gcam_agprodchange(data = data,
                                     climate_model = climate_model,
                                     climate_scenario = climate_scenario,
                                     member = member,

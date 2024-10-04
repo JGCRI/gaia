@@ -5,8 +5,8 @@
 #' @format R data frame
 #' @examples
 #' \dontrun{
-#'  library(gaea);
-#'  co2_historical <- gaea::co2_historical
+#'  library(gaia);
+#'  co2_historical <- gaia::co2_historical
 #' }
 "co2_historical"
 
@@ -17,8 +17,8 @@
 #' @format R data frame
 #' @examples
 #' \dontrun{
-#'  library(gaea);
-#'  co2_projection <- gaea::co2_projection
+#'  library(gaia);
+#'  co2_projection <- gaia::co2_projection
 #' }
 "co2_projection"
 
@@ -29,8 +29,8 @@
 #' @format R data frame
 #' @examples
 #' \dontrun{
-#'  library(gaea);
-#'  agprodchange_ni_gcam7 <- gaea::agprodchange_ni_gcam7
+#'  library(gaia);
+#'  agprodchange_ni_gcam7 <- gaia::agprodchange_ni_gcam7
 #' }
 "agprodchange_ni_gcam7"
 
@@ -40,8 +40,8 @@
 #' @format R data frame
 #' @examples
 #' \dontrun{
-#'  library(gaea);
-#'  agprodchange_ni_gcam6 <- gaea::agprodchange_ni_gcam6
+#'  library(gaia);
+#'  agprodchange_ni_gcam6 <- gaia::agprodchange_ni_gcam6
 #' }
 "agprodchange_ni_gcam6"
 
@@ -51,7 +51,7 @@
 #' @format R data frame
 #' @examples
 #' \dontrun{
-#'  library(gaea);
-#'  coef_default <- gaea::coef_default
+#'  library(gaia);
+#'  coef_default <- gaia::coef_default
 #' }
 "coef_default"

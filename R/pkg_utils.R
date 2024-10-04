@@ -11,9 +11,9 @@
 pkg_example <- function(path = NULL) {
 
   if (is.null(path)) {
-    dir(system.file('extras', package = 'gaea'))
+    dir(system.file('extras', package = 'gaia'))
   } else {
-    system.file('extras', path, package = 'gaea', mustWork = TRUE)
+    system.file('extras', path, package = 'gaia', mustWork = TRUE)
   }
 
 }
@@ -222,8 +222,8 @@ merge_data <- function( d1, d2, x1, x2 )
   x2.y <- paste( x2, "y", sep = "." )
   d1[[x1.y]] <- NULL
   d1[[x2.y]] <- NULL
-  d1 <- gaea::colname_replace( d1, x1.x, x1 )
-  d1 <- gaea::colname_replace( d1, x2.x, x2 )
+  d1 <- gaia::colname_replace( d1, x1.x, x1 )
+  d1 <- gaia::colname_replace( d1, x2.x, x2 )
   d1$id <- NULL
   return( d1 )
 }
@@ -251,7 +251,7 @@ agprodchange_ref <- function(gcam_version = 'gcam7',
   if(!is.null(gcamdata_dir)){
 
     # If user provide their own gcamdata dirctory, then use user provided data
-    gaea::path_check(gcamdata_dir)
+    gaia::path_check(gcamdata_dir)
 
     if(grepl('ssp1|ssp5', climate_scenario)){
       agprodchange_ag <- data.table::fread(file.path(gcamdata_dir, 'outputs', 'L2052.AgProdChange_irr_high.csv'))
@@ -283,11 +283,11 @@ agprodchange_ref <- function(gcam_version = 'gcam7',
 
     # if user doesn't provide any gcamdata, then use default
     if(gcam_version == 'gcam6'){
-      agprodchange_ni <- gaea::agprodchange_ni_gcam6
+      agprodchange_ni <- gaia::agprodchange_ni_gcam6
     }
 
     if(gcam_version == 'gcam7'){
-      agprodchange_ni <- gaea::agprodchange_ni_gcam7
+      agprodchange_ni <- gaia::agprodchange_ni_gcam7
     }
 
     # filter based on the scenario

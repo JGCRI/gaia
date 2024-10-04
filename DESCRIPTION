@@ -1,5 +1,5 @@
-Package: gaea
-Title: gaea: An R package to estimate crop yield responses to temperature
+Package: gaia
+Title: gaia: An R package to estimate crop yield responses to temperature
     and precipitation
 Version: 1.0.0
 Authors@R: c(
@@ -15,8 +15,8 @@ Authors@R: c(
 Description: An empirical model to estimate annual crop yield responses to
     temperature and precipitation.
 License: BSD_3_clause + file LICENSE
-URL: https://github.com/JGCRI/gaea
-BugReports: https://github.com/JGCRI/gaea/issues
+URL: https://github.com/JGCRI/gaia
+BugReports: https://github.com/JGCRI/gaia/issues
 Depends: 
     R (>= 4.1)
 Imports: 

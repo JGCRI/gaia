@@ -152,7 +152,7 @@ usethis::use_data(agprodchange_ni_gcam7, overwrite = TRUE)
 # is provided
 coef_default <- data.table::data.table()
 for(crop_name in mapping_mirca_sage$crop_mirca){
-  coef_crop <- gaea::input_data(folder_path = 'C:/WorkSpace/github/test_scripts/gaea/output/data_processed',
+  coef_crop <- gaia::input_data(folder_path = 'C:/WorkSpace/github/test_scripts/gaia/output/data_processed',
                                 input_file =  paste("reg_out_", crop_name, "_", fit_name, ".csv", sep = ""),
                                 skip_number = 0 )
   coef_default <- dplyr::bind_rows(
@@ -288,7 +288,7 @@ attr(mirca_harvest_area, 'unit') <- 'm2'
 #-------------------------------------------------------------------------------
 # ISO Mapping
 #-------------------------------------------------------------------------------
-mapping_gcam_iso <- gaea::input_data(
+mapping_gcam_iso <- gaia::input_data(
   folder_path = file.path(model_data.dir, 'data_raw'),
   input_file = 'iso_GCAM_regID_name.csv',
   skip_number = 0)
@@ -315,7 +315,7 @@ mapping_rmap_gcamregions <- rmap::mapping_country_gcam32 %>% dplyr::select(regio
 #-------------------------------------------------------------------------------
 # crop calendar dataset
 # https://sage.nelson.wisc.edu/data-and-models/datasets/crop-calendar-dataset/
-sage <- gaea::input_data(
+sage <- gaia::input_data(
   folder_path = file.path(model_data.dir, 'data_raw'),
   input_file = 'SAGE_All_data_with_climate.csv',
   skip_number = 0)
@@ -327,18 +327,18 @@ sage <- sage %>%
 #-------------------------------------------------------------------------------
 # FAO Data - Harvested Area
 #-------------------------------------------------------------------------------
-fao_yield <- gaea::input_data(
+fao_yield <- gaia::input_data(
   folder_path = file.path(model_data.dir, 'data_raw'),
   input_file = 'FAO_yield_ha.csv',
   skip_number = 0
 )
 
-fao_yield <- gaea::clean_yield(fao_yield)
+fao_yield <- gaia::clean_yield(fao_yield)
 
 #-------------------------------------------------------------------------------
 # FAO Data - Irrigation Equip
 #-------------------------------------------------------------------------------
-fao_irr_equip <- gaea::input_data(
+fao_irr_equip <- gaia::input_data(
   folder_path = file.path(model_data.dir, 'data_raw'),
   input_file = 'fao_irr_equip.csv',
   skip_number = 0
@@ -352,7 +352,7 @@ fao_irr_equip <- fao_irr_equip %>%
 #-------------------------------------------------------------------------------
 # GDP
 #-------------------------------------------------------------------------------
-gdp <- gaea::input_data(
+gdp <- gaia::input_data(
   folder_path = file.path(model_data.dir, 'data_raw'),
   input_file = "pwt_gdp_pcap_ppp.csv",
   skip_number = 0)

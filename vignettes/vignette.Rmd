@@ -61,10 +61,10 @@ font-style: italic;
 <p align="center"><img src="vignetteFigs/divider.png"/></p>
 
 
-`gaea` is designed with a climate-driven empirical model at its core, integrated into an efficient modular structure. This architecture streamlines the entire workflow, from initial climate and crop data processing through empirical model fitting, yield shock projections under future climate scenarios, to the calculation of agricultural productivity changes for GCAM. The modular design also facilitates comprehensive diagnostic outputs, enhancing the tool's utility for researchers and policymakers.
+`gaia` is designed with a climate-driven empirical model at its core, integrated into an efficient modular structure. This architecture streamlines the entire workflow, from initial climate and crop data processing through empirical model fitting, yield shock projections under future climate scenarios, to the calculation of agricultural productivity changes for GCAM. The modular design also facilitates comprehensive diagnostic outputs, enhancing the tool's utility for researchers and policymakers.
 
 
-The primary functionality of `gaea` is encapsulated in the `yield_impact` wrapper function, which executes the entire workflow from climate data processing to yield shock estimation. Users can also execute individual functions to work through the main steps of the process ([Figure 1](#figure1)).
+The primary functionality of `gaia` is encapsulated in the `yield_impact` wrapper function, which executes the entire workflow from climate data processing to yield shock estimation. Users can also execute individual functions to work through the main steps of the process ([Figure 1](#figure1)).
 
 
 1. `weighted_climate`: Processes CMIP-ISIMIP climate NetCDF data and calculates cropland-weighted precipitation and temperature at the country level, differentiated by crop type and irrigation type   . The function accepts both daily    or monthly climate data that are consistent with the CMIP-ISIMIP NetCDF data format.   
@@ -73,7 +73,7 @@ The primary functionality of `gaea` is encapsulated in the `yield_impact` wrappe
 
 3. `data_aggregation`: Calculates crop growing seasons using climate variables processed by `weighted_climate` and crop calendars for both historical and projected periods. This function prepares climate and yield data for subsequent model fitting.
 
-4. `yield_regression`: Performs regression analysis fitted with historical annual crop yields, monthly growing season temperature and precipitation, CO2 concentrations, GDP per capita, and year. The default econometric model applied in `gaea` is from [Waldhoff et al., (2020)](https://doi.org/10.1088/1748-9326/abadcb). User can specify alternative formulas that are consistent with the data processed in `data_aggregation.`
+4. `yield_regression`: Performs regression analysis fitted with historical annual crop yields, monthly growing season temperature and precipitation, CO2 concentrations, GDP per capita, and year. The default econometric model applied in `gaia` is from [Waldhoff et al., (2020)](https://doi.org/10.1088/1748-9326/abadcb). User can specify alternative formulas that are consistent with the data processed in `data_aggregation.`
 
 5. `yield_shock_projection`: Projects yield shocks for future climate scenarios using the fitted model and temperature, precipitation, and CO2 projections from the climate scenario.
 
@@ -83,7 +83,7 @@ The primary functionality of `gaea` is encapsulated in the `yield_impact` wrappe
 
 <p align="center"><img src="vignetteFigs/workflow.jpg"/></p>
 <a name="figure1"></a>
-<p align="left" style="font-size:14px;"> **Figure 1:** The gaea workflow showing the functions and the corresponding outputs of modeling crop yield shocks to climate variations using empritical econometric model. </p>
+<p align="left" style="font-size:14px;"> **Figure 1:** The gaia workflow showing the functions and the corresponding outputs of modeling crop yield shocks to climate variations using empritical econometric model. </p>
 
 <br />
 
@@ -100,14 +100,14 @@ The primary functionality of `gaea` is encapsulated in the `yield_impact` wrappe
 
 ## Example Climate Data
 
-`gaea` requires global climate data from the Inter-Sectoral Impact Model Intercomparison Project ([ISIMIP](https://www.isimip.org/)) or data formatted similarly to ISIMIP data. Additionally, `gaea` supports climate data aggregated to a monthly time step. Due to the large size of daily time step climate data, we have provided an example of monthly aggregated climate data covering the period from 2015 to 2100. Please download the example data using the instructions below.
+`gaia` requires global climate data from the Inter-Sectoral Impact Model Intercomparison Project ([ISIMIP](https://www.isimip.org/)) or data formatted similarly to ISIMIP data. Additionally, `gaia` supports climate data aggregated to a monthly time step. Due to the large size of daily time step climate data, we have provided an example of monthly aggregated climate data covering the period from 2015 to 2100. Please download the example data using the instructions below.
 
 <div class="alert alert-info">
-<strong>NOTE:</strong> In the case where there is no available historical climate data, `gaea` will use the default fitted model that has already been fitted with WATCH historical climate forcing data ([Weedon et al., (2011)](https://doi.org/10.1175/2011JHM1369.1)).
+<strong>NOTE:</strong> In the case where there is no available historical climate data, `gaia` will use the default fitted model that has already been fitted with WATCH historical climate forcing data ([Weedon et al., (2011)](https://doi.org/10.1175/2011JHM1369.1)).
 </div>
 
 
-## Run gaea!
+## Run gaia!
 
 ### Example 1
 
@@ -115,11 +115,11 @@ Download the example climate NetCDF data and configure the data paths accordingl
 
 ```{r eval=F}
 
-# load gaea
-library(gaea)
+# load gaia
+library(gaia)
 
 # NOTE: please change `data_dir` to your desired location for downloaded data
-data_dir <- gaea::get_example_data(
+data_dir <- gaia::get_example_data(
   download_url = 'https://zenodo.org/records/13179630/files/gaea_example_climate.zip?download=1',
   data_dir = 'path/to/desired/location'
 )
@@ -138,21 +138,21 @@ tas_projection_file <- file.path(data_dir, 'tas_monthly_canesm5_w5e5_rcp7_2015_2
 
 <br />
 
-Once the example climate NetCDF data is in place, we can run `gaea` with a single function `yield_impact` that streamlines the entire workflow. For the explanation of each argument of `yield_impact`, refer to this [reference page](https://jgcri.github.io/gaea/reference/yield_impact.html).
+Once the example climate NetCDF data is in place, we can run `gaia` with a single function `yield_impact` that streamlines the entire workflow. For the explanation of each argument of `yield_impact`, refer to this [reference page](https://jgcri.github.io/gaia/reference/yield_impact.html).
 
 <div class="alert alert-info">
-<strong>NOTE:</strong> This workflow may take up to one hour due to the amount of climate data `gaea` needs to process. For a faster example, please see [Example 2](#example-2).
+<strong>NOTE:</strong> This workflow may take up to one hour due to the amount of climate data `gaia` needs to process. For a faster example, please see [Example 2](#example-2).
 </div>
 
 
 ```{r eval=FALSE}
 
-# load gaea
-library(gaea)
+# load gaia
+library(gaia)
 
-# Run gaea
+# Run gaia
 # The full run with raw climate data can take up to an hour
-gaea::yield_impact(
+gaia::yield_impact(
   pr_hist_ncdf = pr_historical_file, 
   tas_hist_ncdf = tas_historical_file, 
   pr_proj_ncdf = pr_projection_file, 
@@ -181,7 +181,7 @@ gaea::yield_impact(
 <br />
 
 <div class="alert alert-info">
-<strong>NOTE:</strong> The arguments `climate_model`, `climate_scenario`, `member`, `bias_adj`, and `cfe` require corresponding strings that demonstrate climate model information in the output files. These arguments will not affect `gaea` model simulation, other than the meta information of climate data in the output files.
+<strong>NOTE:</strong> The arguments `climate_model`, `climate_scenario`, `member`, `bias_adj`, and `cfe` require corresponding strings that demonstrate climate model information in the output files. These arguments will not affect `gaia` model simulation, other than the meta information of climate data in the output files.
 </div>
 
 
@@ -190,16 +190,16 @@ gaea::yield_impact(
 ### Example 2
 
 
-We also provide an example of **weighted** climate data, processed using cropland weights at the country level. This weighted climate data is generated by `gaea::weighted_climate`. We have provided this example to help users format their data to match the weighted climate data format if their raw climate data differs from the ISIMIP format. Download the example of weighted climate data and run `gaea` by following the instructions below.
+We also provide an example of **weighted** climate data, processed using cropland weights at the country level. This weighted climate data is generated by `gaia::weighted_climate`. We have provided this example to help users format their data to match the weighted climate data format if their raw climate data differs from the ISIMIP format. Download the example of weighted climate data and run `gaia` by following the instructions below.
 
 
 ```{r eval=FALSE}
 
-# load gaea
-library(gaea)
+# load gaia
+library(gaia)
 
 # NOTE: please change `data_dir` to your desired location for downloaded data
-data_dir <- gaea::get_example_data(
+data_dir <- gaia::get_example_data(
   download_url = 'https://zenodo.org/records/13179630/files/weighted_climate.zip?download=1',
   data_dir = 'path/to/desired/location'
 )
@@ -217,16 +217,16 @@ climate_impact_dir <- file.path(data_dir, 'canesm5')
 <br />
 
 
-Running `gaea` directly with weighted climate data only takes a few minutes!
+Running `gaia` directly with weighted climate data only takes a few minutes!
 
 
 ```{r eval=FALSE}
 
-# load gaea
-library(gaea)
+# load gaia
+library(gaia)
 
-# Run gaea
-gaea::yield_impact(
+# Run gaia
+gaia::yield_impact(
   climate_hist_dir = climate_hist_dir,
   climate_impact_dir = climate_impact_dir,
   timestep = 'monthly',                   # specify the time step of the NetCDF data (monthly or daily)

@@ -18,8 +18,8 @@ coef_default
 }
 \examples{
 \dontrun{
- library(gaea);
- coef_default <- gaea::coef_default
+ library(gaia);
+ coef_default <- gaia::coef_default
 }
 }
 \keyword{datasets}

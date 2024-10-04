@@ -28,23 +28,23 @@ yield_regression <- function(formula = NULL,
   for(crop_i in mapping_mirca_sage$crop_mirca){
 
     # read in the historical crop data and weather data
-    d_crop <- gaea::input_data(folder_path = file.path(output_dir, "data_processed"),
+    d_crop <- gaia::input_data(folder_path = file.path(output_dir, "data_processed"),
                                input_file = paste("historic_vars_", crop_i, ".csv", sep = ""),
                                skip_number = 0,
                                quietly = TRUE)
 
     # prepare for regression analysis
-    d_crop_reg <- gaea::prep_regression(d_crop)
+    d_crop_reg <- gaia::prep_regression(d_crop)
 
     # regression analysis with fixed effects
-    d_crop_reg_fe <- gaea::regression_fixed_effects(d = d_crop_reg,
+    d_crop_reg_fe <- gaia::regression_fixed_effects(d = d_crop_reg,
                                                     crop_name = crop_i,
                                                     formula = formula,
                                                     output_dir = output_dir)
 
     # plot
     if(diagnostics == TRUE){
-      gaea::plot_fit(data = d_crop_reg_fe,
+      gaia::plot_fit(data = d_crop_reg_fe,
                      crop_name = crop_i,
                      output_dir = output_dir)
     }

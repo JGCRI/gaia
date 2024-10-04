@@ -118,13 +118,13 @@ weighted_climate <- function(pr_ncdf = NULL,
     for(pr_file in pr_ncdf) {
 
       # check if pr file is valid
-      gaea::path_check(path = pr_file, file_type = 'nc')
+      gaia::path_check(path = pr_file, file_type = 'nc')
 
       # precipitation
       message(paste0('Processing: ', pr_file))
 
       # get time periods of the nc file
-      nc_time <- gaea::get_nc_time(pr_file)
+      nc_time <- gaia::get_nc_time(pr_file)
 
       # check if the data periods is within the selected periods
       if (!is.null(time_periods)){
@@ -175,13 +175,13 @@ weighted_climate <- function(pr_ncdf = NULL,
     for(tas_file in tas_ncdf) {
 
       # check if pr file is valid
-      gaea::path_check(path = tas_file, file_type = 'nc')
+      gaia::path_check(path = tas_file, file_type = 'nc')
 
       # precipitation
       message(paste0('Processing: ', tas_file))
 
       # get time periods of the nc file
-      nc_time <- gaea::get_nc_time(tas_file)
+      nc_time <- gaia::get_nc_time(tas_file)
 
       # check if the data periods is within the selected periods
       if (!is.null(time_periods)){
@@ -265,7 +265,7 @@ weighted_climate <- function(pr_ncdf = NULL,
     }
 
 
-  } # end of for(crop in names(gaea::mirca_harvest_area))
+  } # end of for(crop in names(gaia::mirca_harvest_area))
 
   message('The function weighted_climate is complete.')
 

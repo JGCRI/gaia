@@ -1,4 +1,4 @@
 library(testthat)
-library(gaea)
+library(gaia)
 
-test_check("gaea")
+test_check("gaia")

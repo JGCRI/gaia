@@ -13,9 +13,9 @@ authors:
 - family-names: "Abigail"
   given-names: "Snyder"
   orcid: "https://orcid.org/0000-0002-9034-9948"
-title: "gaea: An R package to estimate crop yield responses to temperature and precipitation"
+title: "gaia: An R package to estimate crop yield responses to temperature and precipitation"
 version: 1.0.0
-url: "https://github.com/JGCRI/gaea"
+url: "https://github.com/JGCRI/gaia"
 preferred-citation:
     type: article
     authors:
@@ -33,7 +33,7 @@ preferred-citation:
       orcid: "https://orcid.org/0000-0002-9034-9948"
     doi: "10.xxxxx/joss.xxxxx"
     journal: "Journal of Open Source Software"
-    title: "gaea: An R package to estimate crop yield responses to temperature and precipitation"
+    title: "gaia: An R package to estimate crop yield responses to temperature and precipitation"
     issue: x
     volume: y
     year: 2024

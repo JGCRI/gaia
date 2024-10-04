@@ -18,11 +18,11 @@ clean_yield <- function(fao_yield = NULL)
   d <- subset( fao_yield, select = c( "AreaName", "ElementName", "ItemName", "Year", "Value" ) )
   d <- subset( d, AreaName != "" )
   d <- subset( d, AreaName != "China, mainland" )
-  d <- gaea::colname_replace( d, "AreaName", "country_name" )
-  d <- gaea::colname_replace( d, "ElementName", "var" )
-  d <- gaea::colname_replace( d, "ItemName", "crop" )
-  d <- gaea::colname_replace( d, "Year", "year" )
-  d <- gaea::colname_replace( d, "Value", "value" )
+  d <- gaia::colname_replace( d, "AreaName", "country_name" )
+  d <- gaia::colname_replace( d, "ElementName", "var" )
+  d <- gaia::colname_replace( d, "ItemName", "crop" )
+  d <- gaia::colname_replace( d, "Year", "year" )
+  d <- gaia::colname_replace( d, "Value", "value" )
   d$crop <- tolower( d$crop )
   d$var <- gsub( "Area harvested", "area_harvest", d$var )
   d$var <- gsub( "Yield", "yield", d$var )
@@ -36,7 +36,7 @@ clean_yield <- function(fao_yield = NULL)
   d$crop <- gsub( " ", "_", d$crop )
   d <- data.table::dcast( d, country_name + crop + year ~ var, value.var = "value" )
   d <- merge( d, mapping_gcam_iso, by ="country_name", all.x = TRUE )
-  d <- gaea::iso_replace( d )
+  d <- gaia::iso_replace( d )
   #   For these countries, root_tuber == cassava; others root_tuber == potato
   d$crop <- ifelse( d$crop == "potatoes", "root_tuber", d$crop )
   #   d$crop <- ifelse( ( ( d$iso == "ben" | d$iso ==  "cmr" | d$iso == "caf" | d$iso == "cog" | d$iso == "cod" | d$iso == "civ" | d$iso == "gab" | d$iso == "gha" |
@@ -77,7 +77,7 @@ weather_clean <- function(file = NULL,
   d <- subset( d, country_name != "Coral Sea Islands" )
   d$country_name <- NULL
   d$crop <- crop_name
-  d <- gaea::colname_replace( d, "value", weather_var)
+  d <- gaia::colname_replace( d, "value", weather_var)
   d$irr_rf <- irr_type
   d <- subset( d, iso != "ala" )
   d <- subset( d, iso != "umi" )
@@ -105,11 +105,11 @@ weather_agg <- function(file_precip = NULL,
                         file_temp = NULL,
                         crop_name = NULL)
 {
-  d1 <- gaea::weather_clean(file = file_precip,
+  d1 <- gaia::weather_clean(file = file_precip,
                             crop_name = crop_name,
                             weather_var = 'precip',
                             irr_type = 'rf' )
-  d2 <- gaea::weather_clean(file = file_temp,
+  d2 <- gaia::weather_clean(file = file_temp,
                             crop_name = crop_name,
                             weather_var = 'temp',
                             irr_type = 'rf' )
@@ -165,7 +165,7 @@ crop_month <- function(climate_data = NULL,
                               "month_1", "month_2", "month_3", "month_4", "month_5", "month_6",
                               "month_7", "month_8", "month_9", "month_10", "month_11", "month_12" ) )
   d <- data.table::melt( d, id.vars = 1:9 )
-  d <- gaea::colname_replace( d, "variable", "grow_month" )
+  d <- gaia::colname_replace( d, "variable", "grow_month" )
   d$grow_month <- as.numeric( as.character( gsub( "month_", "", d$grow_month ) ) )
   # Remove partial year coverage in first year for growing seasons that cover different years
   d.year2 <- subset( d, year2 == 1)
@@ -207,7 +207,7 @@ data_merge <- function(data = NULL,
   crop <- grow_season <- var <- NULL
 
   if(is.null(co2_hist)){
-    co2_hist <- gaea::co2_historical
+    co2_hist <- gaia::co2_historical
   }
 
   yield <- subset( yield, crop == crop_name )
@@ -221,7 +221,7 @@ data_merge <- function(data = NULL,
                               "grow_month", "grow_season", "temp", "precip" ) )
 
   # save
-  gaea::output_data(
+  gaia::output_data(
     data = d,
     save_path = file.path(output_dir, 'data_processed'),
     file_name = paste0( "historic_vars_", crop_name, ".csv" ),
@@ -256,13 +256,13 @@ data_trans <- function( data = NULL,
   grow_season <- var <- NULL
 
   if(is.null(co2_proj)){
-    co2_proj <- gaea::co2_projection
+    co2_proj <- gaia::co2_projection
   }
 
   d <- subset( data, grow_season == 1 )
   d$grow_season <- NULL
   d <- data.table::melt( d, id.vars = c( "iso", "year", "crop", "irr_rf", "grow_month" ) )
-  d <- gaea::colname_replace( d, "variable", "var" )
+  d <- gaia::colname_replace( d, "variable", "var" )
   d <- data.table::dcast( d, iso + year + crop + var ~ grow_month, value.var = "value" )
 
   # temperature
@@ -291,7 +291,7 @@ data_trans <- function( data = NULL,
   d <- d[ order( d$iso, d$year ), ]
 
   # save
-  gaea::output_data(
+  gaia::output_data(
     data = d,
     save_path = file.path(output_dir, 'data_processed'),
     file_name =  paste0( "weather_", climate_model, "_", climate_scenario, "_", crop_name, ".csv"),
@@ -421,7 +421,7 @@ regression_fixed_effects <- function(data = NULL,
   d[[fit_name]] <- exp( d[[fit_name]] )
 
   # save
-  gaea::output_data(
+  gaia::output_data(
     data = sum.fit,
     save_path = file.path(output_dir, 'data_processed'),
     file_name = paste( "reg_out_", crop_name, "_", fit_name, ".csv", sep = "" ),
@@ -430,7 +430,7 @@ regression_fixed_effects <- function(data = NULL,
   # print( paste0("Statistics for regression analysis saved to: ", file.path(save_path, file_name)) )
 
   # save weather file
-  gaea::output_data(
+  gaia::output_data(
     data = d,
     save_path = file.path(output_dir, 'data_processed'),
     file_name = paste0( "weather_yield_", crop_name, ".csv" ),
@@ -485,7 +485,7 @@ plot_fit <- function(data = NULL,
     ggplot2::coord_equal( ratio = 1 )
 
   # save
-  gaea::output_data(
+  gaia::output_data(
     data = p,
     save_path = file.path(output_dir, 'figures'),
     file_name = paste( "model_", crop_name, "_", fit_name, ".pdf", sep = "" ),
@@ -534,11 +534,11 @@ z_estimate <- function(use_default_coeff = FALSE,
 
   # Extract significant coefficient values
   if(use_default_coeff){
-    coef <- gaea::coef_default %>%
+    coef <- gaia::coef_default %>%
       dplyr::filter(crop == crop_name) %>%
       dplyr::select(-crop)
   } else {
-    coef <- gaea::input_data(folder_path = file.path( output_dir, "data_processed" ),
+    coef <- gaia::input_data(folder_path = file.path( output_dir, "data_processed" ),
                              input_file = paste( "reg_out_", crop_name, "_", fit_name, ".csv", sep = "" ),
                              skip_number = 0 )
   }
@@ -576,7 +576,7 @@ z_estimate <- function(use_default_coeff = FALSE,
   precip_min_2 <- est_fn( "precip_min_2", n_sig )
 
   # Estimate y_hat for each year
-  d <- gaea::input_data(folder_path = file.path( output_dir, "data_processed" ),
+  d <- gaia::input_data(folder_path = file.path( output_dir, "data_processed" ),
                         input_file =  paste0( "weather_", climate_model, "_", climate_scenario, "_", crop_name, ".csv"),
                         skip_number = 0)
 
@@ -634,7 +634,7 @@ climate_impact <- function(use_default_coeff = FALSE,
                            output_dir = file.path(getwd(), 'output'))
 {
   # estimate z hat
-  d <- gaea::z_estimate(use_default_coeff = use_default_coeff,
+  d <- gaia::z_estimate(use_default_coeff = use_default_coeff,
                         climate_model = climate_model,
                         climate_scenario = climate_scenario,
                         crop_name = crop_name,
@@ -672,13 +672,13 @@ climate_impact <- function(use_default_coeff = FALSE,
   # clean up the data
   d <- dplyr::select( d, -( paste0('X', start_year:end_year) ) )
   d <- data.table::melt( d, id.vars = 1:3 )
-  d <- gaea::colname_replace( d, "variable", "year" )
+  d <- gaia::colname_replace( d, "variable", "year" )
   d$year <- gsub( "avg_impact_X", "", d$year )
   d$year <- as.numeric( as.character( d$year ) )
-  d <- gaea::colname_replace( d, "value", "yield_impact" )
+  d <- gaia::colname_replace( d, "value", "yield_impact" )
 
   # save
-  gaea::output_data(
+  gaia::output_data(
     data = d,
     save_path = file.path(output_dir, 'yield_impacts_annual'),
     file_name = paste0( "yield_", climate_model, "_", climate_scenario, "_", crop_name, ".csv" ),
@@ -788,7 +788,7 @@ smooth_impacts <- function(data = NULL,
   d <- data.table::dcast( d, crop + model + scenario + iso ~ year, value.var = "yield_impact" )
 
   # save smoothed output
-  gaea::output_data(
+  gaia::output_data(
     data = d,
     save_path = file.path(output_dir, 'yield_impacts_smooth'),
     file_name = paste0( "yield_", climate_model, "_", climate_scenario, "_", crop_name, ".csv" ),
@@ -823,7 +823,7 @@ format_projection <- function(data = NULL,
   # get the harvest area (ha) from FAO data
   d_ha <- subset(fao_yield, year == 2014)
   d_ha <- subset( d_ha, select = c( "crop", "iso", "area_harvest" ) )
-  d_ha <- gaea::colname_replace( d_ha, "area_harvest", "harvested_area" )
+  d_ha <- gaia::colname_replace( d_ha, "area_harvest", "harvested_area" )
 
   # set up the years to filter out
   if(is.null(select_years)){
@@ -845,11 +845,11 @@ format_projection <- function(data = NULL,
     dplyr::rename(climatemodel = model)
 
   # d <- data.table::dcast( d, climatemodel + scenario + iso + crop ~ year, value.var = "yield_impact" )
-  # d <- gaea::colname_replace(data, 'model', 'climatemodel')
+  # d <- gaia::colname_replace(data, 'model', 'climatemodel')
 
 
   # write output
-  gaea::output_data(
+  gaia::output_data(
     data = d,
     save_path = file.path(output_dir, 'data_processed'),
     file_name = paste0("format_yield_change_rel", base_year, ".csv" ),
@@ -898,7 +898,7 @@ plot_projection <- function(data = NULL,
     )
 
   # save
-  gaea::output_data(
+  gaia::output_data(
     data = p,
     save_path = file.path(output_dir, 'figures'),
     file_name = paste0( paste("annual_projected_climate_impacts", climate_model, climate_scenario, crop_name, fit_name, sep = "_"), ".pdf" ),
@@ -945,7 +945,7 @@ plot_projection_smooth <- function(data = NULL,
       axis.text.x = ggplot2::element_text( angle = 50, vjust = 0.5 ) )
 
   # save
-  gaea::output_data(
+  gaia::output_data(
     data = p,
     save_path = file.path(output_dir, 'figures'),
     file_name = paste0( paste("smooth_projected_climate_impacts", climate_model, climate_scenario, crop_name, fit_name, sep = "_"), ".pdf" ),
@@ -1044,7 +1044,7 @@ plot_map <- function(data = NULL,
 
 
           # save plot
-          gaea::output_data(
+          gaia::output_data(
             data = p,
             save_path = file.path(output_dir, 'maps'),
             file_name = paste0( paste("map", m, r, cp, y, sep = "_"), ".pdf" ),

@@ -18,8 +18,8 @@ agprodchange_ni_gcam6
 }
 \examples{
 \dontrun{
- library(gaea);
- agprodchange_ni_gcam6 <- gaea::agprodchange_ni_gcam6
+ library(gaia);
+ agprodchange_ni_gcam6 <- gaia::agprodchange_ni_gcam6
 }
 }
 \keyword{datasets}

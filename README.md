@@ -1,8 +1,8 @@
 <!-- badges: start -->
-[![build](https://github.com/JGCRI/gaea/workflows/build/badge.svg)](https://github.com/JGCRI/gaea/workflows/build/badge.svg?branch=main)
-[![test_coverage](https://github.com/JGCRI/gaea/actions/workflows/test_coverage.yml/badge.svg?branch=main)](https://github.com/JGCRI/gaea/actions/workflows/test_coverage.yml)
-[![codecov](https://codecov.io/gh/JGCRI/gaea/branch/main/graph/badge.svg?token=XQ913U4IYM)](https://codecov.io/gh/JGCRI/gaea)
-[![docs](https://github.com/JGCRI/gaea/actions/workflows/docs.yaml/badge.svg?branch=main)](https://github.com/JGCRI/gaea/actions/workflows/docs.yaml)
+[![build](https://github.com/JGCRI/gaia/workflows/build/badge.svg)](https://github.com/JGCRI/gaia/workflows/build/badge.svg?branch=main)
+[![test_coverage](https://github.com/JGCRI/gaia/actions/workflows/test_coverage.yml/badge.svg?branch=main)](https://github.com/JGCRI/gaia/actions/workflows/test_coverage.yml)
+[![codecov](https://codecov.io/gh/JGCRI/gaia/branch/main/graph/badge.svg?token=XQ913U4IYM)](https://codecov.io/gh/JGCRI/gaia)
+[![docs](https://github.com/JGCRI/gaia/actions/workflows/docs.yaml/badge.svg?branch=main)](https://github.com/JGCRI/gaia/actions/workflows/docs.yaml)
 <!-- badges: end -->
 
 
@@ -13,13 +13,13 @@
 <!-- ------------------------>
 <!-- ------------------------>
 
-`gaea` is an open-source R package designed to estimate crop yield shocks in response to annual climate variations and CO2 concentrations at the country scale for 12 major crops. `gaea` streamlines the workflow from raw climate data processing to the production of different forms of yield shock, such as agricultural productivity changes at the region-basin level, which can be directly integrated into the latest Global Change Analysis Model (GCAM).
+`gaia` is an open-source R package designed to estimate crop yield shocks in response to annual climate variations and CO2 concentrations at the country scale for 12 major crops. `gaia` streamlines the workflow from raw climate data processing to the production of different forms of yield shock, such as agricultural productivity changes at the region-basin level, which can be directly integrated into the latest Global Change Analysis Model (GCAM).
 
 <br />
 
 <p align="center">
-<a href="https://jgcri.github.io/gaea/" target="_blank"><img src="https://github.com/JGCRI/jgcricolors/blob/main/vignettes/button_user_guide.PNG?raw=true" 
-alt="https://jgcri.github.io/gaea/articles/vignette.html" height="60"/></a>
+<a href="https://jgcri.github.io/gaia/" target="_blank"><img src="https://github.com/JGCRI/jgcricolors/blob/main/vignettes/button_user_guide.PNG?raw=true" 
+alt="https://jgcri.github.io/gaia/articles/vignette.html" height="60"/></a>
 <img src="https://github.com/JGCRI/jgcricolors/blob/main/vignettes/button_divider.PNG?raw=true" height="40"/>
 </p>
 
@@ -29,7 +29,7 @@ alt="https://jgcri.github.io/gaea/articles/vignette.html" height="60"/></a>
 <!-- ------------------------>
 <!-- ------------------------>
 
-> Zhao, M., Waldhoff, S., Tebaldi, C., Snyder, A. 2024. gaea: An R package to estimate crop yield responses to temperature and precipitation. (In progress) Journal of Open Source Software, DOI: XXXX
+> Zhao, M., Waldhoff, S., Tebaldi, C., Snyder, A. 2024. gaia: An R package to estimate crop yield responses to temperature and precipitation. (In progress) Journal of Open Source Software, DOI: XXXX
 
 <br/>
 
@@ -48,14 +48,14 @@ alt="https://jgcri.github.io/gaea/articles/vignette.html" height="60"/></a>
 
 ```r
 install.packages("devtools")
-devtools::install_github("JGCRI/gaea")
+devtools::install_github("JGCRI/gaia")
 ```
 
 or
 
 ```r
 install.packages("remotes")
-remotes::install_github("JGCRI/gaea")
+remotes::install_github("JGCRI/gaia")
 ```
 
 Additional steps for UBUNTU from a terminal
@@ -92,4 +92,4 @@ brew install gdal
 <!-- ------------------------>
 <!-- ------------------------>
 
-Whether you find a typo in the documentation, find a bug, or want to develop functionality that you think will make `gaea` more robust, you are welcome to contribute! The [contributing](https://github.com/JGCRI/gaea/blob/main/CONTRIBUTING.md) page will walk you through processes to contribute to `gaea`.
+Whether you find a typo in the documentation, find a bug, or want to develop functionality that you think will make `gaia` more robust, you are welcome to contribute! The [contributing](https://github.com/JGCRI/gaia/blob/main/CONTRIBUTING.md) page will walk you through processes to contribute to `gaia`.

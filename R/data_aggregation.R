@@ -24,13 +24,13 @@ data_aggregation <- function(climate_hist_dir = NULL,
   message('Starting Step: data_aggregation')
 
   # read crop calendar output from crop_calendars function
-  crop_cal <- gaea::input_data(
+  crop_cal <- gaia::input_data(
     folder_path = file.path(output_dir, 'data_processed'),
     input_file = 'crop_calendar.csv'
   )
 
   # merge fao yield and fao irrigation equip data
-  yield <- gaea::merge_data(fao_yield, fao_irr_equip, 'iso', 'year')
+  yield <- gaia::merge_data(fao_yield, fao_irr_equip, 'iso', 'year')
 
 
   # ----------------------------------------------------------------------------
@@ -46,7 +46,7 @@ data_aggregation <- function(climate_hist_dir = NULL,
 
   } else {
 
-    gaea::path_check(climate_hist_dir)
+    gaia::path_check(climate_hist_dir)
 
     # get file list
     list_precip_rfc <- list.files(
@@ -70,17 +70,17 @@ data_aggregation <- function(climate_hist_dir = NULL,
       file_temp <-list_temp_rfc[grepl(crop_id, list_temp_rfc)]
 
       # aggregate weather data for crop_i
-      d_climate <- gaea::weather_agg(file_precip = file_precip,
+      d_climate <- gaia::weather_agg(file_precip = file_precip,
                                      file_temp = file_temp,
                                      crop_name = crop_i)
 
       # estimate growing season for each crop and country (SAGE db)
-      d_crop <- gaea::crop_month(climate_data = d_climate,
+      d_crop <- gaia::crop_month(climate_data = d_climate,
                                  crop_name = crop_i,
                                  crop_calendar = crop_cal)
 
       # merge data
-      d_crop <- gaea::data_merge(data = d_crop,
+      d_crop <- gaia::data_merge(data = d_crop,
                                  crop_name = crop_i,
                                  yield = yield,
                                  co2_hist = co2_hist,
@@ -99,7 +99,7 @@ data_aggregation <- function(climate_hist_dir = NULL,
   if(is.null(climate_impact_dir)){
     stop('Please provide folder path to the projected climate data.')
   } else {
-    gaea::path_check(climate_impact_dir)
+    gaia::path_check(climate_impact_dir)
   }
 
   # get file list
@@ -124,17 +124,17 @@ data_aggregation <- function(climate_hist_dir = NULL,
     file_temp <-list_temp_rfc[grepl(crop_id, list_temp_rfc)]
 
     # aggregate weather data for crop_i
-    d_climate <- gaea::weather_agg(file_precip = file_precip,
+    d_climate <- gaia::weather_agg(file_precip = file_precip,
                                    file_temp = file_temp,
                                    crop_name = crop_i)
 
     # estimate growing season for each crop and country (SAGE db)
-    d_crop <- gaea::crop_month(climate_data = d_climate,
+    d_crop <- gaia::crop_month(climate_data = d_climate,
                                crop_name = crop_i,
                                crop_calendar = crop_cal)
 
     # merge data
-    d_crop <- gaea::data_trans(data = d_crop,
+    d_crop <- gaia::data_trans(data = d_crop,
                                climate_model = climate_model,
                                climate_scenario = climate_scenario,
                                crop_name = crop_i,
