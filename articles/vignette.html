@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>User Guide • gaea</title>
+<title>User Guide • gaia</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
@@ -31,7 +31,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">gaea</a>
+        <a class="navbar-link" href="../index.html">gaia</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
@@ -85,7 +85,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/JGCRI/gaea/" class="external-link">
+  <a href="https://github.com/JGCRI/gaia/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
 
   </a>
@@ -106,7 +106,7 @@
       <h1 data-toc-skip>User Guide</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/JGCRI/gaea/blob/main/vignettes/vignette.Rmd" class="external-link"><code>vignettes/vignette.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JGCRI/gaia/blob/main/vignettes/vignette.Rmd" class="external-link"><code>vignettes/vignette.Rmd</code></a></small>
       <div class="hidden name"><code>vignette.Rmd</code></div>
 
     </div>
@@ -156,7 +156,7 @@ font-style: italic;
 <!-------------------------->
 <p align="center">
 <img src="vignetteFigs%2Fdivider.png"></p>
-<p><code>gaea</code> is designed with a climate-driven empirical model
+<p><code>gaia</code> is designed with a climate-driven empirical model
 at its core, integrated into an efficient modular structure. This
 architecture streamlines the entire workflow, from initial climate and
 crop data processing through empirical model fitting, yield shock
@@ -164,7 +164,7 @@ projections under future climate scenarios, to the calculation of
 agricultural productivity changes for GCAM. The modular design also
 facilitates comprehensive diagnostic outputs, enhancing the tool’s
 utility for researchers and policymakers.</p>
-<p>The primary functionality of <code>gaea</code> is encapsulated in the
+<p>The primary functionality of <code>gaia</code> is encapsulated in the
 <code>yield_impact</code> wrapper function, which executes the entire
 workflow from climate data processing to yield shock estimation. Users
 can also execute individual functions to work through the main steps of
@@ -186,7 +186,7 @@ prepares climate and yield data for subsequent model fitting.</p></li>
 <li><p><code>yield_regression</code>: Performs regression analysis
 fitted with historical annual crop yields, monthly growing season
 temperature and precipitation, CO2 concentrations, GDP per capita, and
-year. The default econometric model applied in <code>gaea</code> is from
+year. The default econometric model applied in <code>gaia</code> is from
 <a href="https://doi.org/10.1088/1748-9326/abadcb" class="external-link">Waldhoff et al.,
 (2020)</a>. User can specify alternative formulas that are consistent
 with the data processed in <code>data_aggregation.</code></p></li>
@@ -205,7 +205,7 @@ yields in GCAM) and creates ready-to-use XML outputs for GCAM.</p></li>
 <img src="vignetteFigs%2Fworkflow.jpg"></p>
 <a name="figure1"></a>
 <p align="left" style="font-size:14px;">
-<strong>Figure 1:</strong> The gaea workflow showing the functions and
+<strong>Figure 1:</strong> The gaia workflow showing the functions and
 the corresponding outputs of modeling crop yield shocks to climate
 variations using empritical econometric model.
 </p>
@@ -223,23 +223,23 @@ variations using empritical econometric model.
 <div class="section level3">
 <h3 id="example-climate-data">Example Climate Data<a class="anchor" aria-label="anchor" href="#example-climate-data"></a>
 </h3>
-<p><code>gaea</code> requires global climate data from the
+<p><code>gaia</code> requires global climate data from the
 Inter-Sectoral Impact Model Intercomparison Project (<a href="https://www.isimip.org/" class="external-link">ISIMIP</a>) or data formatted similarly
-to ISIMIP data. Additionally, <code>gaea</code> supports climate data
+to ISIMIP data. Additionally, <code>gaia</code> supports climate data
 aggregated to a monthly time step. Due to the large size of daily time
 step climate data, we have provided an example of monthly aggregated
 climate data covering the period from 2015 to 2100. Please download the
 example data using the instructions below.</p>
 <div class="alert alert-info">
 <p><strong>NOTE:</strong> In the case where there is no available
-historical climate data, <code>gaea</code> will use the default fitted
+historical climate data, <code>gaia</code> will use the default fitted
 model that has already been fitted with WATCH historical climate forcing
 data (<a href="https://doi.org/10.1175/2011JHM1369.1" class="external-link">Weedon et al.,
 (2011)</a>).</p>
 </div>
 </div>
 <div class="section level3">
-<h3 id="run-gaea">Run gaea!<a class="anchor" aria-label="anchor" href="#run-gaea"></a>
+<h3 id="run-gaia">Run gaia!<a class="anchor" aria-label="anchor" href="#run-gaia"></a>
 </h3>
 <div class="section level4">
 <h4 id="example-1">Example 1<a class="anchor" aria-label="anchor" href="#example-1"></a>
@@ -247,11 +247,11 @@ data (<a href="https://doi.org/10.1175/2011JHM1369.1" class="external-link">Weed
 <p>Download the example climate NetCDF data and configure the data paths
 accordingly.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># load gaea</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JGCRI/gaea" class="external-link">gaea</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># load gaia</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JGCRI/gaia" class="external-link">gaia</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># NOTE: please change `data_dir` to your desired location for downloaded data</span></span>
-<span><span class="va">data_dir</span> <span class="op">&lt;-</span> <span class="fu">gaea</span><span class="fu">::</span><span class="fu"><a href="../reference/get_example_data.html">get_example_data</a></span><span class="op">(</span></span>
+<span><span class="va">data_dir</span> <span class="op">&lt;-</span> <span class="fu">gaia</span><span class="fu">::</span><span class="fu"><a href="../reference/get_example_data.html">get_example_data</a></span><span class="op">(</span></span>
 <span>  download_url <span class="op">=</span> <span class="st">'https://zenodo.org/records/13179630/files/gaea_example_climate.zip?download=1'</span>,</span>
 <span>  data_dir <span class="op">=</span> <span class="st">'path/to/desired/location'</span></span>
 <span><span class="op">)</span></span>
@@ -267,21 +267,21 @@ accordingly.</p>
 <span><span class="va">tas_projection_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">'tas_monthly_canesm5_w5e5_rcp7_2015_2100.nc'</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
 <p>Once the example climate NetCDF data is in place, we can run
-<code>gaea</code> with a single function <code>yield_impact</code> that
+<code>gaia</code> with a single function <code>yield_impact</code> that
 streamlines the entire workflow. For the explanation of each argument of
-<code>yield_impact</code>, refer to this <a href="https://jgcri.github.io/gaea/reference/yield_impact.html" class="external-link">reference
+<code>yield_impact</code>, refer to this <a href="https://jgcri.github.io/gaia/reference/yield_impact.html" class="external-link">reference
 page</a>.</p>
 <div class="alert alert-info">
 <p><strong>NOTE:</strong> This workflow may take up to one hour due to
-the amount of climate data <code>gaea</code> needs to process. For a
+the amount of climate data <code>gaia</code> needs to process. For a
 faster example, please see <a href="#example-2">Example 2</a>.</p>
 </div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># load gaea</span></span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">library</span>(gaea)</span>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># load gaia</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">library</span>(gaia)</span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co"># Run gaea</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co"># Run gaia</span></span>
 <span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co"># The full run with raw climate data can take up to an hour</span></span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>gaea<span class="sc">::</span><span class="fu">yield_impact</span>(</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>gaia<span class="sc">::</span><span class="fu">yield_impact</span>(</span>
 <span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>  <span class="at">pr_hist_ncdf =</span> pr_historical_file, </span>
 <span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>  <span class="at">tas_hist_ncdf =</span> tas_historical_file, </span>
 <span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>  <span class="at">pr_proj_ncdf =</span> pr_projection_file, </span>
@@ -310,7 +310,7 @@ faster example, please see <a href="#example-2">Example 2</a>.</p>
 <code>climate_scenario</code>, <code>member</code>,
 <code>bias_adj</code>, and <code>cfe</code> require corresponding
 strings that demonstrate climate model information in the output files.
-These arguments will not affect <code>gaea</code> model simulation,
+These arguments will not affect <code>gaia</code> model simulation,
 other than the meta information of climate data in the output files.</p>
 </div>
 <p><br></p>
@@ -320,17 +320,17 @@ other than the meta information of climate data in the output files.</p>
 </h4>
 <p>We also provide an example of <strong>weighted</strong> climate data,
 processed using cropland weights at the country level. This weighted
-climate data is generated by <code><a href="../reference/weighted_climate.html">gaea::weighted_climate</a></code>. We
+climate data is generated by <code><a href="../reference/weighted_climate.html">gaia::weighted_climate</a></code>. We
 have provided this example to help users format their data to match the
 weighted climate data format if their raw climate data differs from the
 ISIMIP format. Download the example of weighted climate data and run
-<code>gaea</code> by following the instructions below.</p>
+<code>gaia</code> by following the instructions below.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># load gaea</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JGCRI/gaea" class="external-link">gaea</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># load gaia</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JGCRI/gaia" class="external-link">gaia</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># NOTE: please change `data_dir` to your desired location for downloaded data</span></span>
-<span><span class="va">data_dir</span> <span class="op">&lt;-</span> <span class="fu">gaea</span><span class="fu">::</span><span class="fu"><a href="../reference/get_example_data.html">get_example_data</a></span><span class="op">(</span></span>
+<span><span class="va">data_dir</span> <span class="op">&lt;-</span> <span class="fu">gaia</span><span class="fu">::</span><span class="fu"><a href="../reference/get_example_data.html">get_example_data</a></span><span class="op">(</span></span>
 <span>  download_url <span class="op">=</span> <span class="st">'https://zenodo.org/records/13179630/files/weighted_climate.zip?download=1'</span>,</span>
 <span>  data_dir <span class="op">=</span> <span class="st">'path/to/desired/location'</span></span>
 <span><span class="op">)</span></span>
@@ -343,13 +343,13 @@ ISIMIP format. Download the example of weighted climate data and run
 <span><span class="co"># projected climate data</span></span>
 <span><span class="va">climate_impact_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">'canesm5'</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
-<p>Running <code>gaea</code> directly with weighted climate data only
+<p>Running <code>gaia</code> directly with weighted climate data only
 takes a few minutes!</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># load gaea</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">library</span>(gaea)</span>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># load gaia</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">library</span>(gaia)</span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co"># Run gaea</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>gaea<span class="sc">::</span><span class="fu">yield_impact</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co"># Run gaia</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>gaia<span class="sc">::</span><span class="fu">yield_impact</span>(</span>
 <span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">climate_hist_dir =</span> climate_hist_dir,</span>
 <span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  <span class="at">climate_impact_dir =</span> climate_impact_dir,</span>
 <span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>  <span class="at">timestep =</span> <span class="st">'monthly'</span>,                   <span class="co"># specify the time step of the NetCDF data (monthly or daily)</span></span>
