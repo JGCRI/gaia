@@ -107,41 +107,6 @@ for(gcam_version in c('gcam6', 'gcam7')){
 usethis::use_data(agprodchange_ni_gcam6, overwrite = TRUE)
 usethis::use_data(agprodchange_ni_gcam7, overwrite = TRUE)
 
-# For GCAM7
-# agprodchange_ni_gcam7 <- dplyr::bind_rows(
-#   data.table::fread(file.path(agprodchange.dir, 'gcam7', 'L2052.AgProdChange_bio_irr_ref.csv')),
-#   data.table::fread(file.path(agprodchange.dir, 'gcam7', 'L2052.AgProdChange_ag_irr_ref.csv'))) %>%
-#   dplyr::mutate(year = paste0('X', year)) %>%
-#   dplyr::rename(AgProdChange_ni = AgProdChange)
-#
-# agprodchange_ni_gcam7 <- dplyr::bind_rows(
-#   agprodchange_ni_gcam7,
-#   agprodchange_ni_gcam7 %>%
-#     dplyr::select(-year, -AgProdChange_ni) %>%
-#     dplyr::distinct() %>%
-#     dplyr::mutate(year = 'X2015',
-#                   AgProdChange_ni = 0)
-# )
-#
-# usethis::use_data(agprodchange_ni_gcam7, overwrite = TRUE)
-#
-# # For GCAM6
-# agprodchange_ni_gcam6 <- dplyr::bind_rows(
-#   data.table::fread(file.path(agprodchange.dir, 'gcam6', 'L2052.AgProdChange_bio_irr_ref.csv')),
-#   data.table::fread(file.path(agprodchange.dir, 'gcam6', 'L2052.AgProdChange_ag_irr_ref.csv'))) %>%
-#   dplyr::mutate(year = paste0('X', year)) %>%
-#   dplyr::rename(AgProdChange_ni = AgProdChange)
-#
-# agprodchange_ni_gcam6 <- dplyr::bind_rows(
-#   agprodchange_ni_gcam6,
-#   agprodchange_ni_gcam6 %>%
-#     dplyr::select(-year, -AgProdChange_ni) %>%
-#     dplyr::distinct() %>%
-#     dplyr::mutate(year = 'X2015',
-#                   AgProdChange_ni = 0)
-# )
-#
-# usethis::use_data(agprodchange_ni_gcam6, overwrite = TRUE)
 
 
 #-------------------------------------------------------------------------------
@@ -163,6 +128,22 @@ for(crop_name in mapping_mirca_sage$crop_mirca){
 }
 
 usethis::use_data(coef_default, overwrite = TRUE)
+
+
+#-------------------------------------------------------------------------------
+# Raster of Cropland Area
+#-------------------------------------------------------------------------------
+
+# cropland area file list
+crop_area_list <- list.files(
+  file.path(mirca.dir, 'harvested_area_grids_26crops_30mn'),
+  full.names = TRUE)
+
+# convert ASCII files to raster bick
+mirca_ras_brick <- raster::stack(crop_area_list)
+
+usethis::use_data(mirca_ras_brick, overwrite = TRUE)
+
 
 #===============================================================================
 #'* Internal Data *
@@ -563,17 +544,6 @@ map_country <- sf_country %>%
 sf::st_crs(map_country) <- 4326
 
 
-#-------------------------------------------------------------------------------
-# Raster of Cropland Area
-#-------------------------------------------------------------------------------
-
-# cropland area file list
-crop_area_list <- list.files(
-  file.path(mirca.dir, 'harvested_area_grids_26crops_30mn'),
-  full.names = TRUE)
-
-# convert ASCII files to raster bick
-mirca_ras_brick <- raster::stack(crop_area_list)
 
 
 #'*Save All Internal Data*
@@ -584,5 +554,5 @@ usethis::use_data(country_id, mapping_country, grid_fao_glu, mapping_fao_glu, ma
                   mirca_harvest_area, sage, fao_yield, fao_irr_equip, gdp,
                   waldhoff_formula, y_hat, reg_vars, weight_var, n_sig, fit_name,
                   col_scale_region, col_fill_region, theme_basic,
-                  map_country, mirca_ras_brick,
+                  map_country,
                   internal = TRUE, overwrite = TRUE )

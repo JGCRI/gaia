@@ -213,7 +213,7 @@ get_cropland_weight <- function(gcam_version = 'gcam7',
 
 
   # for 67420 grid cells with country-glu-reg mapping
-  grid_ctry_glu_reg <- get_mirca_cropland(raster_brick = mirca_ras_brick,
+  grid_ctry_glu_reg <- get_mirca_cropland(raster_brick = gaia::mirca_ras_brick,
                                           mapping = mp_rmap)
 
 
