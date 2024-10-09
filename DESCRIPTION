@@ -32,6 +32,7 @@ Imports:
     magrittr,
     ncdf4 (>= 1.21),
     plyr (>= 1.8.9),
+    R.utils (>= 2.12.3),
     raster (>= 3.6.20),
     reshape2 (>= 1.4.4),
     sandwich (>= 3.1.0),

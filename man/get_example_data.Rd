@@ -7,15 +7,18 @@
 get_example_data(
   download_url = "",
   file_extension = "zip",
-  data_dir = file.path(getwd(), "example")
+  data_dir = file.path(getwd(), "example"),
+  check_exist = TRUE
 )
 }
 \arguments{
 \item{download_url}{Link to the downloadable dataset}
 
-\item{file_extension}{String of file extension without "."}
+\item{file_extension}{Default = 'zip'. String of file extension without "."}
 
-\item{data_dir}{Path of desired location to download data}
+\item{data_dir}{Default= file.path(getwd(), 'example'). Path of desired location to download data}
+
+\item{check_exist}{Default = TRUE. Binary to check if the example data already exists. If TRUE, then function gives error if the downloaded folder already exist}
 }
 \description{
 get_example_data

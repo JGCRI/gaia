@@ -487,14 +487,16 @@ iso_replace <- function( d ){
 #' get_example_data
 #'
 #' @param download_url Link to the downloadable dataset
-#' @param file_extension String of file extension without "."
-#' @param data_dir Path of desired location to download data
+#' @param file_extension Default = 'zip'. String of file extension without "."
+#' @param data_dir Default= file.path(getwd(), 'example'). Path of desired location to download data
+#' @param check_exist Default = TRUE. Binary to check if the example data already exists. If TRUE, then function gives error if the downloaded folder already exist
 #'
 #' @export
 
 get_example_data <- function(download_url = '',
                              file_extension = 'zip',
-                             data_dir = file.path(getwd(), 'example')){
+                             data_dir = file.path(getwd(), 'example'),
+                             check_exist = TRUE){
 
 
   # Download
@@ -510,10 +512,10 @@ get_example_data <- function(download_url = '',
   dest_file <- file.path(data_dir, fname)
   out_dir <- file.path(data_dir, strsplit(fname, split = paste0('.', file_extension)))[[1]][1]
 
-  if(!dir.exists(file.path(out_dir))){
+  if(!dir.exists(file.path(out_dir)) & check_exist){
 
     # create the base location for data to be downloaded
-    dir.create(data_dir)
+    if(!dir.exists(data_dir)){dir.create(data_dir)}
 
     # download data
     utils::download.file(url = download_url,
@@ -542,5 +544,75 @@ get_example_data <- function(download_url = '',
 
   return(out_dir)
 
+
+}
+
+
+# ------------------------------------------------------------------------------
+#' get_mirca2000_data
+#'
+#' @param download_url Link to the downloadable dataset
+#' @param file_extension String of file extension without "."
+#' @param data_dir Path of desired location to download data
+#'
+#' @export
+
+get_mirca2000_data <- function(download_url = 'https://zenodo.org/records/7422506/files/harvested_area_grids.zip?download=1',
+                               file_extension = 'zip',
+                               data_dir = file.path(getwd(), 'example')){
+
+
+  if(!dir.exists(file.path(data_dir, 'harvested_area_grids_26crops_30mn'))){
+
+    # download the data
+    download_dir <- gaia::get_example_data(
+      download_url = download_url,
+      file_extension = file_extension,
+      data_dir = data_dir
+    )
+
+    # Unzip
+    message('Starting unzip MIRCA2000 harvested_area_grids_26crops_30mn')
+
+    target_dir <- list.files(download_dir,
+                             pattern = 'harvested_area_grids_26crops_30mn.zip',
+                             recursive = T,
+                             full.names = T)
+
+    ex_dir <- file.path(data_dir, gsub('.zip', '', basename(target_dir)))
+
+    if(!dir.exists(ex_dir)){
+      dir.create(ex_dir, recursive = T)
+      }
+
+    # unzip data
+    utils::unzip(zipfile = target_dir,
+                 exdir = ex_dir)
+
+    # remove the initial unzipped folder harvested_area_grids
+    unlink(download_dir, recursive = T)
+
+    file_list <- list.files(ex_dir, '.gz', recursive = T, full.names = T)
+
+
+    # unzip each .gz file within the harvested_area_grids_26crops_30mn
+    for(f in file_list){
+
+      R.utils::gunzip(filename = f,
+                      destname = gsub('.gz', '', f),
+                      remove = T)
+
+    }
+
+    message(paste0('Data unzipped to: ', ex_dir))
+
+  } else {
+
+    message('harvested_area_grids_26crops_30mn data already exists.')
+
+  }
+
+
+  return(ex_dir)
 
 }

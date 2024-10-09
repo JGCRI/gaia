@@ -192,15 +192,27 @@ get_mirca_cropland <- function(raster_brick = NULL,
 #'
 #' @param gcam_version Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7
 #' @param climate_scenario Default = NULL. string for climate scenario (e.g., 'ssp245')
+#' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @keywords internal
 #' @export
 
 get_cropland_weight <- function(gcam_version = 'gcam7',
-                                climate_scenario = NULL)
+                                climate_scenario = NULL,
+                                output_dir = file.path(getwd(), 'output'))
 {
 
   region_name <- basin_name <- glu <- region_id <- glu_id <- glu_name <- crop <-
     croparea_to <- croparea_from <- country_name <- irr <- irrtype <- iso <- NULL
+
+
+  # get MIRCA2000 harvested area data
+  mirca_data <- gaia::get_mirca2000_data(data_dir = output_dir)
+
+  # cropland area file list
+  crop_area_list <- list.files(mirca_data, full.names = TRUE)
+
+  # convert ASCII files to raster bick
+  mirca_ras_brick <- raster::stack(crop_area_list)
 
   # get mapping
   mp <- mirca_to_gcam(gcam_version = gcam_version,
@@ -211,9 +223,8 @@ get_cropland_weight <- function(gcam_version = 'gcam7',
   mp_gcam <- mp$mp_gcam
   mp_gcam_commod <- mp$gcam_commod_fill
 
-
   # for 67420 grid cells with country-glu-reg mapping
-  grid_ctry_glu_reg <- get_mirca_cropland(raster_brick = gaia::mirca_ras_brick,
+  grid_ctry_glu_reg <- get_mirca_cropland(raster_brick = mirca_ras_brick,
                                           mapping = mp_rmap)
 
 
@@ -305,7 +316,8 @@ get_weighted_yield_impact <- function(data = NULL,
   # get weight of cropland area within the intersected region-glu-country to
   # cropland area within intersected region-glu
   out_list <- get_cropland_weight(gcam_version = gcam_version,
-                                  climate_scenario = climate_scenario)
+                                  climate_scenario = climate_scenario,
+                                  output_dir = output_dir)
 
   weight <- out_list$weight
   cropland_glu_region <- out_list$cropland_glu_region

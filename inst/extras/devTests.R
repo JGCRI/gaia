@@ -138,7 +138,7 @@ t <- gaia::gcam_agprodchange(data = t_yield_projection,
                              bias_adj = bias_adj,
                              cfe = cfe,
                              gcam_version = 'gcam7',
-                             diagnostics = T,
+                             diagnostics = F,
                              output_dir = output_dir)
 
 

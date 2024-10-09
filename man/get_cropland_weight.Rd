@@ -4,12 +4,18 @@
 \alias{get_cropland_weight}
 \title{get_cropland_weight}
 \usage{
-get_cropland_weight(gcam_version = "gcam7", climate_scenario = NULL)
+get_cropland_weight(
+  gcam_version = "gcam7",
+  climate_scenario = NULL,
+  output_dir = file.path(getwd(), "output")
+)
 }
 \arguments{
 \item{gcam_version}{Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7}
 
 \item{climate_scenario}{Default = NULL. string for climate scenario (e.g., 'ssp245')}
+
+\item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
 }
 \description{
 Calculate the weight of cropland area within the intersected region-glu-country to

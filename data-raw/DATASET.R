@@ -130,21 +130,6 @@ for(crop_name in mapping_mirca_sage$crop_mirca){
 usethis::use_data(coef_default, overwrite = TRUE)
 
 
-#-------------------------------------------------------------------------------
-# Raster of Cropland Area
-#-------------------------------------------------------------------------------
-
-# cropland area file list
-crop_area_list <- list.files(
-  file.path(mirca.dir, 'harvested_area_grids_26crops_30mn'),
-  full.names = TRUE)
-
-# convert ASCII files to raster bick
-mirca_ras_brick <- raster::stack(crop_area_list)
-
-usethis::use_data(mirca_ras_brick, overwrite = TRUE)
-
-
 #===============================================================================
 #'* Internal Data *
 #===============================================================================
