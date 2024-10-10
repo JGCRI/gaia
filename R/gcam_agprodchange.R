@@ -120,7 +120,8 @@ mirca_to_gcam <- function(gcam_version = 'gcam7',
     dplyr::select(-crop_type) %>%
     dplyr::left_join(gcam_commod_ref %>%
                        dplyr::filter(GCAM_commod %in% GCAM_commod[crop_type %in% 'Tree']),
-                     by = c('GCAM_commod'))
+                     by = c('GCAM_commod'),
+                     relationship = 'many-to-many')
 
 
   gcam_commod_fill <- temp %>%
@@ -236,7 +237,8 @@ get_cropland_weight <- function(gcam_version = 'gcam7',
     dplyr::left_join(mp_rmap, by = c('lon', 'lat')) %>%
     dplyr::left_join(mp_gcam %>%
                        dplyr::select(region_name, glu_name = basin_name, glu),
-                     by = c('region_name', 'glu_name')) %>%
+                     by = c('region_name', 'glu_name'),
+                     relationship = 'many-to-many') %>%
     dplyr::filter(!is.na(glu)) %>%
     tidyr::pivot_longer(cols = dplyr::all_of(name_new), names_to = 'crop', values_to = 'croparea_to') %>%
     dplyr::group_by(region_id, region_name, glu_id, glu_name, glu, crop) %>%
@@ -248,7 +250,8 @@ get_cropland_weight <- function(gcam_version = 'gcam7',
     dplyr::left_join(mp_rmap, by = c('lon', 'lat')) %>%
     dplyr::left_join(mp_gcam %>%
                        dplyr::select(region_name, glu_name = basin_name, glu),
-                     by = c('region_name', 'glu_name')) %>%
+                     by = c('region_name', 'glu_name'),
+                     relationship = 'many-to-many') %>%
     dplyr::filter(!is.na(glu)) %>%
     tidyr::pivot_longer(cols = dplyr::all_of(name_new), names_to = 'crop', values_to = 'croparea_from') %>%
     dplyr::group_by(region_id, region_name, country_name, glu_id, glu_name, glu, crop) %>%

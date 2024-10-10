@@ -347,9 +347,7 @@ iso_replace <- function( d ){
   d <- iso( d, "C\x92\x82te d'Ivoire", "civ" )
   d <- iso( d, "C\xed\xc7te d'Ivoire", "civ" )
   d <- iso( d, "C\xc8te d'Ivoire", "civ" )
-  # d <- iso( d, "CÌ«te d'Ivoire", "civ" )
   d <- iso( d, "C\u00cc\u00abte d'Ivoire", "civ" )
-  # d <- iso( d, "CÍte d'Ivoire", "civ" )
   d <- iso( d, "C\u00cd\u0089te d'Ivoire", "civ" )
   d <- iso( d, "Ethiopia PDR", "eth" )
   d <- iso( d, "Gambia, The", "gmb" )
@@ -454,10 +452,10 @@ iso_replace <- function( d ){
   d <- iso( d, "Libya", "lby" )
   d <- iso( d, "Micronesia (Federated States of)", "fsm" )
   d <- iso( d, "R\x8eunion", "reu" )
-  d <- iso( d, "RÌ©union", "reu" )
+  # d <- iso( d, "RÌ©union", "reu" )
   d <- iso( d, "R\x92\xa9union", "reu" )
   d <- iso( d, "R\xed\xa9union", "reu" )
-  d <- iso( d, "RÍ©union", "reu" ) # MZ
+  # d <- iso( d, "RÍ©union", "reu" ) # MZ
   d <- iso( d, "Republic of Moldova", "mda" )
   d <- iso( d, "Saint Helena, Ascension and Tristan da Cunha", "shn" )
   d <- iso( d, "St. Helena", "shn" ) # MZ
@@ -607,6 +605,8 @@ get_mirca2000_data <- function(download_url = 'https://zenodo.org/records/742250
     message(paste0('Data unzipped to: ', ex_dir))
 
   } else {
+
+    ex_dir <- file.path(data_dir, 'harvested_area_grids_26crops_30mn')
 
     message('harvested_area_grids_26crops_30mn data already exists.')
 

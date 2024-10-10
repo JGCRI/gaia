@@ -589,9 +589,9 @@ z_estimate <- function(use_default_coeff = FALSE,
   d$temp_mean_2 <- ( d$temp_mean )^2
   d$temp_max_2 <- ( d$temp_max )^2
   d$temp_min_2 <- ( d$temp_min )^2
-  d$ln_temp_mean <- log( d$temp_mean )
-  d$ln_temp_max <- log( d$temp_max )
-  d$ln_temp_min <- log( d$temp_min )
+  d$ln_temp_mean <- suppressWarnings( log( d$temp_mean ) )
+  d$ln_temp_max <- suppressWarnings( log( d$temp_max ) )
+  d$ln_temp_min <- suppressWarnings( log( d$temp_min ) )
   d$precip_mean_2 <- ( d$precip_mean )^2
   d$precip_max_2 <- ( d$precip_max )^2
   d$precip_min_2 <- ( d$precip_min )^2
