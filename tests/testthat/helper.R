@@ -21,7 +21,7 @@ start_year_i = 2015
 end_year_i = 2100
 smooth_window_i = 20
 
-diagnostics_i <- F
+diagnostics_i <- T
 use_default_coeff_i <- F
 
 

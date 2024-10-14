@@ -68,6 +68,8 @@ weather_clean <- function(file = NULL,
   country_name <- iso <- NULL
 
   d <- data.table::fread( file, skip = 0, stringsAsFactors = FALSE, header = TRUE )
+  cols_to_num <- names(d)[!names(d) %in% c('year', 'month')]
+  d <- d[, (cols_to_num) := lapply(.SD, as.numeric), .SDcols = cols_to_num]
   d <- data.table::melt( d, id.vars = c('year', 'month'), variable.name = 'country_id' )
   d$country_id <- as.numeric( as.character( gsub( "X", "", d$country_id ) ) )
   d <- merge( d, country_id, by = "country_id", all.x = TRUE )
@@ -213,7 +215,7 @@ data_merge <- function(data = NULL,
   yield <- subset( yield, crop == crop_name )
   d <- merge( data, yield, by = c( "iso", "year", "crop" ) )
   d <- subset( d, !is.na( yield ) )
-  d$id <- NULL
+  # d$id <- NULL
   d <- merge( d, co2_hist, by = "year" )
   d <- merge_data( d, gdp_hist, "iso", "year" )
   d <- subset( d, select = c( "iso", "year", "gdp_pcap_ppp", "crop", "area_harvest",
@@ -349,9 +351,9 @@ prep_regression <- function(data = NULL)
   d$temp_mean_2 <- ( d$temp_mean )^2
   d$temp_max_2 <- ( d$temp_max )^2
   d$temp_min_2 <- ( d$temp_min )^2
-  d$ln_temp_mean <- log( d$temp_mean )
-  d$ln_temp_max <- log( d$temp_max )
-  d$ln_temp_min <- log( d$temp_min )
+  d$ln_temp_mean <- suppressWarnings( log( d$temp_mean ) )
+  d$ln_temp_max <- suppressWarnings( log( d$temp_max ) )
+  d$ln_temp_min <- suppressWarnings( log( d$temp_min ) )
   d$precip_mean_2 <- ( d$precip_mean )^2
   d$precip_max_2 <- ( d$precip_max )^2
   d$precip_min_2 <- ( d$precip_min )^2
@@ -459,7 +461,7 @@ plot_fit <- function(data = NULL,
 
   d <- data
 
-  p <- ggplot2::ggplot( d, ggplot2::aes_string( x = 'yield', y = fit_name, size = 'area_harvest', color = 'GCAM_region_name' ) ) +
+  p <- ggplot2::ggplot( d, ggplot2::aes( x = yield, y = .data[[fit_name]], size = area_harvest, color = GCAM_region_name ) ) +
     ggplot2::geom_point( shape = 21, stroke = 0.5 ) +
     ggplot2::scale_size_area( max_size = 20 ) +
     ggplot2::guides( color = ggplot2::guide_legend( ncol = 1 ) ) +
@@ -883,6 +885,9 @@ plot_projection <- function(data = NULL,
 {
 
   year <- iso <- NULL
+
+  data <- data %>%
+    dplyr::filter(!is.na(yield_impact))
 
   p <- ggplot2::ggplot( data, ggplot2::aes( x = year, y = yield_impact, color = iso ) ) +
     ggplot2::geom_line( ) +

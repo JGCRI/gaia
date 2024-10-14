@@ -1,5 +1,5 @@
 <!-- badges: start -->
-[![R-CMD-check.yaml](https://github.com/JGCRI/gaia/actions/workflows/R-CDM-check.yaml/badge.svg)](https://github.com/JGCRI/gaia/actions/workflows/R-CDM-check.yaml)
+[![R-CMD-check.yaml](https://github.com/JGCRI/gaia/actions/workflows/R-CDM-check.yaml/badge.svg?branch=main)](https://github.com/JGCRI/gaia/actions/workflows/R-CDM-check.yaml)
 [![test-coverage.yaml](https://github.com/JGCRI/gaia/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/JGCRI/gaia/actions/workflows/test-coverage.yaml)
 [![codecov](https://codecov.io/gh/JGCRI/gaia/branch/main/graph/badge.svg?token=XQ913U4IYM)](https://codecov.io/gh/JGCRI/gaia)
 [![docs](https://github.com/JGCRI/gaia/actions/workflows/docs.yaml/badge.svg)](https://github.com/JGCRI/gaia/actions/workflows/docs.yaml)

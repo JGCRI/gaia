@@ -82,7 +82,7 @@ crop_cal <- gaia::crop_calendars(output_dir = output_dir)
 # test data_aggregation
 # climate_hist_dir <- file.path(output_dir, 'weighted_climate', 'country_climate_hist')
 
-climate_hist_dir <- file.path('C:/WorkSpace/github/test_scripts/gaia/output/climate/country_climate_txt')
+climate_hist_dir <- file.path('C:/WorkSpace/GCIMS/GCIMS_Yield/regression_analysis/data/data_raw/country_climate_txt')
 # climate_hist_dir <- file.path(output_dir, 'weighted_climate', 'canesm5_hist')
 climate_impact_dir <- file.path(output_dir, 'weighted_climate', 'canesm5')
 
