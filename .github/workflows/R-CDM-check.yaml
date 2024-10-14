@@ -44,10 +44,6 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
-      - name: Increase download timeout
-        run: |
-          Rscript -e 'options(timeout = 300)'
-
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true

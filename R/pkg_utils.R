@@ -516,6 +516,8 @@ get_example_data <- function(download_url = '',
     if(!dir.exists(data_dir)){dir.create(data_dir)}
 
     # download data
+    options(timeout = 300)
+
     utils::download.file(url = download_url,
                          destfile = dest_file,
                          mode = 'wb')
