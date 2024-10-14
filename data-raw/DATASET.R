@@ -3,6 +3,7 @@
 library(tibble)
 library(dplyr)
 library(raster)
+library(sf)
 library(sp)
 library(usethis)
 library(ggplot2)

@@ -65,7 +65,7 @@ weather_clean <- function(file = NULL,
                           weather_var = NULL,
                           irr_type = NULL)
 {
-  country_name <- iso <- NULL
+  country_name <- iso <- .SD <- NULL
 
   d <- data.table::fread( file, skip = 0, stringsAsFactors = FALSE, header = TRUE )
   cols_to_num <- names(d)[!names(d) %in% c('year', 'month')]
@@ -458,6 +458,8 @@ plot_fit <- function(data = NULL,
                      crop_name = NULL,
                      output_dir = file.path(getwd(), 'output'))
 {
+
+  yield <- .data <- area_harvest <- GCAM_region_name <- NULL
 
   d <- data
 

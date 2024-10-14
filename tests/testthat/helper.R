@@ -1,4 +1,5 @@
 library(dplyr)
+library(sf)
 
 # -------------------------------
 # Prepare example data
