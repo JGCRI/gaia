@@ -1,4 +1,4 @@
-name: test-coverage.yaml
+name: test-coverage
 
 on:
   push:

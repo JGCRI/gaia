@@ -1,6 +1,6 @@
 <!-- badges: start -->
-[![R-CMD-check.yaml](https://github.com/JGCRI/gaia/actions/workflows/R-CDM-check.yaml/badge.svg?branch=main)](https://github.com/JGCRI/gaia/actions/workflows/R-CDM-check.yaml)
-[![test-coverage.yaml](https://github.com/JGCRI/gaia/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/JGCRI/gaia/actions/workflows/test-coverage.yaml)
+[![R-CMD-check](https://github.com/JGCRI/gaia/actions/workflows/R-CDM-check.yaml/badge.svg?branch=main)](https://github.com/JGCRI/gaia/actions/workflows/R-CDM-check.yaml)
+[![test-coverage](https://github.com/JGCRI/gaia/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/JGCRI/gaia/actions/workflows/test-coverage.yaml)
 [![codecov](https://codecov.io/gh/JGCRI/gaia/branch/main/graph/badge.svg?token=XQ913U4IYM)](https://codecov.io/gh/JGCRI/gaia)
 [![docs](https://github.com/JGCRI/gaia/actions/workflows/docs.yaml/badge.svg)](https://github.com/JGCRI/gaia/actions/workflows/docs.yaml)
 <!-- badges: end -->
@@ -18,7 +18,7 @@
 <br />
 
 <p align="center">
-<a href="https://jgcri.github.io/gaia/" target="_blank"><img src="https://github.com/JGCRI/gaia/blob/main/vignettes/vignetteFigs/button_user_guide.png?raw=true" 
+<a href="https://jgcri.github.io/gaia/articles/vignette.html" target="_blank"><img src="https://github.com/JGCRI/gaia/blob/main/vignettes/vignetteFigs/button_user_guide.png?raw=true" 
 alt="https://jgcri.github.io/gaia/articles/vignette.html" height="60"/></a>
 <img src="https://github.com/JGCRI/jgcricolors/blob/main/vignettes/button_divider.PNG?raw=true" height="40"/>
 </p>
