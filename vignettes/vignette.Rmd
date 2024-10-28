@@ -563,7 +563,7 @@ gcam_apg <- gaia::gcam_agprodchange(data = out_yield_shock,
 
 Once the run is complete, a folder named `[gcam-version]_agprodchange_[cfe]` (e.g., `gcam7_agprodchange_no-cfe`) will be created in your specified output location. This folder contains the `XML` file of the agricultural productivity growth rate (APG) for GCAM. Additionally, it includes diagnostic figures illustrating the APG by region-basin. An example of APG for soybean is shown in [Figure 4](#figure4) below.
 
-<p align="center"><img src="vignetteFigs/soybean.png"/></p>
+<p align="center"><img src="vignetteFigs/agprodchange_soybean.png"/></p>
 <a name="figure4"></a>
 <p align="left" style="font-size:14px;"> **Figure 4:** Agricultural productivity growth rate for soybean. Each line under a region indicates the APG for the region-basin intersection. </p>
 
