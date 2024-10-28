@@ -57,17 +57,20 @@ clean_yield <- function(fao_yield = NULL)
 #' @param crop_name Default = NULL. String for the crop name
 #' @param weather_var Default = NULL. String for the weather var name
 #' @param irr_type Default = NULL. String for the irrigation type. Options: 'irr', 'rf'
+#' @param time_periods Default = NULL. vector for years to subset from the climate data. If NULL, use the default climate data period
 #' @keywords internal
 #' @export
 
 weather_clean <- function(file = NULL,
                           crop_name = NULL,
                           weather_var = NULL,
-                          irr_type = NULL)
+                          irr_type = NULL,
+                          time_periods = NULL)
 {
-  country_name <- iso <- .SD <- NULL
+  country_name <- iso <- .SD <- year <- NULL
 
   d <- data.table::fread( file, skip = 0, stringsAsFactors = FALSE, header = TRUE )
+  if(!is.null(time_periods)){d <- d[year %in% time_periods, ]}
   cols_to_num <- names(d)[!names(d) %in% c('year', 'month')]
   d <- d[, (cols_to_num) := lapply(.SD, as.numeric), .SDcols = cols_to_num]
   d <- data.table::melt( d, id.vars = c('year', 'month'), variable.name = 'country_id' )
@@ -100,21 +103,25 @@ weather_clean <- function(file = NULL,
 #' @param file_precip Default = NULL. string for path to the precipitation file
 #' @param file_temp Default = NULL. string for path to the temperature file
 #' @param crop_name Default = NULL. string for crop name
+#' @param time_periods Default = NULL. vector for years to subset from the climate data. If NULL, use the default climate data period
 #' @keywords internal
 #' @export
 
 weather_agg <- function(file_precip = NULL,
                         file_temp = NULL,
-                        crop_name = NULL)
+                        crop_name = NULL,
+                        time_periods = NULL)
 {
   d1 <- gaia::weather_clean(file = file_precip,
                             crop_name = crop_name,
                             weather_var = 'precip',
-                            irr_type = 'rf' )
+                            irr_type = 'rf',
+                            time_periods = time_periods)
   d2 <- gaia::weather_clean(file = file_temp,
                             crop_name = crop_name,
                             weather_var = 'temp',
-                            irr_type = 'rf' )
+                            irr_type = 'rf',
+                            time_periods = time_periods)
   d <- rbind( d1, d2 )
   return( d )
 }

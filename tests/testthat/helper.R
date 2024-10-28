@@ -46,7 +46,7 @@ run_data_aggregation <- function(data_dir = NULL,
                                  climate_scenario = climate_scenario_i,
                                  output_dir = output_dir_i){
 
-  climate_hist_dir_i <- file.path(data_dir, 'canesm5_hist')
+  climate_hist_dir_i <- file.path(data_dir, 'climate_hist')
   climate_impact_dir_i <- file.path(data_dir, 'canesm5')
 
   output <- gaia::data_aggregation(climate_hist_dir = climate_hist_dir_i,

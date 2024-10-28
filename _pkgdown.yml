@@ -1,5 +1,9 @@
 title: gaia
 
+template:
+  bootstrap: 5
+  bootswatch: sandstone
+
 home:
   sidebar:
     structure: [links, license, community, authors, dev]
@@ -18,14 +22,13 @@ navbar:
     - icon: fa-newspaper-o
       text: "News"
       href: news/index.html
-    - text: "Contribute"
+    - icon: fas fa-lightbulb
+      text: "Contribute"
       href: CONTRIBUTING.html
-    - icon: fas fa-quote-left
-      text: Citation
-      href: CITATION.html
     - icon: fas fa-question
       text: Support
       href: SUPPORT.html
 
 toc:
-  depth: 3
+  depth: 4
+  collapse: section
