@@ -6,6 +6,7 @@
 #' @param climate_impact_dir Default = NULL. string for path to the processed future climate data folder using weighted_climate function
 #' @param climate_model Default = NULL. string for climate model (e.g., 'CanESM5')
 #' @param climate_scenario Default = NULL. string for climate scenario (e.g., 'ssp245')
+#' @param historical_periods Default = NULL. vector for years to subset from the historical climate data. If NULL, use the default climate data period
 #' @param co2_hist Default = NULL. data table for historical CO2 concentration in columns [year, co2_conc]. If NULL, use built-in CO2 emission data
 #' @param co2_proj Default = NULL. data table for projected CO2 concentration in columns [year, co2_conc]. If NULL, use built-in CO2 emission data
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
@@ -16,6 +17,7 @@ data_aggregation <- function(climate_hist_dir = NULL,
                              climate_impact_dir = NULL,
                              climate_model = 'gcm',
                              climate_scenario = 'rcp',
+                             historical_periods = NULL,
                              co2_hist = NULL,
                              co2_proj = NULL,
                              output_dir = file.path(getwd(), 'output'))
@@ -72,7 +74,8 @@ data_aggregation <- function(climate_hist_dir = NULL,
       # aggregate weather data for crop_i
       d_climate <- gaia::weather_agg(file_precip = file_precip,
                                      file_temp = file_temp,
-                                     crop_name = crop_i)
+                                     crop_name = crop_i,
+                                     time_periods = historical_periods)
 
       # estimate growing season for each crop and country (SAGE db)
       d_crop <- gaia::crop_month(climate_data = d_climate,
@@ -105,12 +108,12 @@ data_aggregation <- function(climate_hist_dir = NULL,
   # get file list
   list_precip_rfc <- list.files(
     path = climate_impact_dir,
-    pattern = glob2rx(paste0(climate_model, '_', climate_scenario, '*precip*rfc*')),
+    pattern = glob2rx(paste0(climate_model, '*', climate_scenario, '*precip*rfc*')),
     recursive = TRUE, full.names = TRUE)
 
   list_temp_rfc <- list.files(
     path = climate_impact_dir,
-    pattern = glob2rx(paste0(climate_model, '_', climate_scenario, '*tmean*rfc*')),
+    pattern = glob2rx(paste0(climate_model, '*', climate_scenario, '*tmean*rfc*')),
     recursive = TRUE, full.names = TRUE)
 
   crop_projection <- data.table::data.table()

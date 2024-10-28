@@ -59,7 +59,7 @@ yield_impact <- function(pr_hist_ncdf = NULL,
     gaia::weighted_climate(pr_ncdf = pr_hist_ncdf,
                            tas_ncdf = tas_hist_ncdf,
                            timestep = timestep,
-                           climate_model = climate_model,
+                           climate_model = 'climate',
                            climate_scenario = 'historical',
                            time_periods = historical_periods,
                            output_dir = output_dir,
@@ -89,7 +89,7 @@ yield_impact <- function(pr_hist_ncdf = NULL,
   if(all(is.null(climate_hist_dir),
          !is.null(pr_hist_ncdf),
          !is.null(tas_hist_ncdf))){
-    climate_hist_dir <- file.path(output_dir, 'weighted_climate', paste0(climate_model, '_hist'))
+    climate_hist_dir <- file.path(output_dir, 'weighted_climate', 'climate_hist')
   }
 
   if(all(is.null(climate_impact_dir),

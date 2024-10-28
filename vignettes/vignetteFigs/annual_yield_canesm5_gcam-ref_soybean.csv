@@ -1,0 +1,20 @@
+,GCAM_region_name,iso,crop,year,yield_impact
+1,Africa_Southern,tza,soybean,2015,1.005751894
+2,Africa_Western,nga,soybean,2015,1.03779405
+3,Argentina,arg,soybean,2015,1.015149238
+4,Canada,can,soybean,2015,1.004919412
+5,China,chn,soybean,2015,0.97691396
+6,Colombia,col,soybean,2015,NA
+7,EU-15,ita,soybean,2015,0.998577392
+8,Europe_Non_EU,tur,soybean,2015,1.056600386
+9,India,ind,soybean,2015,1.054560194
+10,Mexico,mex,soybean,2015,0.977395146
+11,South Africa,zaf,soybean,2015,NA
+12,South America_Northern,guy,soybean,2015,0.958441468
+13,South America_Northern,sur,soybean,2015,NA
+14,South America_Southern,bol,soybean,2015,NA
+15,South America_Southern,per,soybean,2015,NA
+16,South America_Southern,pry,soybean,2015,NA
+17,South America_Southern,ury,soybean,2015,NA
+18,Southeast Asia,prk,soybean,2015,1.109781878
+19,USA,usa,soybean,2015,0.997785704

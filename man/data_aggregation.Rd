@@ -9,6 +9,7 @@ data_aggregation(
   climate_impact_dir = NULL,
   climate_model = "gcm",
   climate_scenario = "rcp",
+  historical_periods = NULL,
   co2_hist = NULL,
   co2_proj = NULL,
   output_dir = file.path(getwd(), "output")
@@ -22,6 +23,8 @@ data_aggregation(
 \item{climate_model}{Default = NULL. string for climate model (e.g., 'CanESM5')}
 
 \item{climate_scenario}{Default = NULL. string for climate scenario (e.g., 'ssp245')}
+
+\item{historical_periods}{Default = NULL. vector for years to subset from the historical climate data. If NULL, use the default climate data period}
 
 \item{co2_hist}{Default = NULL. data table for historical CO2 concentration in columns [year, co2_conc]. If NULL, use built-in CO2 emission data}
 

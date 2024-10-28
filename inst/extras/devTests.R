@@ -24,13 +24,27 @@ gaia::weighted_climate(pr_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process
                        output_dir = 'C:/WorkSpace/github/test_scripts/gaia/output_test',
                        name_append = '_hist')
 
+# test watch data
+gaia::weighted_climate(pr_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/gaia_example_climate/pr_watch_monthly_1960_2001.nc4',
+                       tas_ncdf = NULL,
+                       timestep = 'daily',
+                       climate_model = 'watch',
+                       climate_scenario = 'historical',
+                       time_periods = seq(1960, 2001, 1),
+                       output_dir = 'C:/WorkSpace/github/test_scripts/gaia/output_test/climate_watch',
+                       name_append = '_hist')
+
 if(T){
 
   # pr_proj_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/pr_mon_basd_CanESM5_W5E5v2_GCAM_ref_2015-2100.nc'
   # tas_proj_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/tas_mon_basd_CanESM5_W5E5v2_GCAM_ref_2015-2100.nc'
 
-  pr_hist_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/gaia_example_climate/pr_monthly_canesm5_w5e5_rcp7_1950_2014.nc'
-  tas_hist_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/gaia_example_climate/tas_monthly_canesm5_w5e5_rcp7_1950_2014.nc'
+  # pr_hist_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/gaia_example_climate/pr_monthly_canesm5_w5e5_rcp7_1950_2014.nc'
+  # tas_hist_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/gaia_example_climate/tas_monthly_canesm5_w5e5_rcp7_1950_2014.nc'
+
+  pr_hist_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/gaia_example_climate/pr_watch_monthly_1960_2001.nc4'
+  tas_hist_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/gaia_example_climate/tas_watch_monthly_1960_2001.nc4'
+
   pr_proj_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/gaia_example_climate/pr_monthly_canesm5_w5e5_rcp7_2015_2100.nc'
   tas_proj_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/gaia_example_climate/tas_monthly_canesm5_w5e5_rcp7_2015_2100.nc'
   timestep = 'monthly'
@@ -175,12 +189,12 @@ time.taken
 # if there is climate NetCDF available
 
 start.time <- Sys.time()
-gaia::yield_impact(pr_hist_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/gaia_example_climate/pr_monthly_canesm5_w5e5_rcp7_1950_2014.nc',
-                   tas_hist_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/gaia_example_climate/tas_monthly_canesm5_w5e5_rcp7_1950_2014.nc',
-                   pr_proj_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/gaia_example_climate/pr_monthly_canesm5_w5e5_rcp7_2015_2100.nc',
-                   tas_proj_ncdf = 'C:/WorkSpace/GCIMS/GCIMS_Yield/climate_process/data/climate/gaia_example_climate/tas_monthly_canesm5_w5e5_rcp7_2015_2100.nc',
+gaia::yield_impact(pr_hist_ncdf = pr_hist_ncdf,
+                   tas_hist_ncdf = tas_hist_ncdf,
+                   pr_proj_ncdf = pr_proj_ncdf,
+                   tas_proj_ncdf = tas_proj_ncdf,
                    timestep = timestep,
-                   historical_periods = c(1950:2014),
+                   historical_periods = c(1960:2001),
                    climate_hist_dir = NULL,
                    climate_impact_dir = NULL,
                    climate_model = climate_model,
@@ -203,14 +217,15 @@ time.taken <- round(end.time - start.time,2)
 time.taken
 
 # if climate data is already created
+# Test t
 gaia::yield_impact(pr_hist_ncdf = NULL,
                    tas_hist_ncdf = NULL,
                    pr_proj_ncdf = NULL,
                    tas_proj_ncdf = NULL,
                    timestep = timestep,
-                   historical_periods = time_periods,
-                   climate_hist_dir = NULL,
-                   climate_impact_dir = 'C:/WorkSpace/github/test_scripts/gaia/output_joss_test/climate/canesm5',
+                   historical_periods = seq(1951, 2001),
+                   climate_hist_dir = 'C:/WorkSpace/github/test_scripts/gaia/output_joss_test/weighted_climate/country_climate_txt',
+                   climate_impact_dir = 'C:/WorkSpace/github/test_scripts/gaia/output_joss_test/weighted_climate/canesm5',
                    climate_model = climate_model,
                    climate_scenario = climate_scenario,
                    member = member,

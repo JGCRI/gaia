@@ -8,7 +8,8 @@ weather_clean(
   file = NULL,
   crop_name = NULL,
   weather_var = NULL,
-  irr_type = NULL
+  irr_type = NULL,
+  time_periods = NULL
 )
 }
 \arguments{
@@ -19,6 +20,8 @@ weather_clean(
 \item{weather_var}{Default = NULL. String for the weather var name}
 
 \item{irr_type}{Default = NULL. String for the irrigation type. Options: 'irr', 'rf'}
+
+\item{time_periods}{Default = NULL. vector for years to subset from the climate data. If NULL, use the default climate data period}
 }
 \description{
 Function to clean the input weather files (historic and model projections) for regression analysis

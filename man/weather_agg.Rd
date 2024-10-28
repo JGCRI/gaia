@@ -4,7 +4,12 @@
 \alias{weather_agg}
 \title{weather_agg}
 \usage{
-weather_agg(file_precip = NULL, file_temp = NULL, crop_name = NULL)
+weather_agg(
+  file_precip = NULL,
+  file_temp = NULL,
+  crop_name = NULL,
+  time_periods = NULL
+)
 }
 \arguments{
 \item{file_precip}{Default = NULL. string for path to the precipitation file}
@@ -12,6 +17,8 @@ weather_agg(file_precip = NULL, file_temp = NULL, crop_name = NULL)
 \item{file_temp}{Default = NULL. string for path to the temperature file}
 
 \item{crop_name}{Default = NULL. string for crop name}
+
+\item{time_periods}{Default = NULL. vector for years to subset from the climate data. If NULL, use the default climate data period}
 }
 \description{
 Function to aggregate the cleaned temperature and precipitation data for each crop
