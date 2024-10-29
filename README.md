@@ -13,7 +13,7 @@
 <!-- ------------------------>
 <!-- ------------------------>
 
-`gaia` is an open-source R package designed to estimate crop yield shocks in response to annual temperature and precipitation variations and CO~2~ concentrations at the country scale for 12 major crops. `gaia` streamlines the workflow from raw climate data processing to the production of different forms of yield shocks, such as agricultural productivity changes at the region-basin level, which can be directly integrated into the latest Global Change Analysis Model (GCAM).
+`gaia` is an open-source R package designed to estimate crop yield shocks in response to annual temperature and precipitation variations and CO<sub>2</sub> concentrations at the country scale for 12 major crops. `gaia` streamlines the workflow from raw climate data processing to the production of different forms of yield shocks, such as agricultural productivity changes at the region-basin level, which can be directly integrated into the latest Global Change Analysis Model (GCAM).
 
 <br />
 
