@@ -485,7 +485,7 @@ region_color <- c( "Africa_Eastern" = "olivedrab2",
                    "USA" = "chocolate3" )
 
 # color scale
-col_scale_region <- ggplot2::scale_colour_manual( name = "gcam_region", values = region_color )
+col_scale_region <- ggplot2::scale_color_manual( name = "gcam_region", values = region_color )
 
 # fill scale
 col_fill_region <- ggplot2::scale_fill_manual( name = "gcam_region", values = region_color )
