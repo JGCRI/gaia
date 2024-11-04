@@ -31,5 +31,4 @@ navbar:
       href: SUPPORT.html
 
 toc:
-  depth: 4
-  collapse: section
+  depth: 3
