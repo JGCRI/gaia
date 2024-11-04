@@ -29,7 +29,7 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="../index.html"><span class="fa fa-home"></span></a></li>
+<li class="nav-item"><a class="nav-link" href="../index.html"><span class="fa fa-home"></span> Home</a></li>
 <li class="nav-item"><a class="nav-link" href="../articles/vignette.html"><span class="fa fas fa-book"></span> User Guide</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html"><span class="fa fa-file-code-o"></span> Reference</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html"><span class="fa fa-newspaper-o"></span> News</a></li>
@@ -57,7 +57,7 @@
       <h1>User Guide</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/JGCRI/gaia/blob/main/vignettes/vignette.Rmd" class="external-link"><code>vignettes/vignette.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JGCRI/gaia/blob/dev-workflow/vignettes/vignette.Rmd" class="external-link"><code>vignettes/vignette.Rmd</code></a></small>
       <div class="d-none name"><code>vignette.Rmd</code></div>
     </div>
 
@@ -263,15 +263,25 @@ precipitation and temperature NetCDF files using the code below.</p>
 <div class="section level3">
 <h3 id="example-1">Example 1<a class="anchor" aria-label="anchor" href="#example-1"></a>
 </h3>
-<div class="alert alert-info">
-<p><strong>NOTE!</strong> This example demonstrates the complete
-<code>gaia</code> model workflow, including processing the raw climate
-NetCDF data. Due to the large size of the climate dataset, this process
-may take up to an hour. For a quicker demonstration, please refer to <a href="#example-2">Example 2</a>.</p>
+<div class="alert alert-dismissible alert-warning">
+<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+<h5 class="alert-heading">
+Warning!
+</h5>
+<p class="mb-0">
+This example demonstrates the complete <code>gaia</code> model workflow,
+including processing the raw climate NetCDF data. Due to the large size
+of the climate dataset, this process may take up to an hour. For a
+quicker demonstration, please refer to <a href="#example-2">Example
+2</a>.
+</p>
 </div>
+<!-- <div class="alert alert-info"> -->
+<!-- <strong>NOTE!</strong> This example demonstrates the complete `gaia` model workflow, including processing the raw climate NetCDF data. Due to the large size of the climate dataset, this process may take up to an hour. For a quicker demonstration, please refer to [Example 2](#example-2). -->
+<!-- </div> -->
 <p>This example uses both <a href="#example-data-1">example data 1</a>
 and <a href="#example-data-2">example data 2</a>. You can run
-<code>gaia</code> usign the single function <code>yield_impact</code>,
+<code>gaia</code> using the single function <code>yield_impact</code>,
 which streamlines the entire workflow. For detailed explanations of each
 argument in <code>yield_impact</code>, please refer to the <a href="https://jgcri.github.io/gaia/reference/yield_impact.html" class="external-link">reference
 page</a>.</p>
@@ -406,7 +416,8 @@ The file structure is organized in columns as follows:
 correspond to country IDs. To view the country names associated with
 these IDs, simply type <code>country_id</code> in the R console after
 loading the <code>gaia</code> package. Below is an example of the
-structure for the weighted precipitation data.</p>
+structure for the weighted precipitation data for rainfed soybean
+(<code>output_dir/weighted_climate/canesm5/anesm5_gcam-ref_month_precip_country_rfc_crop08_2015_2100.txt</code>).</p>
 <table class="table table table-striped" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption>
 <strong>Table 1.</strong> Soybean-area-weighted precipitation from the
