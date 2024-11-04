@@ -190,11 +190,17 @@ tas_projection_file <- file.path(data_dir, 'tas_monthly_canesm5_w5e5_gcam-ref_20
 
 ## Example 1
 
-<div class="alert alert-info">
-<strong>NOTE!</strong> This example demonstrates the complete `gaia` model workflow, including processing the raw climate NetCDF data. Due to the large size of the climate dataset, this process may take up to an hour. For a quicker demonstration, please refer to [Example 2](#example-2).
+<div class="alert alert-dismissible alert-warning">
+  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  <h4 class="alert-heading">Warning!</h4>
+  <p class="mb-0">This example demonstrates the complete `gaia` model workflow, including processing the raw climate NetCDF data. Due to the large size of the climate dataset, this process may take up to an hour. For a quicker demonstration, please refer to [Example 2](#example-2).</p>
 </div>
 
-This example uses both [example data 1](#example-data-1) and [example data 2](#example-data-2). You can run `gaia` usign the single function `yield_impact`, which streamlines the entire workflow. For detailed explanations of each argument in `yield_impact`, please refer to the [reference page](https://jgcri.github.io/gaia/reference/yield_impact.html).
+<!-- <div class="alert alert-info"> -->
+<!-- <strong>NOTE!</strong> This example demonstrates the complete `gaia` model workflow, including processing the raw climate NetCDF data. Due to the large size of the climate dataset, this process may take up to an hour. For a quicker demonstration, please refer to [Example 2](#example-2). -->
+<!-- </div> -->
+
+This example uses both [example data 1](#example-data-1) and [example data 2](#example-data-2). You can run `gaia` using the single function `yield_impact`, which streamlines the entire workflow. For detailed explanations of each argument in `yield_impact`, please refer to the [reference page](https://jgcri.github.io/gaia/reference/yield_impact.html).
 
 ```{r eval=F, echo=T}
 
@@ -311,7 +317,7 @@ gaia::weighted_climate(pr_ncdf = pr_projection_file ,
 
 ```
 
-This will create a folder based on the specified `climate_model` argument (e.g., `output_dir/weighted_climate/canesm5`). Inside this folder, you will find files containing precipitation and temperature data weighted by the irrigated and rainfed cropland areas for 26 MIRCA crops. The file structure is organized in columns as follows: `[year, month, 1, 2, 3, ..., 265]`, where the numbers correspond to country IDs. To view the country names associated with these IDs, simply type `country_id` in the R console after loading the `gaia` package. Below is an example of the structure for the weighted precipitation data.
+This will create a folder based on the specified `climate_model` argument (e.g., `output_dir/weighted_climate/canesm5`). Inside this folder, you will find files containing precipitation and temperature data weighted by the irrigated and rainfed cropland areas for 26 MIRCA crops. The file structure is organized in columns as follows: `[year, month, 1, 2, 3, ..., 265]`, where the numbers correspond to country IDs. To view the country names associated with these IDs, simply type `country_id` in the R console after loading the `gaia` package. Below is an example of the structure for the weighted precipitation data for rainfed soybean (`output_dir/weighted_climate/canesm5/anesm5_gcam-ref_month_precip_country_rfc_crop08_2015_2100.txt`).
 
 ```{r eval=T, echo=F, message=F, results='hide'}
 

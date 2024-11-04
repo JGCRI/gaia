@@ -11,7 +11,8 @@ home:
 navbar:
   type: inverse
   left:
-    - icon: fa-home
+    - text: "Home"
+      icon: fa-home
       href: index.html
     - text: "User Guide"
       icon: fas fa-book

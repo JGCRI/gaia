@@ -118,7 +118,7 @@ usethis::use_data(agprodchange_ni_gcam7, overwrite = TRUE)
 # is provided
 coef_default <- data.table::data.table()
 for(crop_name in mapping_mirca_sage$crop_mirca){
-  coef_crop <- gaia::input_data(folder_path = 'C:/WorkSpace/github/test_scripts/gaia/output/data_processed',
+  coef_crop <- gaia::input_data(folder_path = 'C:/WorkSpace/GCIMS/GCIMS_Yield/regression_analysis/output/20230706_0942/data_processed',
                                 input_file =  paste("reg_out_", crop_name, "_", fit_name, ".csv", sep = ""),
                                 skip_number = 0 )
   coef_default <- dplyr::bind_rows(
