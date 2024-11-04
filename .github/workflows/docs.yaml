@@ -8,7 +8,7 @@ name: docs
 
 jobs:
   pkgdown:
-    runs-on: macOS-12
+    runs-on: macos-latest
     env:
       GITHUB_PAT: ${{ secrets.GAEA_PAT }}
     steps:
