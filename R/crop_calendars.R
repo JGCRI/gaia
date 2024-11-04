@@ -35,10 +35,7 @@ crop_calendars <- function(output_dir = file.path(getwd(), 'output')){
   d <- gaia::iso_replace( d )
 
   # Indicators for crops
-  crops <- tibble::tibble(
-    crop_mirca = c('wheat', 'sorghum', 'maize', 'rice', 'soybean', 'sugarcane', 'sugarbeet', 'cotton', 'cassava', 'root_tuber', 'sunflower'),
-    crop_sage = c('wheat', 'sorghum', 'maize', 'rice', 'soybeans', 'sugarcane', 'sugarbeets', 'cotton', 'cassava', 'potatoes', 'sunflower')
-  )
+  crops <- mapping_mirca_sage
 
   for(i in 1:nrow(crops)){
 
