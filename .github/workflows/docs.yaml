@@ -1,14 +1,14 @@
 on:
   push:
-    branches:
-      - main
-      - dev
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 name: docs
 
 jobs:
   pkgdown:
-    runs-on: macos-latest
+    runs-on: macos-13
     env:
       GITHUB_PAT: ${{ secrets.GAEA_PAT }}
     steps:
