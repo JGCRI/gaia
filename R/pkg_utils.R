@@ -254,17 +254,17 @@ agprodchange_ref <- function(gcam_version = 'gcam7',
     gaia::path_check(gcamdata_dir)
 
     if(grepl('ssp1|ssp5', climate_scenario)){
-      agprodchange_ag <- data.table::fread(file.path(gcamdata_dir, 'outputs', 'L2052.AgProdChange_irr_high.csv'))
+      agprodchange_ag <- data.table::fread(list.files(path = gcamdata_dir, pattern = 'L2052.AgProdChange_irr_high.csv', recursive = T, full.names = T))
     }else if(grepl('ssp3', climate_scenario)){
-      agprodchange_ag <- data.table::fread(file.path(gcamdata_dir, 'outputs', 'L2052.AgProdChange_irr_low.csv'))
+      agprodchange_ag <- data.table::fread(list.files(path = gcamdata_dir, pattern = 'L2052.AgProdChange_irr_low.csv', recursive = T, full.names = T))
     }else if(grepl('ssp4', climate_scenario)){
-      agprodchange_ag <- data.table::fread(file.path(gcamdata_dir, 'outputs', 'L2052.AgProdChange_irr_ssp4.csv'))
+      agprodchange_ag <- data.table::fread(list.files(path = gcamdata_dir, pattern = 'L2052.AgProdChange_irr_ssp4.csv', recursive = T, full.names = T))
     }else{
-      agprodchange_ag <- data.table::fread(file.path(gcamdata_dir, 'outputs', 'L2052.AgProdChange_ag_irr_ref.csv'))
+      agprodchange_ag <- data.table::fread(list.files(path = gcamdata_dir, pattern = 'L2052.AgProdChange_ag_irr_ref.csv', recursive = T, full.names = T))
     }
 
     agprodchange_ni <- dplyr::bind_rows(
-      data.table::fread(file.path(gcamdata_dir, 'outputs', 'L2052.AgProdChange_bio_irr_ref.csv')),
+      data.table::fread(list.files(path = gcamdata_dir, pattern = 'L2052.AgProdChange_bio_irr_ref.csv', recursive = T, full.names = T)),
       agprodchange_ag
       ) %>%
       dplyr::mutate(year = paste0('X', year)) %>%

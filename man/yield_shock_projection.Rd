@@ -11,6 +11,7 @@ yield_shock_projection(
   base_year = NULL,
   start_year = NULL,
   end_year = NULL,
+  gcam_timestep = 5,
   smooth_window = 20,
   diagnostics = TRUE,
   output_dir = file.path(getwd(), "output")
@@ -28,6 +29,8 @@ yield_shock_projection(
 \item{start_year}{Default = NULL. integer for the  start year of the data}
 
 \item{end_year}{Default = NULL. integer for the end year of the data}
+
+\item{gcam_timestep}{Default = 5. integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)}
 
 \item{smooth_window}{Default = 20. integer for smoothing window in years}
 

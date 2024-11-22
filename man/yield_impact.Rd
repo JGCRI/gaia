@@ -19,6 +19,8 @@ yield_impact(
   bias_adj = "ba",
   cfe = "no-cfe",
   gcam_version = "gcam7",
+  gcam_timestep = 5,
+  gcamdata_dir = NULL,
   use_default_coeff = FALSE,
   base_year = NULL,
   start_year = NULL,
@@ -58,6 +60,10 @@ yield_impact(
 \item{cfe}{Default = 'no-cfe'. string for whether the yield impact formula implemented CO2 fertilization effect}
 
 \item{gcam_version}{Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7}
+
+\item{gcam_timestep}{Default = 5. integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)}
+
+\item{gcamdata_dir}{Default = NULL. string for directory to the gcamdata folder within the specific GCAM version. The gcamdata need to be run with drake to have the CSV outputs beforehand.}
 
 \item{use_default_coeff}{Default = FALSE. binary for using default regression coefficients. Set to TRUE will use the default coefficients instead of calculating coefficients from the historical climate data.}
 

@@ -730,6 +730,13 @@ smooth_impacts <- function(data = NULL,
 
   d <- data
 
+  # out <- d %>%
+  #   dplyr::select(iso, year, yield_impact) %>%
+  #   dplyr::mutate(yield_impact = ifelse(year == base_year, 1, yield_impact)) %>%
+  #   dplyr::group_by(iso) %>%
+  #   dplyr::mutate(yield_impact = zoo::rollapply(yield_impact, width = smooth_window, FUN = mean, fill = NA, align = 'center', partial = T)) %>%
+  #   dplyr::ungroup()
+
   d$year <- paste( "X", d$year, sep = "" )
   baseYear <- paste0("X", base_year)
   d <- data.table::dcast( d, GCAM_region_name + iso ~ year, value.var = "yield_impact" )
@@ -739,26 +746,42 @@ smooth_impacts <- function(data = NULL,
   year_min <- min(data$year)
   year_max <- max(data$year)
   year_all <- unique(data$year)
-  window_pre <- round(smooth_window/2) - 1
-  window_post <- round(smooth_window/2)
 
-  period_first <- plyr::round_any(base_year, 10, f = ceiling)
-  period_last <- plyr::round_any(year_max - window_post, 10, f = ceiling)
+  if(smooth_window != 1){
 
-  selectYears <- year_all[year_all %in% c(base_year, seq(period_first, period_last, window_post))]
+    window_pre <- round(smooth_window/2) - 1
+    window_post <- round(smooth_window/2)
 
-  for(y in selectYears){
+    period_first <- plyr::round_any(base_year, 10, f = ceiling)
+    period_last <- plyr::round_any(year_max - window_post, 10, f = ceiling)
 
-    if(y == base_year){
-      d[[baseYear]] <- 1
-    } else {
-      window <- paste0("X", seq(max(start_year, (y - window_pre)), min(end_year, (y + window_post)), 1)) # 20 year window
-      Year <- paste0("X", y)
-      # d[[Year]] <- rowMeans(d[, window])
-      d[[Year]] <- d[, rowMeans(.SD), .SDcols = window]
+    selectYears <- sort(year_all[year_all %in% unique(c(base_year, seq(period_first, period_last, window_post), year_max))])
+
+    for(y in selectYears){
+
+      if(y == base_year){
+        d[[baseYear]] <- 1
+      } else if(y == year_max){
+        window <- paste0("X", seq(selectYears[length(selectYears)-1], selectYears[length(selectYears)], 1)) # 20 year window
+        Year <- paste0("X", y)
+        d[[Year]] <- d[, rowMeans(.SD), .SDcols = window]
+      }else{
+        window <- paste0("X", seq(max(start_year, (y - window_pre)), min(end_year, (y + window_post)), 1)) # 20 year window
+        Year <- paste0("X", y)
+        d[[Year]] <- d[, rowMeans(.SD), .SDcols = window]
+      }
+
     }
 
+  } else {
+
+    selectYears <- sort(year_all[year_all %in% unique(seq(base_year, year_max, 1))])
+
+    d[[baseYear]] <- 1
+
+
   }
+
 
   # new method for linear interpolation (more flexible with years) by MZ
   d <- subset( d, select = c( "GCAM_region_name", "iso", paste0("X", selectYears)))
@@ -776,7 +799,7 @@ smooth_impacts <- function(data = NULL,
       dplyr::mutate(year = as.numeric(gsub("X", '', variable)))
 
     interp <- stats::approx(x = df$year, y = df$value, method = 'linear',
-                            xout = seq(base_year, period_last, 1))
+                            xout = seq(base_year, year_max, 1))
 
     append <- data.frame(GCAM_region_name = group$GCAM_region_name,
                          iso = group$iso,
@@ -816,7 +839,7 @@ smooth_impacts <- function(data = NULL,
 #'
 #' @param data Default = NULL. data frame from yield_shock_projection with columns [crop, model, iso, years]
 #' @param base_year Default = NULL. integer for the base year (for GCAM)
-#' @param select_years Default = NULL. vector of integers of selected years to format
+#' @param gcam_timestep Default = NULL. integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #'
 #' @keywords internal
@@ -824,7 +847,7 @@ smooth_impacts <- function(data = NULL,
 
 format_projection <- function(data = NULL,
                               base_year = NULL,
-                              select_years = NULL,
+                              gcam_timestep = NULL,
                               output_dir = file.path(getwd(), 'output'))
 {
 
@@ -837,8 +860,10 @@ format_projection <- function(data = NULL,
   d_ha <- gaia::colname_replace( d_ha, "area_harvest", "harvested_area" )
 
   # set up the years to filter out
-  if(is.null(select_years)){
-    select_years <- c(base_year, seq(2020, 2090, 10))
+  if(is.null(gcam_timestep)){
+    select_years <- c(base_year, seq(2020, 2100, 5))
+  } else {
+    select_years <- c(base_year, seq(base_year + gcam_timestep, 2100, gcam_timestep))
   }
 
   # format data
@@ -1092,8 +1117,7 @@ plot_yield_impact <- function(data = NULL,
                               output_dir = NULL)
 {
 
-  X2020 <- X2030 <- X2040 <- X2050 <- X2060 <- X2070 <- X2080 <- X2090 <-
-    GCAM_commod <- year <- glu <- irrtype <- yield_multiplier <- region_name <-
+  GCAM_commod <- year <- glu <- irrtype <- yield_multiplier <- region_name <-
     AgProductionTechnology <- NULL
 
   save_path <- file.path(output_dir, 'figures_yield_impacts')
@@ -1105,19 +1129,23 @@ plot_yield_impact <- function(data = NULL,
   print(paste0('Plotting Yield Shock for ', commodity, crop_type, ' to: ',
                file.path(save_path, paste0(commodity, crop_type, '.png'))))
 
-  df_plot <- data %>%
+  select_years <- colnames(data)[grepl('X', colnames(data))]
+
+   df_plot <- data %>%
     dplyr::filter(GCAM_commod == commodity, crop_type %in% crop_type) %>%
-    dplyr::mutate(X2025 = ((X2020 + X2030) / 2),
-                  X2035 = ((X2030 + X2040) / 2),
-                  X2045 = ((X2040 + X2050) / 2),
-                  X2055 = ((X2050 + X2060) / 2),
-                  X2065 = ((X2060 + X2070) / 2),
-                  X2075 = ((X2070 + X2080) / 2),
-                  X2085 = ((X2080 + X2090) / 2),
-                  X2095 = X2090,
-                  X2100 = X2090) %>%
-    tidyr::pivot_longer(cols = dplyr::all_of(paste0('X', seq(2015, 2100, 5))),
-                        names_to = 'year', values_to = 'yield_multiplier') %>%
+    # dplyr::mutate(X2025 = ((X2020 + X2030) / 2),
+    #               X2035 = ((X2030 + X2040) / 2),
+    #               X2045 = ((X2040 + X2050) / 2),
+    #               X2055 = ((X2050 + X2060) / 2),
+    #               X2065 = ((X2060 + X2070) / 2),
+    #               X2075 = ((X2070 + X2080) / 2),
+    #               X2085 = ((X2080 + X2090) / 2),
+    #               X2095 = X2090,
+    #               X2100 = X2090) %>%
+    # tidyr::pivot_longer(cols = dplyr::all_of(paste0('X', seq(2015, 2100, 5))),
+    #                     names_to = 'year', values_to = 'yield_multiplier') %>%
+     tidyr::pivot_longer(cols = dplyr::all_of(select_years),
+                         names_to = 'year', values_to = 'yield_multiplier') %>%
     dplyr::mutate(year = as.integer(gsub('X', '', year)),
                   AgProductionTechnology = paste(glu, paste0(GCAM_commod, crop_type), irrtype, sep = '_'))
 

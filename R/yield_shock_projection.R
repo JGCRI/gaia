@@ -9,6 +9,7 @@
 #' @param base_year Default = NULL. integer for the base year (for GCAM)
 #' @param start_year Default = NULL. integer for the  start year of the data
 #' @param end_year Default = NULL. integer for the end year of the data
+#' @param gcam_timestep Default = 5. integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)
 #' @param smooth_window Default = 20. integer for smoothing window in years
 #' @param diagnostics Default = TRUE. Logical for performing diagnostic plot
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
@@ -20,6 +21,7 @@ yield_shock_projection <- function(use_default_coeff = FALSE,
                                    base_year = NULL,
                                    start_year = NULL,
                                    end_year = NULL,
+                                   gcam_timestep = 5,
                                    smooth_window = 20,
                                    diagnostics = TRUE,
                                    output_dir = file.path(getwd(), 'output')
@@ -100,9 +102,10 @@ yield_shock_projection <- function(use_default_coeff = FALSE,
 
   }
 
-  # format the smoothed yield
+  # format the smoothed yield to prepare for GCAM related process
   d_format <- gaia::format_projection(data = d_bind,
                                       base_year = base_year,
+                                      gcam_timestep = gcam_timestep,
                                       output_dir = output_dir)
 
   return(d_format)
