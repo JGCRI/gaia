@@ -14,6 +14,7 @@ gcam_agprodchange(
   gcam_version = "gcam7",
   gcam_timestep = 5,
   cfe = "no-cfe",
+  base_year = 2015,
   diagnostics = TRUE,
   output_dir = file.path(getwd(), "output")
 )
@@ -36,6 +37,8 @@ gcam_agprodchange(
 \item{gcam_timestep}{Default = 5. integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)}
 
 \item{cfe}{Default = 'no-cfe'. string for whether the yield impact formula implimented CO2 fertilization effect.}
+
+\item{base_year}{Default = 2015. integer for the base year (for GCAM)}
 
 \item{diagnostics}{Default = TRUE. Logical for performing diagnostic plot}
 

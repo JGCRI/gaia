@@ -22,7 +22,7 @@ yield_impact(
   gcam_timestep = 5,
   gcamdata_dir = NULL,
   use_default_coeff = FALSE,
-  base_year = NULL,
+  base_year = 2015,
   start_year = NULL,
   end_year = NULL,
   smooth_window = 20,
@@ -67,7 +67,7 @@ yield_impact(
 
 \item{use_default_coeff}{Default = FALSE. binary for using default regression coefficients. Set to TRUE will use the default coefficients instead of calculating coefficients from the historical climate data.}
 
-\item{base_year}{Default = NULL. integer for the base year (for GCAM)}
+\item{base_year}{Default = 2015. integer for the base year (for GCAM)}
 
 \item{start_year}{Default = NULL. integer for the  start year of the projected data}
 

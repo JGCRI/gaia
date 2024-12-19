@@ -475,6 +475,7 @@ get_agprodchange <- function(data = NULL,
 #' @param member Default = 'member'. string for the ensemble member name
 #' @param bias_adj Default = 'ba'. string for the dataset used for climate data bias adjustment
 #' @param cfe Default = 'no-cfe'. string for whether the yield impact formula implimented CO2 fertilization effect.
+#' @param base_year Default = 2015. integer for the base year (for GCAM)
 #' @param gcam_version Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7
 #' @param gcam_timestep Default = 5. integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)
 #' @param diagnostics Default = TRUE. Logical for performing diagnostic plot
@@ -491,6 +492,7 @@ gcam_agprodchange <- function(data = NULL,
                               gcam_version = 'gcam7',
                               gcam_timestep = 5,
                               cfe = 'no-cfe',
+                              base_year = 2015,
                               diagnostics = TRUE,
                               output_dir = file.path(getwd(), 'output'))
 {
@@ -515,6 +517,8 @@ gcam_agprodchange <- function(data = NULL,
   # input reference ag productivity change without climate impact
   # note that different GCAM versions will have different agprodchange structure
   agprodchange_ni <- agprodchange_ref(gcam_version = gcam_version,
+                                      gcam_timestep = gcam_timestep,
+                                      base_year = base_year,
                                       climate_scenario = climate_scenario,
                                       gcamdata_dir = gcamdata_dir)
 

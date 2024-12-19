@@ -8,7 +8,7 @@ yield_shock_projection(
   use_default_coeff = FALSE,
   climate_model = "gcm",
   climate_scenario = "rcp",
-  base_year = NULL,
+  base_year = 2015,
   start_year = NULL,
   end_year = NULL,
   gcam_timestep = 5,
@@ -24,7 +24,7 @@ yield_shock_projection(
 
 \item{climate_scenario}{Default = NULL. string for climate scenario (e.g., 'ssp245')}
 
-\item{base_year}{Default = NULL. integer for the base year (for GCAM)}
+\item{base_year}{Default = 2015. integer for the base year (for GCAM)}
 
 \item{start_year}{Default = NULL. integer for the  start year of the data}
 

@@ -19,7 +19,7 @@
 #' @param gcam_timestep Default = 5. integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)
 #' @param gcamdata_dir Default = NULL. string for directory to the gcamdata folder within the specific GCAM version. The gcamdata need to be run with drake to have the CSV outputs beforehand.
 #' @param use_default_coeff Default = FALSE. binary for using default regression coefficients. Set to TRUE will use the default coefficients instead of calculating coefficients from the historical climate data.
-#' @param base_year Default = NULL. integer for the base year (for GCAM)
+#' @param base_year Default = 2015. integer for the base year (for GCAM)
 #' @param start_year Default = NULL. integer for the  start year of the projected data
 #' @param end_year Default = NULL. integer for the end year of the projected data
 #' @param smooth_window Default = 20. integer for smoothing window in years
@@ -47,7 +47,7 @@ yield_impact <- function(pr_hist_ncdf = NULL,
                          gcam_timestep = 5,
                          gcamdata_dir = NULL,
                          use_default_coeff = FALSE,
-                         base_year = NULL,
+                         base_year = 2015,
                          start_year = NULL,
                          end_year = NULL,
                          smooth_window = 20,
