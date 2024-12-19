@@ -6,12 +6,18 @@
 \usage{
 agprodchange_ref(
   gcam_version = "gcam7",
+  gcam_timestep = 5,
+  base_year = 2015,
   climate_scenario = NULL,
   gcamdata_dir = NULL
 )
 }
 \arguments{
 \item{gcam_version}{Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7}
+
+\item{gcam_timestep}{Default = 5. integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)}
+
+\item{base_year}{Default = 2015. integer for the base year (for GCAM)}
 
 \item{climate_scenario}{Default = NULL. string for climate scenario (e.g., 'ssp245')}
 

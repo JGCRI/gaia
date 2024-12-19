@@ -57,7 +57,7 @@ if(T){
   use_default_coeff = TRUE
   climate_hist_dir = NULL
   climate_impact_dir = 'C:/WorkSpace/github/test_scripts/gaia/output/climate/canesm5'
-  time_periods = seq(2015, 2020, 1)
+  historical_periods = seq(2015, 2020, 1)
   start_year = 2015
   end_year = 2100
   base_year = 2015
@@ -96,7 +96,7 @@ crop_cal <- gaia::crop_calendars(output_dir = output_dir)
 # test data_aggregation
 # climate_hist_dir <- file.path(output_dir, 'weighted_climate', 'country_climate_hist')
 
-climate_hist_dir <- file.path('C:/WorkSpace/GCIMS/GCIMS_Yield/regression_analysis/data/data_raw/country_climate_txt')
+climate_hist_dir <- file.path('C:/WorkSpace/github/test_scripts/gaia/output_joss_test/weighted_climate/country_climate_txt')
 # climate_hist_dir <- file.path(output_dir, 'weighted_climate', 'canesm5_hist')
 climate_impact_dir <- file.path(output_dir, 'weighted_climate', 'canesm5')
 
@@ -127,8 +127,9 @@ t_yield_projection <- gaia::yield_shock_projection(use_default_coeff = FALSE,
                                                    base_year = base_year,
                                                    start_year = start_year,
                                                    end_year = end_year,
+                                                   gcam_timestep = 5,
                                                    smooth_window = 20,
-                                                   diagnostics = T,
+                                                   diagnostics = F,
                                                    output_dir = output_dir)
 
 
@@ -152,6 +153,20 @@ t <- gaia::gcam_agprodchange(data = t_yield_projection,
                              bias_adj = bias_adj,
                              cfe = cfe,
                              gcam_version = 'gcam7',
+                             gcam_timestep = 5,
+                             diagnostics = F,
+                             output_dir = output_dir)
+
+## for 1-year timestep GCAM test
+t <- gaia::gcam_agprodchange(data = t_yield_projection,
+                             climate_model = climate_model,
+                             climate_scenario = climate_scenario,
+                             member = member,
+                             bias_adj = bias_adj,
+                             cfe = cfe,
+                             gcam_version = 'gcam7',
+                             gcam_timestep = 1,
+                             gcamdata_dir = 'C:/WorkSpace/github/gaia/inst/extras',
                              diagnostics = F,
                              output_dir = output_dir)
 
@@ -164,7 +179,7 @@ gaia::yield_impact(pr_hist_ncdf = NULL,
                    pr_proj_ncdf = NULL,
                    tas_proj_ncdf = NULL,
                    timestep = timestep,
-                   historical_periods = time_periods,
+                   historical_periods = historical_periods,
                    climate_hist_dir = NULL,
                    climate_impact_dir = 'C:/WorkSpace/github/test_scripts/gaia/output/climate/canesm5',
                    climate_model = climate_model,

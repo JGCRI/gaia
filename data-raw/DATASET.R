@@ -54,10 +54,10 @@ usethis::use_data(co2_projection, overwrite = TRUE)
 
 
 #-------------------------------------------------------------------------------
-# Reference Agricultural Producticvity Change
+# Reference Agricultural Productivity Change
 #-------------------------------------------------------------------------------
 
-# for GCAM 6 and 7
+# for GCAM 6 and 7 at 5-year period
 for(gcam_version in c('gcam6', 'gcam7')){
 
   if(gcam_version == 'gcam6'){

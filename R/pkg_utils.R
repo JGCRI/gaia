@@ -230,17 +230,81 @@ merge_data <- function( d1, d2, x1, x2 )
 
 
 # ------------------------------------------------------------------------------
+#' agprodchange_interp
+#'
+#' Check if the reference agricultural productivity has the same timestep as the user defined timestep
+#' If not, linearly interpolate the value
+#'
+#' @param data = NULL. data frame of the agprodchange
+#' @param gcam_timestep Default = 5. integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)
+#' @keywords internal
+#' @export
+
+agprodchange_interp <- function(data = NULL,
+                                gcam_timestep = 5){
+
+  # check if the time step is the same with the APG no climate impact
+  # for example, the default GCAM is 5 year and reference APG from GCAM starts from 2020
+  # however, it the time step is 1 year, adding base year 2015 to the dataset will create a 5 year gap between 2015 and 2020
+  # In such case, we can linearly interpolate the values from the base year to the first future year
+  years_ref <- sort(as.integer(gsub('X', '', unique(data$year))))
+  ref_timestep_series <- years_ref[2:length(years_ref)] - years_ref[1:length(years_ref)-1]
+  ref_timestep <- unique(ref_timestep_series)
+
+  # find where the timestep series is difference from the gcam_timestep
+  ref_timestep_index <- which(ref_timestep_series != gcam_timestep)
+  ref_timestep_interp_start <- years_ref[ref_timestep_index]
+  ref_timestep_interp_end <- years_ref[ref_timestep_index + 1]
+
+  # check if the reference time step equals to user defined gcam_timestep
+
+  if(!any(grepl(gcam_timestep, ref_timestep)) | length(ref_timestep) != 1){
+
+    warning(paste0('The time step of the reference agricultural productivity change data is different from the user defined gcam_timestep = ',
+                   gcam_timestep))
+
+    print(paste0('Interpolating the reference agricultural productivity change to ',
+                 gcam_timestep, ' year time step between: ',
+                 ref_timestep_interp_start, ' to ', ref_timestep_interp_end))
+
+    data_interp <- data %>%
+      dplyr::mutate(year = as.numeric(gsub('X', '', year))) %>%
+      dplyr::group_by(region, AgSupplySector, AgSupplySubsector, AgProductionTechnology) %>%
+      tidyr::complete(year = tidyr::full_seq(year, gcam_timestep)) %>%
+      dplyr::mutate(AgProdChange_ni = ifelse(is.na(AgProdChange_ni),
+                                          approx(x = year[!is.na(AgProdChange_ni)],
+                                                 y = AgProdChange_ni[!is.na(AgProdChange_ni)],
+                                                 xout = year)$y,
+                                          AgProdChange_ni)) %>%
+      dplyr::ungroup() %>%
+      dplyr::mutate(year = paste0('X', year))
+
+  } else {
+
+    data_interp <- data
+
+  }
+
+
+  return(data_interp)
+}
+
+# ------------------------------------------------------------------------------
 #' agprodchange_ref
 #'
 #' Get the reference agricultural productivity change based GCAM version
 #'
 #' @param gcam_version Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7
+#' @param gcam_timestep Default = 5. integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)
+#' @param base_year Default = 2015. integer for the base year (for GCAM)
 #' @param climate_scenario Default = NULL. string for climate scenario (e.g., 'ssp245')
 #' @param gcamdata_dir Default = NULL. string for directory to the gcamdata folder within the specific GCAM version. The gcamdata need to be run with drake to have the CSV outputs beforehand.
 #' @keywords internal
 #' @export
 
 agprodchange_ref <- function(gcam_version = 'gcam7',
+                             gcam_timestep = 5,
+                             base_year = 2015,
                              climate_scenario = NULL,
                              gcamdata_dir = NULL)
 {
@@ -254,30 +318,33 @@ agprodchange_ref <- function(gcam_version = 'gcam7',
     gaia::path_check(gcamdata_dir)
 
     if(grepl('ssp1|ssp5', climate_scenario)){
-      agprodchange_ag <- data.table::fread(file.path(gcamdata_dir, 'outputs', 'L2052.AgProdChange_irr_high.csv'))
+      agprodchange_ag <- data.table::fread(list.files(path = gcamdata_dir, pattern = 'L2052.AgProdChange_irr_high.csv', recursive = T, full.names = T))
     }else if(grepl('ssp3', climate_scenario)){
-      agprodchange_ag <- data.table::fread(file.path(gcamdata_dir, 'outputs', 'L2052.AgProdChange_irr_low.csv'))
+      agprodchange_ag <- data.table::fread(list.files(path = gcamdata_dir, pattern = 'L2052.AgProdChange_irr_low.csv', recursive = T, full.names = T))
     }else if(grepl('ssp4', climate_scenario)){
-      agprodchange_ag <- data.table::fread(file.path(gcamdata_dir, 'outputs', 'L2052.AgProdChange_irr_ssp4.csv'))
+      agprodchange_ag <- data.table::fread(list.files(path = gcamdata_dir, pattern = 'L2052.AgProdChange_irr_ssp4.csv', recursive = T, full.names = T))
     }else{
-      agprodchange_ag <- data.table::fread(file.path(gcamdata_dir, 'outputs', 'L2052.AgProdChange_ag_irr_ref.csv'))
+      agprodchange_ag <- data.table::fread(list.files(path = gcamdata_dir, pattern = 'L2052.AgProdChange_ag_irr_ref.csv', recursive = T, full.names = T))
     }
 
+    # read reference ag productivity change provided by the user
     agprodchange_ni <- dplyr::bind_rows(
-      data.table::fread(file.path(gcamdata_dir, 'outputs', 'L2052.AgProdChange_bio_irr_ref.csv')),
+      data.table::fread(list.files(path = gcamdata_dir, pattern = 'L2052.AgProdChange_bio_irr_ref.csv', recursive = T, full.names = T)),
       agprodchange_ag
       ) %>%
       dplyr::mutate(year = paste0('X', year)) %>%
       dplyr::rename(AgProdChange_ni = AgProdChange)
 
+    # add base year APG and assume it is 0
     agprodchange_ni <- dplyr::bind_rows(
       agprodchange_ni,
       agprodchange_ni %>%
         dplyr::select(-year, -AgProdChange_ni) %>%
         dplyr::distinct() %>%
-        dplyr::mutate(year = 'X2015',
+        dplyr::mutate(year = paste0('X', base_year),
                       AgProdChange_ni = 0)
     )
+
 
   } else {
 
@@ -313,6 +380,10 @@ agprodchange_ref <- function(gcam_version = 'gcam7',
     }
 
   }
+
+  # check the timestep of the agprodchange_ni to match the gcam_timestep
+  agprodchange_ni <- agprodchange_interp(data = agprodchange_ni,
+                                         gcam_timestep = gcam_timestep)
 
   return(agprodchange_ni)
 }

@@ -47,7 +47,7 @@ These considerations may limit the usefulness of yield changes from process mode
 
 # Functionality
 
-The primary functionality of `gaia` is encapsulated in the yield_impact wrapper function that streamlines the entire workflow shown in \autoref{fig:workflow}. The modular design also facilitates comprehensive diagnostic outputs, enhancing the tool’s utility for researchers and decision makers. Users can also execute individual functions to work through the main steps of the process. Detailed instructions on `gaia` can be accessed at https://jgcri.github.io/gaia.
+The primary functionality of `gaia` is encapsulated in the `yield_impact` wrapper function that streamlines the entire workflow shown in \autoref{fig:workflow}. The modular design also facilitates comprehensive diagnostic outputs, enhancing the tool’s utility for researchers and decision makers. Users can also execute individual functions to work through the main steps of the process. Detailed instructions on `gaia` can be accessed at https://jgcri.github.io/gaia.
 
 1. `weighted_climate`: Processes CMIP-ISIMIP climate NetCDF data and calculates cropland-weighted precipitation and temperature at the country level, differentiated by crop type and irrigation type. The function accepts both daily or monthly climate data that are consistent with the CMIP-ISIMIP NetCDF data format
 2. `crop_calenders`: Generates crop planting months for each country and crop based on crop calendar data [@Sacks_2010].

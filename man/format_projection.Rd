@@ -7,7 +7,7 @@
 format_projection(
   data = NULL,
   base_year = NULL,
-  select_years = NULL,
+  gcam_timestep = NULL,
   output_dir = file.path(getwd(), "output")
 )
 }
@@ -16,7 +16,7 @@ format_projection(
 
 \item{base_year}{Default = NULL. integer for the base year (for GCAM)}
 
-\item{select_years}{Default = NULL. vector of integers of selected years to format}
+\item{gcam_timestep}{Default = NULL. integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)}
 
 \item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
 }

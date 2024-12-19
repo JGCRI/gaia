@@ -330,7 +330,8 @@ get_weighted_yield_impact <- function(data = NULL,
   # ----------------------------------------------------------------------------
 
 
-  years <- paste0('X', c(2015, seq(2020, 2090, 10)))
+  # years <- paste0('X', c(2015, seq(2020, 2090, 10)))
+  years <- colnames(data)[grepl('X', colnames(data))]
 
   # join weight to the data
   yield_impact_clean <- dplyr::bind_rows(
@@ -424,31 +425,37 @@ get_weighted_yield_impact <- function(data = NULL,
 #' Calculate agricultural productivity change based on yield impact multiplier and no impact yield
 #'
 #' @param data Default = NULL. output data from function yield_shock_projection, or similar format of data
-#' @param from_year Default = NULL. integer for 'from' year to calculate agricultural productivity change
-#' @param to_year Default = NULL. integer for 'to' year to calculate agricultural productivity change
+#' @param year_pairs Default = NULL. data frame for the paired years of from_year and to_year to calcualte ag productivity change
+#' @param gcam_timestep Default = 5. integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)
 #'
 #' @keywords internal
 #' @export
 
 
 get_agprodchange <- function(data = NULL,
-                             from_year = NULL,
-                             to_year = NULL)
+                             # from_year = NULL,
+                             # to_year = NULL,
+                             year_pairs = NULL,
+                             gcam_timestep = 5)
 {
 
   year <- yield_multiplier <- AgProdChange_ni <- AgProdChange <- NULL
 
-  y1 <- paste0('X', from_year)
-  y2 <- paste0('X', to_year)
+  # Iterate over each year pair and calculate AgProdChange
+  for (i in seq_len(nrow(year_pairs))) {
+    y1 <- paste0('X', year_pairs$from_year[i])
+    y2 <- paste0('X', year_pairs$to_year[i])
 
-  df <- data %>%
-    dplyr::mutate(AgProdChange = ifelse(
-      year == y2,
-      ((yield_multiplier[year == y2] / yield_multiplier[year == y1])^(1/5)) * (1 + AgProdChange_ni[year == y2]) - 1,
-      AgProdChange)) %>%
-    dplyr::mutate(AgProdChange = ifelse(is.na(AgProdChange) & is.na(yield_multiplier), AgProdChange_ni, AgProdChange))
+    # Apply the transformation for the current year pair
+    data <- data %>%
+      dplyr::mutate(AgProdChange = ifelse(
+        year == y2,
+        ((yield_multiplier[year == y2] / yield_multiplier[year == y1])^(1 / gcam_timestep)) * (1 + AgProdChange_ni[year == y2]) - 1,
+        AgProdChange)) %>%
+      dplyr::mutate(AgProdChange = ifelse(is.na(AgProdChange) & is.na(yield_multiplier), AgProdChange_ni, AgProdChange))
+  }
 
-  return(df)
+  return(data)
 
 }
 
@@ -462,30 +469,35 @@ get_agprodchange <- function(data = NULL,
 #' Output agprodchange XML
 #'
 #' @param data Default = NULL. output data from function yield_shock_projection, or similar format of data
+#' @param gcamdata_dir Default = NULL. string for directory to the gcamdata folder within the specific GCAM version. The gcamdata need to be run with drake to have the CSV outputs beforehand.
 #' @param climate_model Default = 'gcm'. string for climate model name (e.g., 'CanESM5')
 #' @param climate_scenario Default = 'rcp'. string for climate scenario name (e.g., 'ssp245')
 #' @param member Default = 'member'. string for the ensemble member name
 #' @param bias_adj Default = 'ba'. string for the dataset used for climate data bias adjustment
 #' @param cfe Default = 'no-cfe'. string for whether the yield impact formula implimented CO2 fertilization effect.
+#' @param base_year Default = 2015. integer for the base year (for GCAM)
 #' @param gcam_version Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7
+#' @param gcam_timestep Default = 5. integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)
 #' @param diagnostics Default = TRUE. Logical for performing diagnostic plot
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #'
 #' @export
 
 gcam_agprodchange <- function(data = NULL,
+                              gcamdata_dir = NULL,
                               climate_model = 'gcm',
                               climate_scenario = 'rcp',
                               member = 'member',
                               bias_adj = 'ba',
                               gcam_version = 'gcam7',
+                              gcam_timestep = 5,
                               cfe = 'no-cfe',
+                              base_year = 2015,
                               diagnostics = TRUE,
                               output_dir = file.path(getwd(), 'output'))
 {
 
-  X2020 <- X2030 <- X2040 <- X2050 <- X2060 <- X2070 <- X2080 <- X2090 <-
-    GCAM_commod <- crop_type <- glu <- GLU <-  year <- irrtype <- mgmt <-
+  GCAM_commod <- crop_type <- glu <- GLU <-  year <- irrtype <- mgmt <-
     yield_multiplier <- region_name <- region <- AgProdChange <-
     AgProductionTechnology <- AgSupplySubsector <- AgSupplySector <- NULL
 
@@ -505,51 +517,46 @@ gcam_agprodchange <- function(data = NULL,
   # input reference ag productivity change without climate impact
   # note that different GCAM versions will have different agprodchange structure
   agprodchange_ni <- agprodchange_ref(gcam_version = gcam_version,
-                                      climate_scenario = climate_scenario)
+                                      gcam_timestep = gcam_timestep,
+                                      base_year = base_year,
+                                      climate_scenario = climate_scenario,
+                                      gcamdata_dir = gcamdata_dir)
+
+  # check if the baseline APC has the same time step as the input
+  years_ref <- sort(as.integer(gsub('X', '', unique(agprodchange_ni$year))))
+  ref_timestep <- unique(years_ref[2:length(years_ref)] - years_ref[1:length(years_ref)-1])
+  if(ref_timestep != as.integer(gcam_timestep)){
+    stop(paste0('The time step of the baseline agricultural productivity change (APC) data does not match the selected GCAM time step. Please provide the gcamdata_dir that holds the APC data with selected gcam_timestep = ', gcam_timestep))
+  }
 
   # linear interpolate at 5 year interval
   yield_impact <- dplyr::bind_rows(
     yield_impact_clean %>% dplyr::mutate(mgmt = 'hi'),
     yield_impact_clean %>% dplyr::mutate(mgmt = 'lo')) %>%
-    dplyr::mutate(X2025 = ((X2020 + X2030) / 2),
-                  X2035 = ((X2030 + X2040) / 2),
-                  X2045 = ((X2040 + X2050) / 2),
-                  X2055 = ((X2050 + X2060) / 2),
-                  X2065 = ((X2060 + X2070) / 2),
-                  X2075 = ((X2070 + X2080) / 2),
-                  X2085 = ((X2080 + X2090) / 2),
-                  X2095 = X2090,
-                  X2100 = X2090) %>%
-    tidyr::pivot_longer(cols = dplyr::all_of(paste0('X', seq(2015, 2100, 5))),
+    tidyr::pivot_longer(cols = dplyr::starts_with('X', ignore.case = F),
                         names_to = 'year', values_to = 'yield_multiplier') %>%
     dplyr::mutate(AgSupplySubsector = paste(paste0(GCAM_commod, crop_type), glu, sep = '_'),
                   AgProductionTechnology = paste(paste0(GCAM_commod, crop_type), glu, irrtype, mgmt, sep = '_')) %>%
     dplyr::select(region = region_name, AgSupplySector = GCAM_commod,
                   AgSupplySubsector, AgProductionTechnology, year, yield_multiplier)
 
+  # get all the years from the data
+  # this will follow the timestep selected by the user
+  select_years <- as.integer(gsub('X', '', unique(yield_impact$year)))
+
+  year_pairs <- data.frame(
+    from_year = select_years[1:length(select_years)-1],
+    to_year = select_years[2:length(select_years)]
+  )
+
+  # calculate agricultural productivity change
   yield_impact_gcam <- agprodchange_ni %>%
     dplyr::left_join(yield_impact,
                      by = c('region', 'AgSupplySector', 'AgSupplySubsector', 'AgProductionTechnology', 'year')) %>%
     # dplyr::mutate(AgProdChange_ni = ifelse(year == 'X2015', 0, AgProdChange_ni)) %>%
     dplyr::group_by(region, AgProductionTechnology) %>%
     dplyr::mutate(AgProdChange = as.numeric("")) %>%
-    get_agprodchange(2015, 2020) %>%
-    get_agprodchange(2020, 2025) %>%
-    get_agprodchange(2025, 2030) %>%
-    get_agprodchange(2030, 2035) %>%
-    get_agprodchange(2035, 2040) %>%
-    get_agprodchange(2040, 2045) %>%
-    get_agprodchange(2045, 2050) %>%
-    get_agprodchange(2050, 2055) %>%
-    get_agprodchange(2055, 2060) %>%
-    get_agprodchange(2060, 2065) %>%
-    get_agprodchange(2065, 2070) %>%
-    get_agprodchange(2070, 2075) %>%
-    get_agprodchange(2075, 2080) %>%
-    get_agprodchange(2080, 2085) %>%
-    get_agprodchange(2085, 2090) %>%
-    get_agprodchange(2090, 2095) %>%
-    get_agprodchange(2095, 2100) %>%
+    get_agprodchange(year_pairs = year_pairs) %>%
     dplyr::ungroup() %>%
     # dplyr::distinct() %>%
     dplyr::mutate(year = as.integer(gsub('X', '', year)),

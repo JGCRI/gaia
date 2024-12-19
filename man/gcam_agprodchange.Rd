@@ -6,18 +6,23 @@
 \usage{
 gcam_agprodchange(
   data = NULL,
+  gcamdata_dir = NULL,
   climate_model = "gcm",
   climate_scenario = "rcp",
   member = "member",
   bias_adj = "ba",
   gcam_version = "gcam7",
+  gcam_timestep = 5,
   cfe = "no-cfe",
+  base_year = 2015,
   diagnostics = TRUE,
   output_dir = file.path(getwd(), "output")
 )
 }
 \arguments{
 \item{data}{Default = NULL. output data from function yield_shock_projection, or similar format of data}
+
+\item{gcamdata_dir}{Default = NULL. string for directory to the gcamdata folder within the specific GCAM version. The gcamdata need to be run with drake to have the CSV outputs beforehand.}
 
 \item{climate_model}{Default = 'gcm'. string for climate model name (e.g., 'CanESM5')}
 
@@ -29,7 +34,11 @@ gcam_agprodchange(
 
 \item{gcam_version}{Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7}
 
+\item{gcam_timestep}{Default = 5. integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)}
+
 \item{cfe}{Default = 'no-cfe'. string for whether the yield impact formula implimented CO2 fertilization effect.}
+
+\item{base_year}{Default = 2015. integer for the base year (for GCAM)}
 
 \item{diagnostics}{Default = TRUE. Logical for performing diagnostic plot}
 
