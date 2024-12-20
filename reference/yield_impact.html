@@ -77,95 +77,95 @@
 
 
 <dl><dt id="arg-pr-hist-ncdf">pr_hist_ncdf<a class="anchor" aria-label="anchor" href="#arg-pr-hist-ncdf"></a></dt>
-<dd><p>Default = NULL. list of paths for historical precipitation NetCDF files from ISIMIP</p></dd>
+<dd><p>Default = NULL. List of paths for historical precipitation NetCDF files from ISIMIP</p></dd>
 
 
 <dt id="arg-pr-proj-ncdf">pr_proj_ncdf<a class="anchor" aria-label="anchor" href="#arg-pr-proj-ncdf"></a></dt>
-<dd><p>Default = NULL. list of paths for projected precipitation NetCDF files from ISIMIP</p></dd>
+<dd><p>Default = NULL. List of paths for projected precipitation NetCDF files from ISIMIP</p></dd>
 
 
 <dt id="arg-tas-hist-ncdf">tas_hist_ncdf<a class="anchor" aria-label="anchor" href="#arg-tas-hist-ncdf"></a></dt>
-<dd><p>Default = NULL. list of paths for historical temperature NetCDF files from ISIMIP</p></dd>
+<dd><p>Default = NULL. List of paths for historical temperature NetCDF files from ISIMIP</p></dd>
 
 
 <dt id="arg-tas-proj-ncdf">tas_proj_ncdf<a class="anchor" aria-label="anchor" href="#arg-tas-proj-ncdf"></a></dt>
-<dd><p>Default = NULL. list of paths for projected temperature NetCDF files from ISIMIP</p></dd>
+<dd><p>Default = NULL. List of paths for projected temperature NetCDF files from ISIMIP</p></dd>
 
 
 <dt id="arg-timestep">timestep<a class="anchor" aria-label="anchor" href="#arg-timestep"></a></dt>
-<dd><p>Default = 'monthly'. string for input climate data time step (e.g., 'monthly', 'daily')</p></dd>
+<dd><p>Default = 'monthly'. String for input climate data time step (e.g., 'monthly', 'daily')</p></dd>
 
 
 <dt id="arg-historical-periods">historical_periods<a class="anchor" aria-label="anchor" href="#arg-historical-periods"></a></dt>
-<dd><p>Default = NULL. vector for years to subset from the historical climate data. If NULL, use the default climate data period</p></dd>
+<dd><p>Default = NULL. Vector for years to subset from the historical climate data. If NULL, use the default climate data period</p></dd>
 
 
 <dt id="arg-climate-hist-dir">climate_hist_dir<a class="anchor" aria-label="anchor" href="#arg-climate-hist-dir"></a></dt>
-<dd><p>Default = NULL. string for path to the historical precipitation and temperature files by irrigation type and crop type. The climate files must follow the same structure as the output of the weighted_climate function. Provide path to this argument when pr_hist_ncdf and tas_hist_ncdf are NULL.</p></dd>
+<dd><p>Default = NULL. String for path to the historical precipitation and temperature files by irrigation type and crop type. The climate files must follow the same structure as the output of the weighted_climate function. Provide path to this argument when pr_hist_ncdf and tas_hist_ncdf are NULL.</p></dd>
 
 
 <dt id="arg-climate-impact-dir">climate_impact_dir<a class="anchor" aria-label="anchor" href="#arg-climate-impact-dir"></a></dt>
-<dd><p>Default = NULL. string for path to the projected precipitation and temperature files by irrigation type and crop type. The climate files must follow the same structure as the output of the weighted_climate function. Provide path to this argument when pr_proj_ncdf and tas_proj_ncdf are NULL.</p></dd>
+<dd><p>Default = NULL. String for path to the projected precipitation and temperature files by irrigation type and crop type. The climate files must follow the same structure as the output of the weighted_climate function. Provide path to this argument when pr_proj_ncdf and tas_proj_ncdf are NULL.</p></dd>
 
 
 <dt id="arg-climate-model">climate_model<a class="anchor" aria-label="anchor" href="#arg-climate-model"></a></dt>
-<dd><p>Default = 'gcm'. string for climate model name (e.g., 'CanESM5')</p></dd>
+<dd><p>Default = 'gcm'. String for climate model name (e.g., 'CanESM5')</p></dd>
 
 
 <dt id="arg-climate-scenario">climate_scenario<a class="anchor" aria-label="anchor" href="#arg-climate-scenario"></a></dt>
-<dd><p>Default = 'rcp'. string for climate scenario name (e.g., 'ssp245')</p></dd>
+<dd><p>Default = 'rcp'. String for climate scenario name (e.g., 'ssp245')</p></dd>
 
 
 <dt id="arg-member">member<a class="anchor" aria-label="anchor" href="#arg-member"></a></dt>
-<dd><p>Default = 'member'. string for the ensemble member name</p></dd>
+<dd><p>Default = 'member'. String for the ensemble member name</p></dd>
 
 
 <dt id="arg-bias-adj">bias_adj<a class="anchor" aria-label="anchor" href="#arg-bias-adj"></a></dt>
-<dd><p>Default = 'ba'. string for the dataset used for climate data bias adjustment</p></dd>
+<dd><p>Default = 'ba'. String for the dataset used for climate data bias adjustment</p></dd>
 
 
 <dt id="arg-cfe">cfe<a class="anchor" aria-label="anchor" href="#arg-cfe"></a></dt>
-<dd><p>Default = 'no-cfe'. string for whether the yield impact formula implemented CO2 fertilization effect</p></dd>
+<dd><p>Default = 'no-cfe'. String for whether the yield impact formula implemented CO2 fertilization effect</p></dd>
 
 
 <dt id="arg-gcam-version">gcam_version<a class="anchor" aria-label="anchor" href="#arg-gcam-version"></a></dt>
-<dd><p>Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7</p></dd>
+<dd><p>Default = 'gcam7'. String for the GCAM version. Only support gcam6 and gcam7</p></dd>
 
 
 <dt id="arg-gcam-timestep">gcam_timestep<a class="anchor" aria-label="anchor" href="#arg-gcam-timestep"></a></dt>
-<dd><p>Default = 5. integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)</p></dd>
+<dd><p>Default = 5. Integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)</p></dd>
 
 
 <dt id="arg-gcamdata-dir">gcamdata_dir<a class="anchor" aria-label="anchor" href="#arg-gcamdata-dir"></a></dt>
-<dd><p>Default = NULL. string for directory to the gcamdata folder within the specific GCAM version. The gcamdata need to be run with drake to have the CSV outputs beforehand.</p></dd>
+<dd><p>Default = NULL. String for directory to the gcamdata folder within the specific GCAM version. The gcamdata need to be run with drake to have the CSV outputs beforehand.</p></dd>
 
 
 <dt id="arg-use-default-coeff">use_default_coeff<a class="anchor" aria-label="anchor" href="#arg-use-default-coeff"></a></dt>
-<dd><p>Default = FALSE. binary for using default regression coefficients. Set to TRUE will use the default coefficients instead of calculating coefficients from the historical climate data.</p></dd>
+<dd><p>Default = FALSE. Binary for using default regression coefficients. Set to TRUE will use the default coefficients instead of calculating coefficients from the historical climate data.</p></dd>
 
 
 <dt id="arg-base-year">base_year<a class="anchor" aria-label="anchor" href="#arg-base-year"></a></dt>
-<dd><p>Default = 2015. integer for the base year (for GCAM)</p></dd>
+<dd><p>Default = 2015. Integer for the base year (for GCAM)</p></dd>
 
 
 <dt id="arg-start-year">start_year<a class="anchor" aria-label="anchor" href="#arg-start-year"></a></dt>
-<dd><p>Default = NULL. integer for the  start year of the projected data</p></dd>
+<dd><p>Default = NULL. Integer for the  start year of the projected data</p></dd>
 
 
 <dt id="arg-end-year">end_year<a class="anchor" aria-label="anchor" href="#arg-end-year"></a></dt>
-<dd><p>Default = NULL. integer for the end year of the projected data</p></dd>
+<dd><p>Default = NULL. Integer for the end year of the projected data</p></dd>
 
 
 <dt id="arg-smooth-window">smooth_window<a class="anchor" aria-label="anchor" href="#arg-smooth-window"></a></dt>
-<dd><p>Default = 20. integer for smoothing window in years</p></dd>
+<dd><p>Default = 20. Integer for smoothing window in years</p></dd>
 
 
 <dt id="arg-co-hist">co2_hist<a class="anchor" aria-label="anchor" href="#arg-co-hist"></a></dt>
-<dd><p>Default = NULL. data table for historical CO2 concentration in columns [year, co2_conc]. If NULL, use built-in CO2 emission data</p></dd>
+<dd><p>Default = NULL. Data table for historical CO2 concentration in columns [year, co2_conc]. If NULL, use built-in CO2 emission data</p></dd>
 
 
 <dt id="arg-co-proj">co2_proj<a class="anchor" aria-label="anchor" href="#arg-co-proj"></a></dt>
-<dd><p>Default = NULL. data table for projected CO2 concentration in columns [year, co2_conc]. If NULL, use built-in CO2 emission data</p></dd>
+<dd><p>Default = NULL. Data table for projected CO2 concentration in columns [year, co2_conc]. If NULL, use built-in CO2 emission data</p></dd>
 
 
 <dt id="arg-diagnostics">diagnostics<a class="anchor" aria-label="anchor" href="#arg-diagnostics"></a></dt>
@@ -176,6 +176,10 @@
 <dd><p>Default = file.path(getwd(), 'output'). String for output directory</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>A data frame of formatted agricultural productivity change for GCAM</p>
+    </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
