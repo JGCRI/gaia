@@ -7,9 +7,9 @@
 path_check(path = NULL, file_type = NULL)
 }
 \arguments{
-\item{path}{Path to the file}
+\item{path}{Default = NULL. String for path to the file}
 
-\item{file_type}{extension of the file}
+\item{file_type}{Default = NULL. String for extension of the file}
 }
 \description{
 check if file format is correct and file exists

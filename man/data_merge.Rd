@@ -14,17 +14,20 @@ data_merge(
 )
 }
 \arguments{
-\item{data}{Default = NULL. data table for crop data created by crop_month}
+\item{data}{Default = NULL. Data table for crop data created by crop_month}
 
-\item{crop_name}{Default = NULL. string for crop name}
+\item{crop_name}{Default = NULL. String for crop name}
 
-\item{yield}{Default = NULL. data table for yield data}
+\item{yield}{Default = NULL. Data table for yield data}
 
-\item{output_dir}{Default = NULL. string for path to output folder}
+\item{output_dir}{Default = NULL. String for path to output folder}
 
-\item{co2_hist}{Default = NULL data table for historical CO2 concentration [year, co2_conc]}
+\item{co2_hist}{Default = NULL. Data table for historical CO2 concentration [year, co2_conc]}
 
-\item{gdp_hist}{Default = gdp. data table for historical GDP by ISO [iso, year, gdp_pcap_ppp]}
+\item{gdp_hist}{Default = gdp. Data table for historical GDP by ISO [iso, year, gdp_pcap_ppp]}
+}
+\value{
+A data frame of aggregated country, crop, weather data
 }
 \description{
 Function to merge the iso codes, FAO yield (historic), crop calendar, and weather variables

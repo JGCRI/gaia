@@ -14,9 +14,12 @@ mirca_to_gcam}
 mirca_to_gcam(gcam_version = "gcam7", climate_scenario = NULL)
 }
 \arguments{
-\item{gcam_version}{Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7}
+\item{gcam_version}{Default = 'gcam7'. String for the GCAM version. Only support gcam6 and gcam7}
 
-\item{climate_scenario}{Default = NULL. string for climate scenario (e.g., 'ssp245')}
+\item{climate_scenario}{Default = NULL. String for climate scenario (e.g., 'ssp245')}
+}
+\value{
+A list of mapping of GCAM region, GLU, and country MIRCA crops, and GCAM commodities
 }
 \description{
 Mapping between GCAM region, GLU, country

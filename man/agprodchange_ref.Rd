@@ -13,15 +13,18 @@ agprodchange_ref(
 )
 }
 \arguments{
-\item{gcam_version}{Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7}
+\item{gcam_version}{Default = 'gcam7'. String for the GCAM version. Only support gcam6 and gcam7}
 
-\item{gcam_timestep}{Default = 5. integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)}
+\item{gcam_timestep}{Default = 5. Integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)}
 
-\item{base_year}{Default = 2015. integer for the base year (for GCAM)}
+\item{base_year}{Default = 2015. Integer for the base year (for GCAM)}
 
-\item{climate_scenario}{Default = NULL. string for climate scenario (e.g., 'ssp245')}
+\item{climate_scenario}{Default = NULL. String for climate scenario (e.g., 'ssp245')}
 
-\item{gcamdata_dir}{Default = NULL. string for directory to the gcamdata folder within the specific GCAM version. The gcamdata need to be run with drake to have the CSV outputs beforehand.}
+\item{gcamdata_dir}{Default = NULL. String for directory to the gcamdata folder within the specific GCAM version. The gcamdata need to be run with drake to have the CSV outputs beforehand.}
+}
+\value{
+A data frame of the baseline agricultural productivity change from GCAM
 }
 \description{
 Get the reference agricultural productivity change based GCAM version

@@ -14,20 +14,23 @@ data_trans(
 )
 }
 \arguments{
-\item{data}{Default = NULL. data table for crop data created by crop_month}
+\item{data}{Default = NULL. Data table for crop data created by crop_month}
 
-\item{climate_model}{Default = NULL. string for climate model}
+\item{climate_model}{Default = NULL. String for climate model}
 
-\item{climate_scenario}{Default = NULL. string for climate scenario (e.g., 'ssp245')}
+\item{climate_scenario}{Default = NULL. String for climate scenario (e.g., 'ssp245')}
 
-\item{crop_name}{Default = NULL. string for crop name}
+\item{crop_name}{Default = NULL. String for crop name}
 
-\item{output_dir}{Default = NULL. string for path to the output folder}
+\item{output_dir}{Default = NULL. String for path to the output folder}
 
-\item{co2_proj}{Default = NULL. data table for future CO2 concentration [year, co2_conc]}
+\item{co2_proj}{Default = NULL. Data table for future CO2 concentration [year, co2_conc]}
+}
+\value{
+A data frame of formatted future weather data
 }
 \description{
-Create dataframe with future monthly weather variables and iso codes for
+Create a data frame with future monthly weather variables and iso codes for
 projecting yields using fitted regression model
 }
 \keyword{internal}

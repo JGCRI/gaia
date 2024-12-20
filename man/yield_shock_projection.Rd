@@ -18,25 +18,28 @@ yield_shock_projection(
 )
 }
 \arguments{
-\item{use_default_coeff}{Default = FALSE. binary for using default regression coefficients. Set to TRUE will use the default coefficients instead of calculating coefficients from the historical climate data.}
+\item{use_default_coeff}{Default = FALSE. Binary for using default regression coefficients. Set to TRUE will use the default coefficients instead of calculating coefficients from the historical climate data.}
 
-\item{climate_model}{Default = NULL. string for climate model (e.g., 'CanESM5')}
+\item{climate_model}{Default = NULL. String for climate model (e.g., 'CanESM5')}
 
-\item{climate_scenario}{Default = NULL. string for climate scenario (e.g., 'ssp245')}
+\item{climate_scenario}{Default = NULL. String for climate scenario (e.g., 'ssp245')}
 
-\item{base_year}{Default = 2015. integer for the base year (for GCAM)}
+\item{base_year}{Default = 2015. Integer for the base year (for GCAM)}
 
-\item{start_year}{Default = NULL. integer for the  start year of the data}
+\item{start_year}{Default = NULL. Integer for the  start year of the data}
 
-\item{end_year}{Default = NULL. integer for the end year of the data}
+\item{end_year}{Default = NULL. Integer for the end year of the data}
 
-\item{gcam_timestep}{Default = 5. integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)}
+\item{gcam_timestep}{Default = 5. Integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)}
 
-\item{smooth_window}{Default = 20. integer for smoothing window in years}
+\item{smooth_window}{Default = 20. Integer for smoothing window in years}
 
 \item{diagnostics}{Default = TRUE. Logical for performing diagnostic plot}
 
 \item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
+}
+\value{
+A data frame of formatted smoothed annual crop yield shocks under climate impacts
 }
 \description{
 Project yields for future climate scenarios using regression analysis

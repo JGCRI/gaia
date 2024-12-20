@@ -7,7 +7,10 @@
 get_nc_time(nc_file = NULL)
 }
 \arguments{
-\item{nc_file}{string for path to the nc file}
+\item{nc_file}{Default = NULL. String for path to the nc file}
+}
+\value{
+A vector of time series based on the input NetCDF file.
 }
 \description{
 get the netcdf file time series

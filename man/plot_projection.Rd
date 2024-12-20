@@ -14,15 +14,15 @@ plot_projection(
 )
 }
 \arguments{
-\item{data}{Default = NULL. data frame for the data to plot}
+\item{data}{Default = NULL. Data frame for the data to plot}
 
-\item{climate_model}{Default = NULL. string for climate model name}
+\item{climate_model}{Default = NULL. String for climate model name}
 
-\item{climate_scenario}{Default = NULL. string for climate scenario (e.g., 'ssp245')}
+\item{climate_scenario}{Default = NULL. String for climate scenario (e.g., 'ssp245')}
 
-\item{crop_name}{Default = NULL. string for crop name}
+\item{crop_name}{Default = NULL. String for crop name}
 
-\item{base_year}{Default = NULL. integer for the base year (for GCAM)}
+\item{base_year}{Default = NULL. Integer for the base year (for GCAM)}
 
 \item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
 }

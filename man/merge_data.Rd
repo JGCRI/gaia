@@ -7,13 +7,16 @@
 merge_data(d1, d2, x1, x2)
 }
 \arguments{
-\item{d1}{data frame}
+\item{d1}{Data frame}
 
-\item{d2}{data frame}
+\item{d2}{Data frame}
 
-\item{x1}{string for column name in d1}
+\item{x1}{String for column name in d1}
 
-\item{x2}{string for column name in d2}
+\item{x2}{String for column name in d2}
+}
+\value{
+A data frame
 }
 \description{
 Merge columns from two data frames using two variables

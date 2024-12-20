@@ -11,7 +11,7 @@ yield_regression(
 )
 }
 \arguments{
-\item{formula}{Default = NULL. string for regression formula}
+\item{formula}{Default = NULL. String for regression formula}
 
 \item{diagnostics}{Default = TRUE. Logical for performing diagnostic plot}
 

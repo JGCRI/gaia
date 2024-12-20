@@ -20,29 +20,32 @@ gcam_agprodchange(
 )
 }
 \arguments{
-\item{data}{Default = NULL. output data from function yield_shock_projection, or similar format of data}
+\item{data}{Default = NULL. Output data frame from function yield_shock_projection, or similar format of data}
 
-\item{gcamdata_dir}{Default = NULL. string for directory to the gcamdata folder within the specific GCAM version. The gcamdata need to be run with drake to have the CSV outputs beforehand.}
+\item{gcamdata_dir}{Default = NULL. String for directory to the gcamdata folder within the specific GCAM version. The gcamdata need to be run with drake to have the CSV outputs beforehand.}
 
-\item{climate_model}{Default = 'gcm'. string for climate model name (e.g., 'CanESM5')}
+\item{climate_model}{Default = 'gcm'. String for climate model name (e.g., 'CanESM5')}
 
-\item{climate_scenario}{Default = 'rcp'. string for climate scenario name (e.g., 'ssp245')}
+\item{climate_scenario}{Default = 'rcp'. String for climate scenario name (e.g., 'ssp245')}
 
-\item{member}{Default = 'member'. string for the ensemble member name}
+\item{member}{Default = 'member'. String for the ensemble member name}
 
-\item{bias_adj}{Default = 'ba'. string for the dataset used for climate data bias adjustment}
+\item{bias_adj}{Default = 'ba'. String for the dataset used for climate data bias adjustment}
 
-\item{gcam_version}{Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7}
+\item{gcam_version}{Default = 'gcam7'. String for the GCAM version. Only support gcam6 and gcam7}
 
-\item{gcam_timestep}{Default = 5. integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)}
+\item{gcam_timestep}{Default = 5. Integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)}
 
-\item{cfe}{Default = 'no-cfe'. string for whether the yield impact formula implimented CO2 fertilization effect.}
+\item{cfe}{Default = 'no-cfe'. String for whether the yield impact formula implimented CO2 fertilization effect.}
 
-\item{base_year}{Default = 2015. integer for the base year (for GCAM)}
+\item{base_year}{Default = 2015. Integer for the base year (for GCAM)}
 
 \item{diagnostics}{Default = TRUE. Logical for performing diagnostic plot}
 
 \item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
+}
+\value{
+A data frame of formatted agricultural productivity change for GCAM
 }
 \description{
 Map country level yield impacts to GCAM region-GLU level

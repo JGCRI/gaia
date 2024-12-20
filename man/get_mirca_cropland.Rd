@@ -7,9 +7,12 @@
 get_mirca_cropland(raster_brick = NULL, mapping = NULL)
 }
 \arguments{
-\item{raster_brick}{Default = NULL. raster brick for the mirca cropland}
+\item{raster_brick}{Default = NULL. Raster brick for the mirca cropland}
 
-\item{mapping}{Default = NULL. data table of 0.5 degree 67420 grid cells with lat and lon of global land area}
+\item{mapping}{Default = NULL. Data table of 0.5 degree 67420 grid cells with lat and lon of global land area}
+}
+\value{
+A list of cropland fraction for country and GLU intersection
 }
 \description{
 Calculate cropland fraction within country and glu intersection

@@ -23,6 +23,9 @@ weather_clean(
 
 \item{time_periods}{Default = NULL. vector for years to subset from the climate data. If NULL, use the default climate data period}
 }
+\value{
+A data frame of formatted weather data
+}
 \description{
 Function to clean the input weather files (historic and model projections) for regression analysis
 }

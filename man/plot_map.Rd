@@ -11,9 +11,9 @@ plot_map(
 )
 }
 \arguments{
-\item{data}{Default = NULL. data frame for the data to plot}
+\item{data}{Default = NULL. Data frame for the data to plot}
 
-\item{plot_years}{Default = NULL. integer for the years to plot}
+\item{plot_years}{Default = NULL. Integer for the years to plot}
 
 \item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
 }

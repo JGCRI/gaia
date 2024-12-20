@@ -8,11 +8,14 @@ get_agprodchange}
 get_agprodchange(data = NULL, year_pairs = NULL, gcam_timestep = 5)
 }
 \arguments{
-\item{data}{Default = NULL. output data from function yield_shock_projection, or similar format of data}
+\item{data}{Default = NULL. Output data frame from function yield_shock_projection, or similar format of data}
 
-\item{year_pairs}{Default = NULL. data frame for the paired years of from_year and to_year to calcualte ag productivity change}
+\item{year_pairs}{Default = NULL. Data frame for the paired years of from_year and to_year to calcualte ag productivity change}
 
-\item{gcam_timestep}{Default = 5. integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)}
+\item{gcam_timestep}{Default = 5. Integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)}
+}
+\value{
+A data frame of agricultural productivity change
 }
 \description{
 Calculate agricultural productivity change based on yield impact multiplier and no impact yield

@@ -13,15 +13,15 @@ output_data(
 )
 }
 \arguments{
-\item{data}{Default = NULL. data frame}
+\item{data}{Default = NULL. Data frame}
 
-\item{save_path}{Default = NULL. string for path to the output folder}
+\item{save_path}{Default = NULL. String for path to the output folder}
 
-\item{file_name}{Default = NULL. string for file name}
+\item{file_name}{Default = NULL. String for file name}
 
-\item{is_figure}{Default = FALSE. binary for saving figure}
+\item{is_figure}{Default = FALSE. Binary for saving figure}
 
-\item{data_info}{Default = 'Data'. string for describing the data information}
+\item{data_info}{Default = 'Data'. String for describing the data information}
 }
 \description{
 write output

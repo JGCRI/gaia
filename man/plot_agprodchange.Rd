@@ -7,11 +7,11 @@
 plot_agprodchange(data = NULL, commodity = NULL, output_dir = NULL)
 }
 \arguments{
-\item{data}{Default = NULL. data frame for the data to plot}
+\item{data}{Default = NULL. Data frame for the data to plot}
 
-\item{commodity}{Default = NULL. string for GCAM commodity}
+\item{commodity}{Default = NULL. String for GCAM commodity}
 
-\item{output_dir}{Default = NULL. string for path to the output folder}
+\item{output_dir}{Default = NULL. String for path to the output folder}
 }
 \description{
 Plot projected ag productivity change by GCAM commodity

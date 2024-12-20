@@ -12,13 +12,16 @@ input_data(
 )
 }
 \arguments{
-\item{folder_path}{Default = NULL. string for the folder path}
+\item{folder_path}{Default = NULL. String for the folder path}
 
-\item{input_file}{Default = NULL. string for the name of the csv file to be read in}
+\item{input_file}{Default = NULL. String for the name of the csv file to be read in}
 
-\item{skip_number}{Default = 0. integer for the number of rows to skip}
+\item{skip_number}{Default = 0. Integer for the number of rows to skip}
 
 \item{quietly}{Default= FALSE. Logical. TRUE to output input data information; FALSE to silent.}
+}
+\value{
+A data table of input CSV file
 }
 \description{
 read in data and output number of rows and columns and variable names

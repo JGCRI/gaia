@@ -4,6 +4,6 @@
 ## usethis namespace: start
 #' @importFrom data.table :=
 #' @importFrom magrittr %>%
-#' @importFrom utils glob2rx
+#' @importFrom stats approx
 ## usethis namespace: end
 NULL
