@@ -1007,6 +1007,7 @@ plot_projection_smooth <- function(data = NULL,
 #' @param data Default = NULL. Data frame for the data to plot
 #' @param plot_years Default = NULL. Integer for the years to plot
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
+#' @import sf
 #' @keywords internal
 #' @export
 
