@@ -70,7 +70,7 @@ font-style: italic;
 <p align="center"><img src="vignetteFigs/divider.png"/></p>
 
 
-`gaia` is designed with a climate-driven empirical model at its core, integrated into an efficient modular structure. This architecture streamlines the entire workflow, from initial climate and crop data processing through empirical model fitting, yield shock projections under future climate scenarios, to the calculation of agricultural productivity changes for GCAM. The modular design also facilitates comprehensive diagnostic outputs, enhancing the tool's utility for researchers and policymakers.
+`gaia` is designed with a climate-driven empirical model at its core, integrated into an efficient modular structure. This architecture streamlines the entire workflow. This workflow includes raw climate and crop data processing, empirical model fitting, yield shock projections under future climate scenarios, and agricultural productivity change calculation for GCAM. The modular design also facilitates comprehensive diagnostic outputs, enhancing the tool's utility for researchers and policymakers.
 
 
 The primary functionality of `gaia` is encapsulated in the `yield_impact` wrapper function, which executes the entire workflow from climate data processing to yield shock estimation. Users can also execute individual functions to work through the main steps of the process ([Figure 1](#figure1)).
@@ -317,7 +317,7 @@ gaia::weighted_climate(pr_ncdf = pr_projection_file ,
 
 ```
 
-This will create a folder based on the specified `climate_model` argument (e.g., `output_dir/weighted_climate/canesm5`). Inside this folder, you will find files containing precipitation and temperature data weighted by the irrigated and rainfed cropland areas for 26 MIRCA crops. The file structure is organized in columns as follows: `[year, month, 1, 2, 3, ..., 265]`, where the numbers correspond to country IDs. To view the country names associated with these IDs, simply type `country_id` in the R console after loading the `gaia` package. Below is an example of the structure for the weighted precipitation data for rainfed soybean (`output_dir/weighted_climate/canesm5/anesm5_gcam-ref_month_precip_country_rfc_crop08_2015_2100.txt`).
+This will create a folder based on the specified `climate_model` argument (e.g., `output_dir/weighted_climate/canesm5`). Inside this folder, you will find files containing precipitation and temperature data weighted by the irrigated and rainfed cropland areas for 26 MIRCA crops. The file structure is organized in columns as follows: `[year, month, 1, 2, 3, ..., 265]`, where the numbers correspond to country IDs. To view the country names associated with these IDs, simply type `gaia::country_id` in the R console after loading the `gaia` package. Below is an example of the structure for the weighted precipitation data for rainfed soybean (`output_dir/weighted_climate/canesm5/anesm5_gcam-ref_month_precip_country_rfc_crop08_2015_2100.txt`).
 
 ```{r eval=T, echo=F, message=F, results='hide'}
 

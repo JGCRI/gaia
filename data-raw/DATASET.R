@@ -131,6 +131,14 @@ for(crop_name in mapping_mirca_sage$crop_mirca){
 usethis::use_data(coef_default, overwrite = TRUE)
 
 
+# country names and ids (from Stephanie's ag yield data)
+country_id <- data.table::fread(file.path(climate_data.dir, 'country_id.csv')) %>%
+  dplyr::rename(country_id = ID,
+                country_name = NAME,
+                iso = ISO3)
+
+usethis::use_data(country_id, overwrite = TRUE)
+
 #===============================================================================
 #'* Internal Data *
 #===============================================================================
@@ -138,12 +146,6 @@ usethis::use_data(coef_default, overwrite = TRUE)
 #-------------------------------------------------------------------------------
 # Country Mapping
 #-------------------------------------------------------------------------------
-# country names and ids (from Stephanie's ag yield data)
-country_id <- data.table::fread(file.path(climate_data.dir, 'country_id.csv')) %>%
-  dplyr::rename(country_id = ID,
-                country_name = NAME,
-                iso = ISO3)
-
 
 # FAO country from gcam boundary dataset (from https://zenodo.org/record/4688451)
 country_fao <- data.table::fread(file.path(gcam_boundary.dir,
@@ -534,7 +536,7 @@ sf::st_crs(map_country) <- 4326
 
 #'*Save All Internal Data*
 #'=========================
-usethis::use_data(country_id, mapping_country, grid_fao_glu, mapping_fao_glu, mapping_gcam_iso,
+usethis::use_data(mapping_country, grid_fao_glu, mapping_fao_glu, mapping_gcam_iso,
                   crop_mirca, gcam_commod, mapping_mirca_sage,
                   mapping_rmap_grid, mapping_rmap_gcambasins, mapping_rmap_gcamregions,
                   mirca_harvest_area, sage, fao_yield, fao_irr_equip, gdp,

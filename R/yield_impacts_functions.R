@@ -76,7 +76,7 @@ weather_clean <- function(file = NULL,
   d <- d[, (cols_to_num) := lapply(.SD, as.numeric), .SDcols = cols_to_num]
   d <- data.table::melt(d, id.vars = c("year", "month"), variable.name = "country_id")
   d$country_id <- as.numeric(as.character(gsub("X", "", d$country_id)))
-  d <- merge(d, country_id, by = "country_id", all.x = TRUE)
+  d <- merge(d, gaia::country_id, by = "country_id", all.x = TRUE)
   d$iso <- tolower(d$iso)
   d$country_id <- NULL
   d <- subset(d, country_name != "Ashmore and Cartier Islands")
