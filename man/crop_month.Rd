@@ -7,11 +7,14 @@
 crop_month(climate_data = NULL, crop_name = NULL, crop_calendar = NULL)
 }
 \arguments{
-\item{climate_data}{Default = NULL. data table for climate data}
+\item{climate_data}{Default = NULL. Data table for climate data}
 
-\item{crop_name}{Default = NULL. string for crop name}
+\item{crop_name}{Default = NULL. String for crop name}
 
-\item{crop_calendar}{Default = NULL. data table for crop calendar}
+\item{crop_calendar}{Default = NULL. Data table for crop calendar}
+}
+\value{
+A data frame of crop growing season
 }
 \description{
 Function to estimate growing season for each crop and country (SAGE db)

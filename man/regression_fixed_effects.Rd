@@ -12,13 +12,16 @@ regression_fixed_effects(
 )
 }
 \arguments{
-\item{data}{Default = NULL. data frame for crop data}
+\item{data}{Default = NULL. Data frame for crop data}
 
-\item{crop_name}{Default = NULL. string for crop name}
+\item{crop_name}{Default = NULL. String for crop name}
 
-\item{formula}{Default = NULL. string for regression fomular. Default is waldhoff_formula}
+\item{formula}{Default = NULL. String for regression fomular. Default is waldhoff_formula}
 
 \item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
+}
+\value{
+A data frame of historical weather variables used in the regression model
 }
 \description{
 Estimate regression

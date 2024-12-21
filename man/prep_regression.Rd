@@ -7,7 +7,10 @@
 prep_regression(data = NULL)
 }
 \arguments{
-\item{data}{Default = NULL. data frame for crop data}
+\item{data}{Default = NULL. Data frame for crop data}
+}
+\value{
+A data frame of formatted historical weather and crop data
 }
 \description{
 Prepare historic dataframe for regression analysis, create all variables that

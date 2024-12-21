@@ -12,13 +12,13 @@ plot_yield_impact(
 )
 }
 \arguments{
-\item{data}{Default = NULL. data frame for the data to plot}
+\item{data}{Default = NULL. Data frame for the data to plot}
 
-\item{commodity}{Default = NULL. string for GCAM commodity}
+\item{commodity}{Default = NULL. String for GCAM commodity}
 
-\item{crop_type}{Default = NULL. string for mirca crop type}
+\item{crop_type}{Default = NULL. String for mirca crop type}
 
-\item{output_dir}{Default = NULL. string for path to the output folder}
+\item{output_dir}{Default = NULL. String for path to the output folder}
 }
 \description{
 Plot projected yield impact by GCAM commodity

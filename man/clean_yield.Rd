@@ -7,7 +7,10 @@
 clean_yield(fao_yield = NULL)
 }
 \arguments{
-\item{fao_yield}{Default = NULL.  data frame for the fao yield table}
+\item{fao_yield}{Default = NULL. Data frame for the fao yield table}
+}
+\value{
+A data frame of formatted FAO yield data
 }
 \description{
 Function to clean FAO yield data

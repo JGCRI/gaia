@@ -55,3 +55,14 @@
 #'  coef_default <- gaia::coef_default
 #' }
 "coef_default"
+
+#' country_id
+#'
+#' @source country ID and name mapping
+#' @format R data frame
+#' @examples
+#' \dontrun{
+#'  library(gaia);
+#'  country_id <- gaia::country_id
+#' }
+"country_id"

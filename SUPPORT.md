@@ -8,4 +8,4 @@ We’re using <a href="https://github.com/JGCRI/gaia/discussions" target="_blank
 * Engage with other community members.
 * Welcome others and are open-minded. Remember that this is a community we build together 💪.
 
-To get started go to https://github.com/JGCRI/gaia/discussions and just click on <a href="https://github.com/JGCRI/gaia/discussions/new" target="_blank">New Discussions</a>. Relevant discussions can be converted into issues as needed. To report bugs and issues please see the <a href="https://jgcri.github.io/gaia/CONTRIBUTE.html" target="_blank">Contribute Page</a>.
+To get started go to https://github.com/JGCRI/gaia/discussions and just click on <a href="https://github.com/JGCRI/gaia/discussions/new" target="_blank">New Discussions</a>. Relevant discussions can be converted into issues as needed. To report bugs and issues please see the <a href="https://jgcri.github.io/gaia/CONTRIBUTING.html" target="_blank">Contribute Page</a>.

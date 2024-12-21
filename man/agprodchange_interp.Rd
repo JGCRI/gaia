@@ -7,9 +7,12 @@
 agprodchange_interp(data = NULL, gcam_timestep = 5)
 }
 \arguments{
-\item{data}{= NULL. data frame of the agprodchange}
+\item{data}{= NULL. Data frame of the agprodchange}
 
-\item{gcam_timestep}{Default = 5. integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)}
+\item{gcam_timestep}{Default = 5. Integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)}
+}
+\value{
+A data frame of the interpolated data
 }
 \description{
 Check if the reference agricultural productivity has the same timestep as the user defined timestep

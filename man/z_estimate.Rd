@@ -13,15 +13,18 @@ z_estimate(
 )
 }
 \arguments{
-\item{use_default_coeff}{Default = FALSE. binary for using default regression coefficients. Set to TRUE will use the default coefficients instead of calculating coefficients from the historical climate data.}
+\item{use_default_coeff}{Default = FALSE. Binary for using default regression coefficients. Set to TRUE will use the default coefficients instead of calculating coefficients from the historical climate data.}
 
-\item{climate_model}{Default = NULL. string for climate model name}
+\item{climate_model}{Default = NULL. String for climate model name}
 
-\item{climate_scenario}{Default = NULL. string for climate scenario (e.g., 'ssp245')}
+\item{climate_scenario}{Default = NULL. String for climate scenario (e.g., 'ssp245')}
 
-\item{crop_name}{Default = NULL. string for crop name}
+\item{crop_name}{Default = NULL. String for crop name}
 
 \item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
+}
+\value{
+A data frame of variables in the regression model
 }
 \description{
 Estimate Z_t = ln(Y_t) w/o constants

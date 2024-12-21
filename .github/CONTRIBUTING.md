@@ -10,7 +10,7 @@ But there are a few guidelines that we ask contributors to follow, guidelines th
   * Clearly describe the issue including steps to reproduce when it is a bug.
   * Discuss how your change will affect gaia, and thus whether it's MAJOR, MINOR, or a PATCH.
   * Interact with the project maintainers to refine/change/prioritize your issue and identify what branch will be targeted (see below).
-* Trivial changes to comments or documentation do not require creating a new issue.
+* Trivial changes to comments or documentation do not require creating a new issue. You may post your ideas in gaia's [GitHub Discussions](https://github.com/JGCRI/gaia/discussions).
 
 ## Making Changes
 

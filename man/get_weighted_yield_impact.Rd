@@ -13,15 +13,18 @@ get_weighted_yield_impact(
 )
 }
 \arguments{
-\item{data}{Default = NULL. output data from function yield_shock_projection, or similar format of data}
+\item{data}{Default = NULL. Output data frame from function yield_shock_projection, or similar format of data}
 
-\item{gcam_version}{Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7}
+\item{gcam_version}{Default = 'gcam7'. String for the GCAM version. Only support gcam6 and gcam7}
 
-\item{climate_scenario}{Default = NULL. string for climate scenario (e.g., 'ssp245')}
+\item{climate_scenario}{Default = NULL. String for climate scenario (e.g., 'ssp245')}
 
 \item{diagnostics}{Default = TRUE. Logical for performing diagnostic plot}
 
 \item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
+}
+\value{
+A data frame of projected yield shocks at the region-basin intersection
 }
 \description{
 Calculate weighted yield impact by region-glu scale for each GCAM commodity

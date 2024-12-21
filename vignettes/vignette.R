@@ -117,14 +117,14 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #  output_dir <- file.path(getwd(), 'gaia_output')
 #  
 #  # calculate weigted climate
-#  gaia::weighted_climate(pr_ncdf = pr_projection_file ,
-#                         tas_ncdf = tas_projection_file ,
-#                         timestep = 'monthly',
-#                         climate_model = 'canesm5',
-#                         climate_scenario = 'gcam-ref',
-#                         time_periods = seq(2015, 2100, 1),
-#                         output_dir = output_dir,
-#                         name_append = NULL)
+#  weighted_climate(pr_ncdf = pr_projection_file ,
+#                   tas_ncdf = tas_projection_file ,
+#                   timestep = 'monthly',
+#                   climate_model = 'canesm5',
+#                   climate_scenario = 'gcam-ref',
+#                   time_periods = seq(2015, 2100, 1),
+#                   output_dir = output_dir,
+#                   name_append = NULL)
 #  
 
 ## ----eval=T, echo=F, message=F, results='hide'--------------------------------
@@ -147,7 +147,7 @@ knitr::kable(input_climate[1:12],
 #  output_dir <- file.path(getwd(), 'gaia_output')
 #  
 #  # calculate crop calendars
-#  crop_cal <- gaia::crop_calendars(output_dir = output_dir)
+#  crop_cal <- crop_calendars(output_dir = output_dir)
 #  
 #  # print result
 #  crop_cal
@@ -173,20 +173,20 @@ knitr::kable(crop_cal[1:10],
 #  output_dir <- file.path(getwd(), 'gaia_output')
 #  
 #  # aggregate crop and climate information at the country level
-#  data_agg <- gaia::data_aggregation(climate_hist_dir = climate_hist_dir,
-#                                     climate_impact_dir = climate_impact_dir,
-#                                     climate_model = 'canesm5',
-#                                     climate_scenario = 'gcam-ref',
-#                                     output_dir = output_dir)
+#  data_agg <- data_aggregation(climate_hist_dir = climate_hist_dir,
+#                               climate_impact_dir = climate_impact_dir,
+#                               climate_model = 'canesm5',
+#                               climate_scenario = 'gcam-ref',
+#                               output_dir = output_dir)
 #  
 
 ## ----eval=T, echo=F, message=F, results='hide'--------------------------------
 
-crop_projection <- gaia::input_data(folder_path = file.path(getwd(), 'vignetteFigs'),
-                                    input_file = 'weather_canesm5_gcam-ref_soybean.csv')
+crop_projection <- input_data(folder_path = file.path(getwd(), 'vignetteFigs'),
+                              input_file = 'weather_canesm5_gcam-ref_soybean.csv')
 
-crop_hist <- gaia::input_data(folder_path = file.path(getwd(), 'vignetteFigs'),
-                              input_file = 'historic_vars_soybean.csv')
+crop_hist <- input_data(folder_path = file.path(getwd(), 'vignetteFigs'),
+                        input_file = 'historic_vars_soybean.csv')
 
 
 ## ----eval=T, echo=F-----------------------------------------------------------
@@ -211,8 +211,8 @@ knitr::kable(crop_projection[1:10],
 #  output_dir <- file.path(getwd(), 'gaia_output')
 #  
 #  # perform empirical regression
-#  gaia::yield_regression(diagnostics = TRUE,
-#                         output_dir = output_dir)
+#  yield_regression(diagnostics = TRUE,
+#                   output_dir = output_dir)
 #  
 
 ## ----eval=T, echo=F, message=F, results='hide'--------------------------------
@@ -235,15 +235,15 @@ knitr::kable(fit_model[1:10],
 #  output_dir <- file.path(getwd(), 'gaia_output')
 #  
 #  # calculate projected yield shocks
-#  out_yield_shock <- gaia::yield_shock_projection(use_default_coeff = FALSE,
-#                                                  climate_model = 'canesm5',
-#                                                  climate_scenario = 'gcam-ref',
-#                                                  base_year = 2015,
-#                                                  start_year = 2015,
-#                                                  end_year = 2100,
-#                                                  smooth_window = 20,
-#                                                  diagnostics = TRUE,
-#                                                  output_dir = output_dir)
+#  out_yield_shock <- yield_shock_projection(use_default_coeff = FALSE,
+#                                            climate_model = 'canesm5',
+#                                            climate_scenario = 'gcam-ref',
+#                                            base_year = 2015,
+#                                            start_year = 2015,
+#                                            end_year = 2100,
+#                                            smooth_window = 20,
+#                                            diagnostics = TRUE,
+#                                            output_dir = output_dir)
 #  
 
 ## ----eval=T, echo=F, message=F, results='hide'--------------------------------
@@ -277,14 +277,14 @@ knitr::kable(smooth_yield[1:10],
 #  output_dir <- file.path(getwd(), 'gaia_output')
 #  
 #  # calculate region-basin agricultural productivity growth rate for GCAM
-#  gcam_apg <- gaia::gcam_agprodchange(data = out_yield_shock,
-#                                      climate_model = 'canesm5',
-#                                      climate_scenario = 'gcam-ref',
-#                                      member = 'r1i1p1f1',
-#                                      bias_adj = 'w5e5',
-#                                      cfe = 'no-cfe',
-#                                      gcam_version = 'gcam7',
-#                                      diagnostics = TRUE,
-#                                      output_dir = output_dir)
+#  gcam_apg <- gcam_agprodchange(data = out_yield_shock,
+#                                climate_model = 'canesm5',
+#                                climate_scenario = 'gcam-ref',
+#                                member = 'r1i1p1f1',
+#                                bias_adj = 'w5e5',
+#                                cfe = 'no-cfe',
+#                                gcam_version = 'gcam7',
+#                                diagnostics = TRUE,
+#                                output_dir = output_dir)
 #  
 

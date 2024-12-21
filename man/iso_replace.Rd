@@ -7,7 +7,10 @@
 iso_replace(d)
 }
 \arguments{
-\item{d}{data frame with country_name column}
+\item{d}{Data frame with country_name column}
+}
+\value{
+A data frame
 }
 \description{
 ISO replacements for countries with non-standard names (can ad to as they come up)

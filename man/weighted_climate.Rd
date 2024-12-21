@@ -16,21 +16,21 @@ weighted_climate(
 )
 }
 \arguments{
-\item{pr_ncdf}{Default = NULL. list of paths for precipitation NetCDF files from ISIMIP}
+\item{pr_ncdf}{Default = NULL. List of paths for precipitation NetCDF files from ISIMIP}
 
-\item{tas_ncdf}{Default = NULL. list of paths for temperature NetCDF files from ISIMIP}
+\item{tas_ncdf}{Default = NULL. List of paths for temperature NetCDF files from ISIMIP}
 
-\item{timestep}{Default = 'monthly'. string for input climate data time step (e.g., 'monthly', 'daily')}
+\item{timestep}{Default = 'monthly'. String for input climate data time step (e.g., 'monthly', 'daily')}
 
-\item{climate_model}{Default = NULL. string for climate model (e.g., 'CanESM5')}
+\item{climate_model}{Default = NULL. String for climate model (e.g., 'CanESM5')}
 
-\item{climate_scenario}{Default = NULL. string for climate scenario (e.g., 'ssp245')}
+\item{climate_scenario}{Default = NULL. String for climate scenario (e.g., 'ssp245')}
 
-\item{time_periods}{Default = NULL. vector for years to subset from the climate data. If NULL, use the default climate data period}
+\item{time_periods}{Default = NULL. Vector for years to subset from the climate data. If NULL, use the default climate data period}
 
 \item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
 
-\item{name_append}{Default = NULL. string for name append to the output folder}
+\item{name_append}{Default = NULL. String for name append to the output folder}
 }
 \description{
 Process standard NetCDF files from ISIMIP to country level climate

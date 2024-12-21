@@ -12,13 +12,16 @@ weather_agg(
 )
 }
 \arguments{
-\item{file_precip}{Default = NULL. string for path to the precipitation file}
+\item{file_precip}{Default = NULL. String for path to the precipitation file}
 
-\item{file_temp}{Default = NULL. string for path to the temperature file}
+\item{file_temp}{Default = NULL. String for path to the temperature file}
 
-\item{crop_name}{Default = NULL. string for crop name}
+\item{crop_name}{Default = NULL. String for crop name}
 
-\item{time_periods}{Default = NULL. vector for years to subset from the climate data. If NULL, use the default climate data period}
+\item{time_periods}{Default = NULL. Vector for years to subset from the climate data. If NULL, use the default climate data period}
+}
+\value{
+A data frame of aggregated weather data
 }
 \description{
 Function to aggregate the cleaned temperature and precipitation data for each crop

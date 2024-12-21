@@ -7,11 +7,14 @@
 colname_replace(d, x, y)
 }
 \arguments{
-\item{d}{data frame}
+\item{d}{Data frame}
 
-\item{x}{string to be replaced}
+\item{x}{String to be replaced}
 
-\item{y}{replacing string}
+\item{y}{Replacing string}
+}
+\value{
+A data frame
 }
 \description{
 Shorter command to replace column names

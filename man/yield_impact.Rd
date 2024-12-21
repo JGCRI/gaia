@@ -33,55 +33,58 @@ yield_impact(
 )
 }
 \arguments{
-\item{pr_hist_ncdf}{Default = NULL. list of paths for historical precipitation NetCDF files from ISIMIP}
+\item{pr_hist_ncdf}{Default = NULL. List of paths for historical precipitation NetCDF files from ISIMIP}
 
-\item{pr_proj_ncdf}{Default = NULL. list of paths for projected precipitation NetCDF files from ISIMIP}
+\item{pr_proj_ncdf}{Default = NULL. List of paths for projected precipitation NetCDF files from ISIMIP}
 
-\item{tas_hist_ncdf}{Default = NULL. list of paths for historical temperature NetCDF files from ISIMIP}
+\item{tas_hist_ncdf}{Default = NULL. List of paths for historical temperature NetCDF files from ISIMIP}
 
-\item{tas_proj_ncdf}{Default = NULL. list of paths for projected temperature NetCDF files from ISIMIP}
+\item{tas_proj_ncdf}{Default = NULL. List of paths for projected temperature NetCDF files from ISIMIP}
 
-\item{timestep}{Default = 'monthly'. string for input climate data time step (e.g., 'monthly', 'daily')}
+\item{timestep}{Default = 'monthly'. String for input climate data time step (e.g., 'monthly', 'daily')}
 
-\item{historical_periods}{Default = NULL. vector for years to subset from the historical climate data. If NULL, use the default climate data period}
+\item{historical_periods}{Default = NULL. Vector for years to subset from the historical climate data. If NULL, use the default climate data period}
 
-\item{climate_hist_dir}{Default = NULL. string for path to the historical precipitation and temperature files by irrigation type and crop type. The climate files must follow the same structure as the output of the weighted_climate function. Provide path to this argument when pr_hist_ncdf and tas_hist_ncdf are NULL.}
+\item{climate_hist_dir}{Default = NULL. String for path to the historical precipitation and temperature files by irrigation type and crop type. The climate files must follow the same structure as the output of the weighted_climate function. Provide path to this argument when pr_hist_ncdf and tas_hist_ncdf are NULL.}
 
-\item{climate_impact_dir}{Default = NULL. string for path to the projected precipitation and temperature files by irrigation type and crop type. The climate files must follow the same structure as the output of the weighted_climate function. Provide path to this argument when pr_proj_ncdf and tas_proj_ncdf are NULL.}
+\item{climate_impact_dir}{Default = NULL. String for path to the projected precipitation and temperature files by irrigation type and crop type. The climate files must follow the same structure as the output of the weighted_climate function. Provide path to this argument when pr_proj_ncdf and tas_proj_ncdf are NULL.}
 
-\item{climate_model}{Default = 'gcm'. string for climate model name (e.g., 'CanESM5')}
+\item{climate_model}{Default = 'gcm'. String for climate model name (e.g., 'CanESM5')}
 
-\item{climate_scenario}{Default = 'rcp'. string for climate scenario name (e.g., 'ssp245')}
+\item{climate_scenario}{Default = 'rcp'. String for climate scenario name (e.g., 'ssp245')}
 
-\item{member}{Default = 'member'. string for the ensemble member name}
+\item{member}{Default = 'member'. String for the ensemble member name}
 
-\item{bias_adj}{Default = 'ba'. string for the dataset used for climate data bias adjustment}
+\item{bias_adj}{Default = 'ba'. String for the dataset used for climate data bias adjustment}
 
-\item{cfe}{Default = 'no-cfe'. string for whether the yield impact formula implemented CO2 fertilization effect}
+\item{cfe}{Default = 'no-cfe'. String for whether the yield impact formula implemented CO2 fertilization effect}
 
-\item{gcam_version}{Default = 'gcam7'. string for the GCAM version. Only support gcam6 and gcam7}
+\item{gcam_version}{Default = 'gcam7'. String for the GCAM version. Only support gcam6 and gcam7}
 
-\item{gcam_timestep}{Default = 5. integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)}
+\item{gcam_timestep}{Default = 5. Integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)}
 
-\item{gcamdata_dir}{Default = NULL. string for directory to the gcamdata folder within the specific GCAM version. The gcamdata need to be run with drake to have the CSV outputs beforehand.}
+\item{gcamdata_dir}{Default = NULL. String for directory to the gcamdata folder within the specific GCAM version. The gcamdata need to be run with drake to have the CSV outputs beforehand.}
 
-\item{use_default_coeff}{Default = FALSE. binary for using default regression coefficients. Set to TRUE will use the default coefficients instead of calculating coefficients from the historical climate data.}
+\item{use_default_coeff}{Default = FALSE. Binary for using default regression coefficients. Set to TRUE will use the default coefficients instead of calculating coefficients from the historical climate data.}
 
-\item{base_year}{Default = 2015. integer for the base year (for GCAM)}
+\item{base_year}{Default = 2015. Integer for the base year (for GCAM)}
 
-\item{start_year}{Default = NULL. integer for the  start year of the projected data}
+\item{start_year}{Default = NULL. Integer for the  start year of the projected data}
 
-\item{end_year}{Default = NULL. integer for the end year of the projected data}
+\item{end_year}{Default = NULL. Integer for the end year of the projected data}
 
-\item{smooth_window}{Default = 20. integer for smoothing window in years}
+\item{smooth_window}{Default = 20. Integer for smoothing window in years}
 
-\item{co2_hist}{Default = NULL. data table for historical CO2 concentration in columns [year, co2_conc]. If NULL, use built-in CO2 emission data}
+\item{co2_hist}{Default = NULL. Data table for historical CO2 concentration in columns [year, co2_conc]. If NULL, use built-in CO2 emission data}
 
-\item{co2_proj}{Default = NULL. data table for projected CO2 concentration in columns [year, co2_conc]. If NULL, use built-in CO2 emission data}
+\item{co2_proj}{Default = NULL. Data table for projected CO2 concentration in columns [year, co2_conc]. If NULL, use built-in CO2 emission data}
 
 \item{diagnostics}{Default = TRUE. Logical for performing diagnostic plot}
 
 \item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
+}
+\value{
+A data frame of formatted agricultural productivity change for GCAM
 }
 \description{
 integrate all the workflow together

@@ -12,11 +12,14 @@ get_mirca2000_data(
 )
 }
 \arguments{
-\item{download_url}{Link to the downloadable dataset}
+\item{download_url}{Default = 'https://zenodo.org/records/7422506/files/harvested_area_grids.zip?download=1'. Link to the downloadable dataset}
 
-\item{file_extension}{String of file extension without "."}
+\item{file_extension}{Default = 'zip'. String of file extension without "."}
 
-\item{data_dir}{Path of desired location to download data}
+\item{data_dir}{Default = file.path(getwd(), 'example'). Path of desired location to download data}
+}
+\value{
+A string of path that the data is downloaded to
 }
 \description{
 get_mirca2000_data

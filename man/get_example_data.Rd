@@ -12,13 +12,16 @@ get_example_data(
 )
 }
 \arguments{
-\item{download_url}{Link to the downloadable dataset}
+\item{download_url}{Default = ''. Link to the downloadable dataset}
 
 \item{file_extension}{Default = 'zip'. String of file extension without "."}
 
 \item{data_dir}{Default= file.path(getwd(), 'example'). Path of desired location to download data}
 
 \item{check_exist}{Default = TRUE. Binary to check if the example data already exists. If TRUE, then function gives error if the downloaded folder already exist}
+}
+\value{
+A string of path that the data is downloaded to
 }
 \description{
 get_example_data

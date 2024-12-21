@@ -12,13 +12,16 @@ format_projection(
 )
 }
 \arguments{
-\item{data}{Default = NULL. data frame from yield_shock_projection with columns [crop, model, iso, years]}
+\item{data}{Default = NULL. Data frame from yield_shock_projection with columns [crop, model, iso, years]}
 
-\item{base_year}{Default = NULL. integer for the base year (for GCAM)}
+\item{base_year}{Default = NULL. Integer for the base year (for GCAM)}
 
-\item{gcam_timestep}{Default = NULL. integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)}
+\item{gcam_timestep}{Default = NULL. Integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)}
 
 \item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
+}
+\value{
+A data frame of formatted and smoothed yield impact projection
 }
 \description{
 Format smoothed yield impact projection to wider

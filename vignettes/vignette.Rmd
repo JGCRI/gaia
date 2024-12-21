@@ -70,7 +70,7 @@ font-style: italic;
 <p align="center"><img src="vignetteFigs/divider.png"/></p>
 
 
-`gaia` is designed with a climate-driven empirical model at its core, integrated into an efficient modular structure. This architecture streamlines the entire workflow, from initial climate and crop data processing through empirical model fitting, yield shock projections under future climate scenarios, to the calculation of agricultural productivity changes for GCAM. The modular design also facilitates comprehensive diagnostic outputs, enhancing the tool's utility for researchers and policymakers.
+`gaia` is designed with a climate-driven empirical model at its core, integrated into an efficient modular structure. This architecture streamlines the entire workflow. This workflow includes raw climate and crop data processing, empirical model fitting, yield shock projections under future climate scenarios, and agricultural productivity change calculation for GCAM. The modular design also facilitates comprehensive diagnostic outputs, enhancing the tool's utility for researchers and policymakers.
 
 
 The primary functionality of `gaia` is encapsulated in the `yield_impact` wrapper function, which executes the entire workflow from climate data processing to yield shock estimation. Users can also execute individual functions to work through the main steps of the process ([Figure 1](#figure1)).
@@ -306,18 +306,18 @@ library(gaia)
 output_dir <- file.path(getwd(), 'gaia_output')
 
 # calculate weigted climate
-gaia::weighted_climate(pr_ncdf = pr_projection_file ,
-                       tas_ncdf = tas_projection_file ,
-                       timestep = 'monthly',
-                       climate_model = 'canesm5',
-                       climate_scenario = 'gcam-ref',
-                       time_periods = seq(2015, 2100, 1),
-                       output_dir = output_dir,
-                       name_append = NULL)
+weighted_climate(pr_ncdf = pr_projection_file ,
+                 tas_ncdf = tas_projection_file ,
+                 timestep = 'monthly',
+                 climate_model = 'canesm5',
+                 climate_scenario = 'gcam-ref',
+                 time_periods = seq(2015, 2100, 1),
+                 output_dir = output_dir,
+                 name_append = NULL)
 
 ```
 
-This will create a folder based on the specified `climate_model` argument (e.g., `output_dir/weighted_climate/canesm5`). Inside this folder, you will find files containing precipitation and temperature data weighted by the irrigated and rainfed cropland areas for 26 MIRCA crops. The file structure is organized in columns as follows: `[year, month, 1, 2, 3, ..., 265]`, where the numbers correspond to country IDs. To view the country names associated with these IDs, simply type `country_id` in the R console after loading the `gaia` package. Below is an example of the structure for the weighted precipitation data for rainfed soybean (`output_dir/weighted_climate/canesm5/anesm5_gcam-ref_month_precip_country_rfc_crop08_2015_2100.txt`).
+This will create a folder based on the specified `climate_model` argument (e.g., `output_dir/weighted_climate/canesm5`). Inside this folder, you will find files containing precipitation and temperature data weighted by the irrigated and rainfed cropland areas for 26 MIRCA crops. The file structure is organized in columns as follows: `[year, month, 1, 2, 3, ..., 265]`, where the numbers correspond to country IDs. To view the country names associated with these IDs, simply type `gaia::country_id` in the R console after loading the `gaia` package. Below is an example of the structure for the weighted precipitation data for rainfed soybean (`output_dir/weighted_climate/canesm5/anesm5_gcam-ref_month_precip_country_rfc_crop08_2015_2100.txt`).
 
 ```{r eval=T, echo=F, message=F, results='hide'}
 
@@ -349,7 +349,7 @@ The crop calendar outlines the planting and harvesting months for each predefine
 output_dir <- file.path(getwd(), 'gaia_output')
 
 # calculate crop calendars
-crop_cal <- gaia::crop_calendars(output_dir = output_dir)
+crop_cal <- crop_calendars(output_dir = output_dir)
 
 # print result
 crop_cal
@@ -395,11 +395,11 @@ The `data_aggregation` function creates two types of files in the output_dir/dat
 output_dir <- file.path(getwd(), 'gaia_output')
 
 # aggregate crop and climate information at the country level
-data_agg <- gaia::data_aggregation(climate_hist_dir = climate_hist_dir,
-                                   climate_impact_dir = climate_impact_dir,
-                                   climate_model = 'canesm5',
-                                   climate_scenario = 'gcam-ref',
-                                   output_dir = output_dir)
+data_agg <- data_aggregation(climate_hist_dir = climate_hist_dir,
+                             climate_impact_dir = climate_impact_dir,
+                             climate_model = 'canesm5',
+                             climate_scenario = 'gcam-ref',
+                             output_dir = output_dir)
 
 ```
 
@@ -445,8 +445,8 @@ The `gaia::yield_regression` function performs empirical model fitting and gener
 output_dir <- file.path(getwd(), 'gaia_output')
 
 # perform empirical regression
-gaia::yield_regression(diagnostics = TRUE,
-                       output_dir = output_dir)
+yield_regression(diagnostics = TRUE,
+                 output_dir = output_dir)
 
 ```
 
@@ -491,15 +491,15 @@ Once the `gaia` model has completed fitting, the `gaia::yield_shock_projection` 
 output_dir <- file.path(getwd(), 'gaia_output')
 
 # calculate projected yield shocks
-out_yield_shock <- gaia::yield_shock_projection(use_default_coeff = FALSE,
-                                                climate_model = 'canesm5',
-                                                climate_scenario = 'gcam-ref',
-                                                base_year = 2015,
-                                                start_year = 2015,
-                                                end_year = 2100,
-                                                smooth_window = 20,
-                                                diagnostics = TRUE,
-                                                output_dir = output_dir)
+out_yield_shock <- yield_shock_projection(use_default_coeff = FALSE,
+                                          climate_model = 'canesm5',
+                                          climate_scenario = 'gcam-ref',
+                                          base_year = 2015,
+                                          start_year = 2015,
+                                          end_year = 2100,
+                                          smooth_window = 20,
+                                          diagnostics = TRUE,
+                                          output_dir = output_dir)
 
 ```
 
@@ -553,15 +553,15 @@ The `gcam_agprodchange` function is specifically designed for the Global Change 
 output_dir <- file.path(getwd(), 'gaia_output')
 
 # calculate region-basin agricultural productivity growth rate for GCAM
-gcam_apg <- gaia::gcam_agprodchange(data = out_yield_shock,
-                                    climate_model = 'canesm5',
-                                    climate_scenario = 'gcam-ref',
-                                    member = 'r1i1p1f1',
-                                    bias_adj = 'w5e5',
-                                    cfe = 'no-cfe',
-                                    gcam_version = 'gcam7',
-                                    diagnostics = TRUE,
-                                    output_dir = output_dir)
+gcam_apg <- gcam_agprodchange(data = out_yield_shock,
+                              climate_model = 'canesm5',
+                              climate_scenario = 'gcam-ref',
+                              member = 'r1i1p1f1',
+                              bias_adj = 'w5e5',
+                              cfe = 'no-cfe',
+                              gcam_version = 'gcam7',
+                              diagnostics = TRUE,
+                              output_dir = output_dir)
 
 ```
 
