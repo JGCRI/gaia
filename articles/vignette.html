@@ -108,10 +108,10 @@ font-style: italic;
 <img src="vignetteFigs%2Fdivider.png"></p>
 <p><code>gaia</code> is designed with a climate-driven empirical model
 at its core, integrated into an efficient modular structure. This
-architecture streamlines the entire workflow, from initial climate and
-crop data processing through empirical model fitting, yield shock
-projections under future climate scenarios, to the calculation of
-agricultural productivity changes for GCAM. The modular design also
+architecture streamlines the entire workflow. This workflow includes raw
+climate and crop data processing, empirical model fitting, yield shock
+projections under future climate scenarios, and agricultural
+productivity change calculation for GCAM. The modular design also
 facilitates comprehensive diagnostic outputs, enhancing the tool’s
 utility for researchers and policymakers.</p>
 <p>The primary functionality of <code>gaia</code> is encapsulated in the
@@ -414,8 +414,8 @@ weighted by the irrigated and rainfed cropland areas for 26 MIRCA crops.
 The file structure is organized in columns as follows:
 <code>[year, month, 1, 2, 3, ..., 265]</code>, where the numbers
 correspond to country IDs. To view the country names associated with
-these IDs, simply type <code>country_id</code> in the R console after
-loading the <code>gaia</code> package. Below is an example of the
+these IDs, simply type <code><a href="../reference/country_id.html">gaia::country_id</a></code> in the R console
+after loading the <code>gaia</code> package. Below is an example of the
 structure for the weighted precipitation data for rainfed soybean
 (<code>output_dir/weighted_climate/canesm5/anesm5_gcam-ref_month_precip_country_rfc_crop08_2015_2100.txt</code>).</p>
 <pre><code><span><span class="co">## Error in get(paste0(generic, ".", class), envir = get_method_env()) : </span></span>
