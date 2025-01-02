@@ -26,6 +26,9 @@ plot_projection_smooth(
 
 \item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
 }
+\value{
+No return value, called for the side effects of plotting projected and smoothed annual yield shocks
+}
 \description{
 Figure of (smoothed) predicted values
 }

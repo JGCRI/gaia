@@ -473,6 +473,7 @@ regression_fixed_effects <- function(data = NULL,
 #' @param data Default = NULL. Data frame for crop data
 #' @param crop_name Default = NULL. String for crop name
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
+#' @returns No return value, called for the side effects of plotting fitted regression
 #' @keywords internal
 #' @export
 
@@ -910,6 +911,7 @@ format_projection <- function(data = NULL,
 #' @param crop_name Default = NULL. String for crop name
 #' @param base_year Default = NULL. Integer for the base year (for GCAM)
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
+#' @returns No return value, called for the side effects of plotting projected annual yield shocks
 #' @keywords internal
 #' @export
 
@@ -963,6 +965,7 @@ plot_projection <- function(data = NULL,
 #' @param crop_name Default = NULL. String for crop name
 #' @param base_year Default = NULL. Integer for the base year (for GCAM)
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
+#' @returns No return value, called for the side effects of plotting projected and smoothed annual yield shocks
 #' @keywords internal
 #' @export
 
@@ -1007,6 +1010,7 @@ plot_projection_smooth <- function(data = NULL,
 #' @param data Default = NULL. Data frame for the data to plot
 #' @param plot_years Default = NULL. Integer for the years to plot
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
+#' @returns No return value, called for the side effects of plotting map of yield shocks at selected years
 #' @import sf
 #' @keywords internal
 #' @export
@@ -1116,6 +1120,7 @@ plot_map <- function(data = NULL,
 #' @param commodity Default = NULL. String for GCAM commodity
 #' @param crop_type Default = NULL. String for mirca crop type
 #' @param output_dir Default = NULL. String for path to the output folder
+#' @returns No return value, called for the side effects of plotting projected yield impact by GCAM commodity
 #' @keywords internal
 #' @export
 
@@ -1202,6 +1207,7 @@ plot_yield_impact <- function(data = NULL,
 #' @param data Default = NULL. Data frame for the data to plot
 #' @param commodity Default = NULL. String for GCAM commodity
 #' @param output_dir Default = NULL. String for path to the output folder
+#' @returns No return value, called for the side effects of plotting agricultural productivity change by GCAM commodity
 #' @keywords internal
 #' @export
 

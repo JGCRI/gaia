@@ -26,6 +26,9 @@ plot_projection(
 
 \item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
 }
+\value{
+No return value, called for the side effects of plotting projected annual yield shocks
+}
 \description{
 Figure of (raw) annual predicted values (shows interannual variability)
 }

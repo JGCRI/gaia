@@ -13,6 +13,9 @@ plot_agprodchange(data = NULL, commodity = NULL, output_dir = NULL)
 
 \item{output_dir}{Default = NULL. String for path to the output folder}
 }
+\value{
+No return value, called for the side effects of plotting agricultural productivity change by GCAM commodity
+}
 \description{
 Plot projected ag productivity change by GCAM commodity
 }

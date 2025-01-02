@@ -11,6 +11,7 @@
 #' @param time_periods Default = NULL. Vector for years to subset from the climate data. If NULL, use the default climate data period
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @param name_append Default = NULL. String for name append to the output folder
+#' @returns No return value, called for the side effects of processing and writing output files
 #' @export
 
 

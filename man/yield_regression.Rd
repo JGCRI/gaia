@@ -17,6 +17,9 @@ yield_regression(
 
 \item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
 }
+\value{
+No return value, called for the side effects of processing and writing output files
+}
 \description{
 Yield regressions and create figures
 using average growing season temperature and precipitation, max and min months

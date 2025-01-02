@@ -6,6 +6,7 @@
 #' @param formula Default = NULL. String for regression formula
 #' @param diagnostics Default = TRUE. Logical for performing diagnostic plot
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
+#' @returns No return value, called for the side effects of processing and writing output files
 #' @export
 
 yield_regression <- function(formula = NULL,

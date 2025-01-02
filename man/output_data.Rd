@@ -23,6 +23,9 @@ output_data(
 
 \item{data_info}{Default = 'Data'. String for describing the data information}
 }
+\value{
+No return value, called for the side effects of writing output files
+}
 \description{
 write output
 }

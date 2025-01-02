@@ -20,6 +20,9 @@ plot_yield_impact(
 
 \item{output_dir}{Default = NULL. String for path to the output folder}
 }
+\value{
+No return value, called for the side effects of plotting projected yield impact by GCAM commodity
+}
 \description{
 Plot projected yield impact by GCAM commodity
 }

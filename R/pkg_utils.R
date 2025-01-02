@@ -6,6 +6,7 @@
 #' list example file paths
 #'
 #' @param path Default = NULL. String for path to example files
+#' @returns A string of path for files within the extras folder of gaia package
 #' @export
 
 pkg_example <- function(path = NULL) {
@@ -23,6 +24,7 @@ pkg_example <- function(path = NULL) {
 #'
 #' @param path Default = NULL. String for path to the file
 #' @param file_type Default = NULL. String for extension of the file
+#' @returns No return value, called for the side effects of checking if a path exists
 #' @keywords internal
 #' @export
 
@@ -147,6 +149,7 @@ input_data <- function(folder_path = NULL,
 #' @param file_name Default = NULL. String for file name
 #' @param is_figure Default = FALSE. Binary for saving figure
 #' @param data_info Default = 'Data'. String for describing the data information
+#' @returns No return value, called for the side effects of writing output files
 #' @keywords internal
 #' @export
 output_data <- function(data = NULL,

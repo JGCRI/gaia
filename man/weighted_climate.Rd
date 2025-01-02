@@ -32,6 +32,9 @@ weighted_climate(
 
 \item{name_append}{Default = NULL. String for name append to the output folder}
 }
+\value{
+No return value, called for the side effects of processing and writing output files
+}
 \description{
 Process standard NetCDF files from ISIMIP to country level climate
 based on crop harvested area from MIRCA2000

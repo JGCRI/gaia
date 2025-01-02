@@ -182,11 +182,11 @@ knitr::kable(crop_cal[1:10],
 
 ## ----eval=T, echo=F, message=F, results='hide'--------------------------------
 
-crop_projection <- input_data(folder_path = file.path(getwd(), 'vignetteFigs'),
-                              input_file = 'weather_canesm5_gcam-ref_soybean.csv')
+crop_projection <- gaia::input_data(folder_path = file.path(getwd(), 'vignetteFigs'),
+                                    input_file = 'weather_canesm5_gcam-ref_soybean.csv')
 
-crop_hist <- input_data(folder_path = file.path(getwd(), 'vignetteFigs'),
-                        input_file = 'historic_vars_soybean.csv')
+crop_hist <- gaia::input_data(folder_path = file.path(getwd(), 'vignetteFigs'),
+                              input_file = 'historic_vars_soybean.csv')
 
 
 ## ----eval=T, echo=F-----------------------------------------------------------
