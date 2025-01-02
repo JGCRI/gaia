@@ -17,6 +17,9 @@ plot_map(
 
 \item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
 }
+\value{
+No return value, called for the side effects of plotting map of yield shocks at selected years
+}
 \description{
 Plot maps by year, model, scenari, and crop
 }

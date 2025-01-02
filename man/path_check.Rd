@@ -11,6 +11,9 @@ path_check(path = NULL, file_type = NULL)
 
 \item{file_type}{Default = NULL. String for extension of the file}
 }
+\value{
+No return value, called for the side effects of checking if a path exists
+}
 \description{
 check if file format is correct and file exists
 }

@@ -9,6 +9,9 @@ pkg_example(path = NULL)
 \arguments{
 \item{path}{Default = NULL. String for path to example files}
 }
+\value{
+A string of path for files within the extras folder of gaia package
+}
 \description{
 list example file paths
 }
