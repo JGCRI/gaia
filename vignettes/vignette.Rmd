@@ -78,7 +78,7 @@ The primary functionality of `gaia` is encapsulated in the `yield_impact` wrappe
 
 1. [`weighted_climate`](#weighted_climate): Processes CMIP-ISIMIP climate NetCDF data and calculates cropland-weighted precipitation and temperature at the country level, differentiated by crop type and irrigation type. The function accepts both daily or monthly climate data that are consistent with the CMIP-ISIMIP NetCDF data format.   
 
-2. [`crop_calendars`](#crop_calendars): Generates crop planting months for each country and crop based on crop calendar data [Sacks et al., (2020)](https:/doi/org/10.1111/j.1466-8238.2010.00551.x).
+2. [`crop_calendars`](#crop_calendars): Generates crop planting months for each country and crop based on crop calendar data [Sacks et al., (2010)](https://doi.org/10.1111/j.1466-8238.2010.00551.x).
 
 3. [`data_aggregation`](#data_aggregation): Calculates crop growing seasons using climate variables processed by `weighted_climate` and crop calendars for both historical and projected periods. This function prepares climate and yield data for subsequent model fitting.
 
