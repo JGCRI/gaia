@@ -59,6 +59,56 @@ font-style: italic;
 
 </style>
 ```
+
+
+<!-------------------------->
+<!-------------------------->
+
+# Installtion
+
+<!-------------------------->
+<!-------------------------->
+
+<p align="center"><img src="vignetteFigs/divider.png"/></p>
+
+
+1. Download and install:
+    - R (https://www.r-project.org/)
+    - R studio (https://www.rstudio.com/)  
+
+
+2. Open R studio:
+
+```r
+install.packages("devtools")
+devtools::install_github("JGCRI/gaia")
+```
+
+or
+
+```r
+install.packages("remotes")
+remotes::install_github("JGCRI/gaia")
+```
+
+Additional steps for UBUNTU from a terminal
+
+```
+sudo add-apt-repository ppa:ubuntugis/ppa
+sudo apt-get update
+sudo apt-get install libudunits2-dev libgdal-dev libgeos-dev libproj-dev libmagick++-dev
+```
+
+Additional steps for MACOSX from a terminal
+
+```
+brew install pkg-config
+brew install gdal
+```
+
+<br/>
+
+
 <!-------------------------->
 <!-------------------------->
 
@@ -76,7 +126,7 @@ font-style: italic;
 The primary functionality of `gaia` is encapsulated in the `yield_impact` wrapper function, which executes the entire workflow from climate data processing to yield shock estimation. Users can also execute individual functions to work through the main steps of the process ([Figure 1](#figure1)).
 
 
-1. [`weighted_climate`](#weighted_climate): Processes CMIP-ISIMIP climate NetCDF data and calculates cropland-weighted precipitation and temperature at the country level, differentiated by crop type and irrigation type. The function accepts both daily or monthly climate data that are consistent with the CMIP-ISIMIP NetCDF data format.   
+1. [`weighted_climate`](#weighted_climate): Processes CMIP climate NetCDF data in accordance with the [ISIMIP simulation protocols](https://www.isimip.org/protocol "Here we specifically require the bias-adjusted and statistically downscaled CMIP climate data following ISIMIP's protocols") and calculates cropland-weighted precipitation and temperature at the country level, differentiated by crop type and irrigation type. The function accepts both daily or monthly climate data in NetCDF format that follows ISIMIP protocols.
 
 2. [`crop_calendars`](#crop_calendars): Generates crop planting months for each country and crop based on crop calendar data [Sacks et al., (2010)](https://doi.org/10.1111/j.1466-8238.2010.00551.x).
 
