@@ -7,7 +7,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #  library(gaia)
 #  
 #  # Path to the output folder. Change it to your desired location
-#  output_dir <- file.path(getwd(), 'gaia_output')
+#  output_dir <- 'gaia_output'
 #  
 #  # Cropland-weighted historical and future climate data
 #  data_dir <- gaia::get_example_data(
@@ -28,7 +28,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #  library(gaia)
 #  
 #  # Path to the output folder. Change it to your desired location
-#  output_dir <- file.path(getwd(), 'gaia_output')
+#  output_dir <- 'gaia_output'
 #  
 #  # Future Climate Data
 #  data_dir <- gaia::get_example_data(
@@ -49,10 +49,10 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #  library(gaia)
 #  
 #  # Path to the output folder. Change it to your desired location
-#  output_dir <- file.path(getwd(), 'gaia_output')
+#  output_dir <- 'gaia_output'
 #  
 #  # Run gaia
-#  # The full run with raw climate data can take up to an hour
+#  # The full run with raw future climate data can take up to an hour
 #  gaia::yield_impact(
 #    pr_hist_ncdf = NULL,                    # path to historical precipitation NetCDF file (must follow ISIMIP format); only if you wish to use your own historical precipitation observation
 #    tas_hist_ncdf = NULL,                   # path to historical temperature NetCDF file (must follow ISIMIP format); only if you wish to use your own historical temperature observation
@@ -85,7 +85,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #  library(gaia)
 #  
 #  # Path to the output folder. Change it to your desired location
-#  output_dir <- file.path(getwd(), 'gaia_output')
+#  output_dir <- 'gaia_output'
 #  
 #  # Run gaia
 #  gaia::yield_impact(
@@ -114,7 +114,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #  library(gaia)
 #  
 #  # Path to the output folder where you wish to save the outputs. Change it accordingly
-#  output_dir <- file.path(getwd(), 'gaia_output')
+#  output_dir <- 'gaia_output'
 #  
 #  # calculate weigted climate
 #  weighted_climate(pr_ncdf = pr_projection_file ,
@@ -134,7 +134,7 @@ input_climate <- gaia::input_data(folder_path = file.path(getwd(), 'vignetteFigs
 
 
 ## ----eval=TRUE, echo=FALSE----------------------------------------------------
-library(dplyr)
+library(tibble)
 library(kableExtra)
 knitr::kable(input_climate[1:12], 
              caption = '**Table 1.** Soybean-area-weighted precipitation from the weighted_climate function.') %>% 
@@ -144,7 +144,7 @@ knitr::kable(input_climate[1:12],
 ## ----eval=F, echo=T-----------------------------------------------------------
 #  
 #  # Path to the output folder where you wish to save the outputs. Change it accordingly
-#  output_dir <- file.path(getwd(), 'gaia_output')
+#  output_dir <- 'gaia_output'
 #  
 #  # calculate crop calendars
 #  crop_cal <- crop_calendars(output_dir = output_dir)
@@ -170,7 +170,7 @@ knitr::kable(crop_cal[1:10],
 ## ----eval=F, echo=T-----------------------------------------------------------
 #  
 #  # Path to the output folder where you wish to save the outputs. Change it accordingly
-#  output_dir <- file.path(getwd(), 'gaia_output')
+#  output_dir <- 'gaia_output'
 #  
 #  # aggregate crop and climate information at the country level
 #  data_agg <- data_aggregation(climate_hist_dir = climate_hist_dir,
@@ -208,7 +208,7 @@ knitr::kable(crop_projection[1:10],
 ## ----eval=F, echo=T-----------------------------------------------------------
 #  
 #  # Path to the output folder where you wish to save the outputs. Change it accordingly
-#  output_dir <- file.path(getwd(), 'gaia_output')
+#  output_dir <- 'gaia_output'
 #  
 #  # perform empirical regression
 #  yield_regression(diagnostics = TRUE,
@@ -232,7 +232,7 @@ knitr::kable(fit_model[1:10],
 ## ----eval=F, echo=T-----------------------------------------------------------
 #  
 #  # Path to the output folder where you wish to save the outputs. Change it accordingly
-#  output_dir <- file.path(getwd(), 'gaia_output')
+#  output_dir <- 'gaia_output'
 #  
 #  # calculate projected yield shocks
 #  out_yield_shock <- yield_shock_projection(use_default_coeff = FALSE,
@@ -274,7 +274,7 @@ knitr::kable(smooth_yield[1:10],
 ## ----eval=F, echo=T-----------------------------------------------------------
 #  
 #  # Path to the output folder where you wish to save the outputs. Change it accordingly
-#  output_dir <- file.path(getwd(), 'gaia_output')
+#  output_dir <- 'gaia_output'
 #  
 #  # calculate region-basin agricultural productivity growth rate for GCAM
 #  gcam_apg <- gcam_agprodchange(data = out_yield_shock,
