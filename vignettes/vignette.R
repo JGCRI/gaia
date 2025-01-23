@@ -167,6 +167,40 @@ knitr::kable(crop_cal[1:10],
   kable_styling(bootstrap_options = "striped", full_width = T, position = 'center') %>% 
   footnote(general = 'This only shows the first 10 lines of the example data.')
 
+## ----eval=T, echo=T, message=F, results='hide'--------------------------------
+
+# adding a new crop: yams. Construct the structure of the data with yams
+crop_add <- expand.grid(iso = c('cog', 'gha', 'lbr'),
+                        crops = c(names(crop_cal)[2:(ncol(crop_cal) - 2)], 'yams')) %>%
+  dplyr::mutate(value = ifelse(crops == 'yams', 1, 0)) %>% 
+  tidyr::pivot_wider(names_from = 'crops', values_from = 'value', values_fill = 0)
+
+# planting and harvesting month for countries with yams
+crop_harvest_plant <- data.frame(iso = c('cog', 'gha', 'lbr'),
+                                 plant = c(2, 2, 2),
+                                 harvest  = c(9, 10, 9))
+
+# complete the data structure with yams added
+crop_add <- dplyr::left_join(crop_add, crop_harvest_plant, by = 'iso')
+
+# bind the data to create updated crop calendars
+crop_cal_update <- crop_cal %>% 
+  dplyr::bind_rows(crop_add) %>% 
+  tidyr::replace_na(list(yams = 0)) %>% 
+  dplyr::select(-plant, -harvest, everything(), plant, harvest)
+
+# view updated crop calendar
+crop_cal_update
+
+
+## ----eval=T, echo=F-----------------------------------------------------------
+library(dplyr)
+library(kableExtra)
+knitr::kable(crop_cal_update[1:10], 
+             caption = '**Table 3.** Updated crop calendar with yams') %>% 
+  kable_styling(bootstrap_options = "striped", full_width = T, position = 'center') %>% 
+  footnote(general = 'This only shows the first 10 lines of the example data.')
+
 ## ----eval=F, echo=T-----------------------------------------------------------
 #  
 #  # Path to the output folder where you wish to save the outputs. Change it accordingly
@@ -194,16 +228,18 @@ library(dplyr)
 library(kableExtra)
 
 knitr::kable(crop_hist[1:10], 
-             caption = '**Table 3.** Aggregated historical information for soybean.') %>% 
+             caption = '**Table 4.** Aggregated historical information for soybean.') %>% 
   kable_styling(bootstrap_options = "striped", full_width = T, position = 'center') %>% 
   footnote(general = 'This only shows the first 10 lines of the example data.')
 
+## ----eval=T, echo=F-----------------------------------------------------------
+library(dplyr)
+library(kableExtra)
 
 knitr::kable(crop_projection[1:10], 
-             caption = '**Table 4.** Aggregated weather information for soybean.') %>% 
+             caption = '**Table 5.** Aggregated weather information for soybean.') %>% 
   kable_styling(bootstrap_options = "striped", full_width = T, position = 'center') %>% 
   footnote(general = 'This only shows the first 10 lines of the example data.')
-
 
 ## ----eval=F, echo=T-----------------------------------------------------------
 #  
@@ -225,7 +261,7 @@ fit_model <- gaia::input_data(folder_path = file.path(getwd(), 'vignetteFigs'),
 library(dplyr)
 library(kableExtra)
 knitr::kable(fit_model[1:10], 
-             caption = '**Table 5.** Fitted model for soybean.') %>% 
+             caption = '**Table 6.** Fitted model for soybean.') %>% 
   kable_styling(bootstrap_options = "striped", full_width = T, position = 'center') %>% 
   footnote(general = 'This only shows the first 10 lines of the example data.')
 
@@ -260,13 +296,17 @@ library(dplyr)
 library(kableExtra)
 
 knitr::kable(annual_yield[1:10], 
-             caption = '**Table 6.** Annual yield shocks for soybean.') %>% 
+             caption = '**Table 7.** Annual yield shocks for soybean.') %>% 
   kable_styling(bootstrap_options = "striped", full_width = T, position = 'center') %>% 
   footnote(general = 'This only shows the first 10 lines of the example data.')
 
 
+## ----eval=T, echo=F-----------------------------------------------------------
+library(dplyr)
+library(kableExtra)
+
 knitr::kable(smooth_yield[1:10], 
-             caption = '**Table 7.** 20-year smoothed yield shocks for soybean.') %>% 
+             caption = '**Table 8.** 20-year smoothed yield shocks for soybean.') %>% 
   kable_styling(bootstrap_options = "striped", full_width = T, position = 'center') %>% 
   footnote(general = 'This only shows the first 10 lines of the example data.')
 
