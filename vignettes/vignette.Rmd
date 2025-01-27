@@ -360,7 +360,7 @@ Example 1 and 2 demonstrates how to use the wrapper function `yield_impact` to s
 
 `weighted_climate` function calculates the cropland-weighted monthly precipitation and temperature for the projected climate. This function can be used if you wish to calculate cropland-weighted monthly precipitation and temperature using different climate forcing data. Please ensure that the climate NetCDF files follows the [ISIMIP simulation protocols](https://www.isimip.org/protocol "Here we specifically require the bias-adjusted and statistically downscaled CMIP climate data following ISIMIP's protocols"). Our [example data 1](#example-data-1-quick-start-dataset) includes the standard ISIMIP-style climate data for users to check the data structure and format.
 
-The example below uses the monthly precipitation and temperature projections from 2015 to 2100. To run this climate data processing, please provide the file paths for the precipitation and temperature NetCDF files using the `pr_ncdf` and `tas_ncdf` arguments, respectively, and adjust the other arguments accordingly to match the specifics of your climate data.
+The example below uses the monthly precipitation (mm) and temperature (degree C) projections from 2015 to 2100. To run this climate data processing, please provide the file paths for the precipitation and temperature NetCDF files using the `pr_ncdf` and `tas_ncdf` arguments, respectively, and adjust the other arguments accordingly to match the specifics of your climate data.
 
 Please note that this step may take up to an hour to complete.
 
@@ -506,9 +506,9 @@ The `data_aggregation` function calculates crop growing seasons using climate va
 
 **Outputs of the function:** The `data_aggregation` function returns a list of historical and projected weather variables and crop data. It also writes the following output files under the `output_dir/data_processed` folder:
 
-* `historic_vars_[crop-name].csv`: This file summarizes historical harvest area, irrigation type, yield, CO2, growing season, weather data by country and crop. For example, historical information for soybean is illustrated in [Table 4](#table4).
+* `historic_vars_[crop-name].csv`: This file summarizes **historical** harvest area (ha), irrigation type, annual yield (kg/ha), CO2 (ppm), growing season, precipitation (mm/month) and temperature (degree C) by country and crop. For example, historical information for soybean is illustrated in [Table 4](#table4). The `grow_season` column is binary and value 1 indicates the `grow_month` from the same row is considered growing season for the crop.
 
-* `weather_[climate-model]_[climate-scenario]_[crop-name].csv`: This file includes future aggregated weather data for the specified climate model/climate scenario/crop. An example of climate information for soybean is shown in [Table 5](#table5).
+* `weather_[climate-model]_[climate-scenario]_[crop-name].csv`: This file includes aggregated **future** weather data for the specified climate model/climate scenario/crop. An example of climate data for soybean is shown in [Table 5](#table5). The output includes the minimum, maximum, and mean temperature, as well as precipitation, all calculated on a monthly basis for each year, based on the cropland-weighted monthly precipitation and temperature values.
 
 ```{r eval=F, echo=T}
 
@@ -555,7 +555,7 @@ library(dplyr)
 library(kableExtra)
 
 knitr::kable(crop_projection[1:10], 
-             caption = '**Table 5.** Aggregated weather information for soybean.') %>% 
+             caption = '**Table 5.** Aggregated future weather information for soybean.') %>% 
   kable_styling(bootstrap_options = "striped", full_width = T, position = 'center') %>% 
   footnote(general = 'This only shows the first 10 lines of the example data.')
 ```

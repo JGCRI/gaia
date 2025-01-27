@@ -237,7 +237,7 @@ library(dplyr)
 library(kableExtra)
 
 knitr::kable(crop_projection[1:10], 
-             caption = '**Table 5.** Aggregated weather information for soybean.') %>% 
+             caption = '**Table 5.** Aggregated future weather information for soybean.') %>% 
   kable_styling(bootstrap_options = "striped", full_width = T, position = 'center') %>% 
   footnote(general = 'This only shows the first 10 lines of the example data.')
 
