@@ -126,7 +126,7 @@ brew install gdal
 The primary functionality of `gaia` is encapsulated in the `yield_impact` wrapper function, which executes the entire workflow from climate data processing to yield shock estimation. Users can also execute individual functions to work through the main steps of the process ([Figure 1](#figure1)).
 
 
-1. [`weighted_climate`](#weighted_climate): Processes CMIP climate NetCDF data in accordance with the [ISIMIP simulation protocols](https://www.isimip.org/protocol "Here we specifically require the bias-adjusted and statistically downscaled CMIP climate data following ISIMIP's protocols") and calculates cropland-weighted precipitation and temperature at the country level, differentiated by crop type and irrigation type. The function accepts both daily or monthly climate data in NetCDF format that follows ISIMIP protocols.
+1. [`weighted_climate`](#weighted_climate): Processes CMIP climate NetCDF data in accordance with the [ISIMIP simulation protocols](https://www.isimip.org/protocol/preparing-simulation-files/ "Here we specifically require the bias-adjusted and statistically downscaled CMIP climate data following ISIMIP's protocols") and calculates cropland-weighted precipitation and temperature at the country level, differentiated by crop type and irrigation type. The function accepts both daily or monthly climate data in NetCDF format that follows ISIMIP protocols.
 
 2. [`crop_calendars`](#crop_calendars): Generates crop planting months for each country and crop based on crop calendar data [Sacks et al., (2010)](https://doi.org/10.1111/j.1466-8238.2010.00551.x).
 
@@ -170,6 +170,11 @@ The primary functionality of `gaia` is encapsulated in the `yield_impact` wrappe
 
 Download the example data 1 using the instructions below. This dataset includes both historical climate observations and future climate projections, weighted by cropland areas and formatted in a tabular structure (see [Table 1](#table1)), as required by `gaia`. The cropland-area-weighted, country-level climate data contains monthly precipitation and temperature for 26 crop types, distinguishing between irrigated and rainfed areas.
 
+There are two options to download the data:
+
+* Option 1: Please use this [download url](https://zenodo.org/records/13976521/files/weighted_climate.zip?download=1) and set the `data_dir` to the directory of the downloaded folder;
+* Option 2: Use `gaia::get_example_data` function following the code chunk below.
+
 
 ```{r eval=F}
 
@@ -184,7 +189,12 @@ data_dir <- gaia::get_example_data(
   download_url = 'https://zenodo.org/records/13976521/files/weighted_climate.zip?download=1',
   data_dir = output_dir
 )
+```
 
+
+Then, set the paths to historical and future climate data folder.
+
+```{r eval=F}
 # Path to the folder that holds cropland-area-weighted precipitation and temperature TXT files
 # historical climate observation
 climate_hist_dir <- file.path(data_dir, 'climate_hist')
@@ -206,6 +216,10 @@ climate_impact_dir <- file.path(data_dir, 'canesm5')
 
 Download the example data 2 using the instructions below. This dataset includes future global monthly precipitation and temperature from 2015 to 2100 at 0.5-degree resolution. To use a different climate model or scenario, you can provide your own climate data in NetCDF format. Note that `gaia` adheres to the ISIMIP climate data format as its standard, so your NetCDF files should be formatted accordingly if the data is not directly downloaded from ISIMIP.
 
+There are two options to download the data:
+
+* Option 1: Please use this [download url](https://zenodo.org/records/13976521/files/gaia_example_climate.zip?download=1) and set the `data_dir` to the directory of the downloaded folder;
+* Option 2: Use `gaia::get_example_data` function following the code chunk below.
 
 ```{r eval=F}
 
@@ -221,6 +235,11 @@ data_dir <- gaia::get_example_data(
   data_dir = output_dir
 )
 
+```
+
+Then, set the paths to each of the climate files.
+
+```{r eval=F}
 # Path to the precipitation and temperature NetCDF files
 # NOTE: Each variable can have more than one file
 # projected climate data
@@ -350,7 +369,7 @@ Explore the results in your output folder. For a detailed explanation of the out
 
 ## Example 3
 
-Example 1 and 2 demonstrates how to use the wrapper function `yield_impact` to streamline the entire workflows shown in [Figure 1](#figure1). In Example 3, we provide additional instructions on using each function described in the [Workflow](#workflow) section with the example data and explain the associated outputs and diagnostic plots if any.
+Example 1 and 2 demonstrates how to use the wrapper function `yield_impact` to streamline the entire workflows shown in [Figure 1](#figure1). In Example 3, we provide additional instructions on using each function described in the [Workflow](#workflow) section with the example data and explain the associated outputs and diagnostic plots if any. This section can also help you better understand each step, and allow you to make changes to certain steps if needed.
 
 <br />
 
@@ -358,21 +377,20 @@ Example 1 and 2 demonstrates how to use the wrapper function `yield_impact` to s
 
 ---
 
-`weighted_climate` function calculates the cropland-weighted monthly precipitation and temperature for the projected climate. This function can be used if you wish to calculate cropland-weighted monthly precipitation and temperature using different climate forcing data. Please ensure that the climate NetCDF files follows the [ISIMIP simulation protocols](https://www.isimip.org/protocol "Here we specifically require the bias-adjusted and statistically downscaled CMIP climate data following ISIMIP's protocols"). Our [example data 1](#example-data-1-quick-start-dataset) includes the standard ISIMIP-style climate data for users to check the data structure and format.
+`weighted_climate` function calculates the cropland-weighted monthly precipitation and temperature for the projected climate. This function can be used if you wish to calculate cropland-weighted monthly precipitation and temperature using different climate forcing data. Please ensure that the climate NetCDF files follows the [ISIMIP simulation protocols](https://www.isimip.org/protocol/preparing-simulation-files/ "Here we specifically require the bias-adjusted and statistically downscaled CMIP climate data following ISIMIP's protocols"). Our [example data 1](#example-data-1-quick-start-dataset) includes the standard ISIMIP-style climate data for users to check the data structure and format.
+
+<div class="alert alert-info">
+<strong>NOTE!</strong> ISIMIP provides a range of bias-adjusted and statistically downscaled climate forcing data at a 0.5-degree resolution. Bias adjustment is the process of statistically modifying climate model outputs to better align with observed climate data, thereby reducing systematic errors or biases. To ensure consistency, simulated climate data should be bias-adjusted using the same historical climate observations that were used to fit the empirical model. For example, ISIMIP’s current CMIP6 climate outputs are bias-adjusted against the W5E5 v2.0 climate dataset using the ISIMIP3BASD v2.5.0 approach.
+
+If you plan to use other climate observations or simulations that are not directly from ISIMIP, please ensure that you:
+
+* Bias-adjust and statistically downscale your data to 0.5-degree resolution. You can follow ISIMIP’s official ISIMIP3BASD v2.5.0 approach ([Lange, 2021](https://doi.org/10.5281/zenodo.4686991); [Lange, 2019](https://doi.org/10.5194/gmd-12-3055-2019)), or use the [basd software](https://jgcri.github.io/basd/) developed by the Pacific Northwest National Laboratory.
+* Format your data according to ISIMIP's guidelines for [preparing simulation files](https://www.isimip.org/protocol/preparing-simulation-files/) in terms of NetCDF headers, grid format, variables and dimensions, and the time axis.
+</div>
 
 The example below uses the monthly precipitation (mm) and temperature (degree C) projections from 2015 to 2100. To run this climate data processing, please provide the file paths for the precipitation and temperature NetCDF files using the `pr_ncdf` and `tas_ncdf` arguments, respectively, and adjust the other arguments accordingly to match the specifics of your climate data.
 
 Please note that this step may take up to an hour to complete.
-
-**Output of the function:** The function has no return values. It also writes the following output files to the `output_dir/weighted_climate` folder:
-
-* `[climate-model]_[climate-scenario]_month_precip_country_irc_[crop-number]_[start-year]_[end-year].csv`: This file is the irrigated cropland-area weighted precipitation for certain climate model, scenario, and crop.
-
-* `[climate-model]_[climate-scenario]_month_precip_country_rfd_[crop-number]_[start-year]_[end-year].csv`: This file is the rainfed cropland-area weighted precipitation for certain climate model, scenario, and crop.
-
-* `[climate-model]_[climate-scenario]_month_tmean_country_irc_[crop-number]_[start-year]_[end-year].csv`: This file is the irrigated cropland-area weighted temperature for certain climate model, scenario, and crop.
-
-* `[climate-model]_[climate-scenario]_month_tmean_country_rfd_[crop-number]_[start-year]_[end-year].csv`: This file is the rainfed cropland-area weighted temperature for certain climate model, scenario, and crop.
 
 
 ```{r eval=F, echo=T}
@@ -393,7 +411,19 @@ weighted_climate(pr_ncdf = pr_projection_file ,
 
 ```
 
-The example above will create a folder based on the specified `climate_model` argument (e.g., `output_dir/weighted_climate/canesm5`). Inside this folder, you will find files containing precipitation and temperature data weighted by the irrigated and rainfed cropland areas for 26 MIRCA crops at the country level. The file structure is organized in columns as follows: `[year, month, 1, 2, 3, ..., 265]`, where the numbers correspond to country IDs. To view the country names associated with these IDs, simply type `gaia::country_id` in the R console after loading the `gaia` package. Below is an example of the structure for the weighted precipitation data for rainfed soybean (`output_dir/weighted_climate/canesm5/anesm5_gcam-ref_month_precip_country_rfc_crop08_2015_2100.txt`).
+The example above will create a folder based on the specified `climate_model` argument (e.g., `output_dir/weighted_climate/canesm5`). Inside this folder, you will find files containing precipitation and temperature data weighted by the irrigated and rainfed cropland areas for 26 MIRCA crops at the country level. The file structure is organized in columns as follows: `[year, month, 1, 2, 3, ..., 265]`, where the numbers correspond to country IDs. To view the country names associated with these IDs, simply type `gaia::country_id` in the R console after loading the `gaia` package.
+
+**Outputs of the function:** The function has no return values. It writes the following output files to the `output_dir/weighted_climate` folder:
+
+* `[climate-model]_[climate-scenario]_month_precip_country_irc_[crop-number]_[start-year]_[end-year].csv`: This file is the irrigated cropland-area weighted precipitation for certain climate model, scenario, and crop.
+
+* `[climate-model]_[climate-scenario]_month_precip_country_rfd_[crop-number]_[start-year]_[end-year].csv`: This file is the rainfed cropland-area weighted precipitation for certain climate model, scenario, and crop.
+
+* `[climate-model]_[climate-scenario]_month_tmean_country_irc_[crop-number]_[start-year]_[end-year].csv`: This file is the irrigated cropland-area weighted temperature for certain climate model, scenario, and crop.
+
+* `[climate-model]_[climate-scenario]_month_tmean_country_rfd_[crop-number]_[start-year]_[end-year].csv`: This file is the rainfed cropland-area weighted temperature for certain climate model, scenario, and crop.
+
+Below is an example of the structure for the weighted precipitation data for rainfed soybean (`output_dir/weighted_climate/canesm5/anesm5_gcam-ref_month_precip_country_rfc_crop08_2015_2100.txt`).
 
 ```{r eval=T, echo=F, message=F, results='hide'}
 
@@ -418,9 +448,8 @@ knitr::kable(input_climate[1:12],
 
 ---
 
-The `crop_calendars` function calculate crop calendars based on the SAGE global crop planting and harvesting dates data ([Sacks et al., (2010)](https://doi.org/10.1111/j.1466-8238.2010.00551.x)).  The crop calendar outlines the planting and harvesting months for each predefined crop across all global countries. To run `crop_calendars` following the code below.
+The `crop_calendars` function calculates crop calendars based on the SAGE global crop planting and harvesting dates data ([Sacks et al., 2010](https://doi.org/10.1111/j.1466-8238.2010.00551.x)).  The crop calendar outlines the planting and harvesting months for each predefined crop across all global countries. The code chunk below runs `crop_calendars`.
 
-**Outputs of the function:** The function returns a data frame of crop calendars. It also writes the output in `output_dir/data_processed/crop_calendar.csv`  
 
 ```{r eval=F, echo=T}
 
@@ -435,8 +464,9 @@ crop_cal
 
 ```
 
+**Outputs of the function:** The function returns a data frame of crop calendars. It also writes the output in `output_dir/data_processed/crop_calendar.csv`  
 
-Below is an example of the crop calendar structure. You can also access the crop calendar output at `output_dir/data_processed/crop_calendar.csv`. The columns `[plant, harvest]` indicates the month of planting and harvesting for the crop with value 1 in the same row. For example, the first row in the table below indicates that the planting and harvesting month of wheat in Albania (iso = 'alb') is November and June. Users can filter to the certain crops by `filter(wheat == 1)` to better view the planting and harvesting month for countries with wheat.
+Below is an example of the crop calendar structure. The columns `[plant, harvest]` indicates the month of planting and harvesting for the crop with value 1 in the same row. For example, the first row in the table below indicates that the planting and harvesting month of wheat in Albania (iso: alb) is November and June. Users can filter to the certain crops by `filter(wheat == 1)` to better view the planting and harvesting month for countries with wheat.
 
 
 ```{r eval=T, echo=F, message=F, results='hide'}
@@ -458,7 +488,6 @@ knitr::kable(crop_cal[1:10],
 
 
 Users can customize the crop calendar by adding new crops to the file, ensuring they follow the established format. The code snippet below shows an example on how to add a crop to the crop calendar. Once you've updated the crop calendar, be sure to save the modified file by overwriting the existing crop calendar CSV in your output folder. This ensures the changes will be applied in the subsequent steps.
-
 
 ```{r eval=T, echo=T, message=F, results='hide'}
 
@@ -504,12 +533,6 @@ knitr::kable(crop_cal_update[1:10],
 
 The `data_aggregation` function calculates crop growing seasons using climate variables processed by `weighted_climate` along with crop calendars for both historical and projected periods. This function prepares climate and yield data for subsequent model fitting.
 
-**Outputs of the function:** The `data_aggregation` function returns a list of historical and projected weather variables and crop data. It also writes the following output files under the `output_dir/data_processed` folder:
-
-* `historic_vars_[crop-name].csv`: This file summarizes **historical** harvest area (ha), irrigation type, annual yield (kg/ha), CO2 (ppm), growing season, precipitation (mm/month) and temperature (degree C) by country and crop. For example, historical information for soybean is illustrated in [Table 4](#table4). The `grow_season` column is binary and value 1 indicates the `grow_month` from the same row is considered growing season for the crop.
-
-* `weather_[climate-model]_[climate-scenario]_[crop-name].csv`: This file includes aggregated **future** weather data for the specified climate model/climate scenario/crop. An example of climate data for soybean is shown in [Table 5](#table5). The output includes the minimum, maximum, and mean temperature, as well as precipitation, all calculated on a monthly basis for each year, based on the cropland-weighted monthly precipitation and temperature values.
-
 ```{r eval=F, echo=T}
 
 # Path to the output folder where you wish to save the outputs. Change it accordingly
@@ -523,6 +546,14 @@ data_agg <- data_aggregation(climate_hist_dir = climate_hist_dir,
                              output_dir = output_dir)
 
 ```
+
+
+**Outputs of the function:** The `data_aggregation` function returns a list of historical and projected weather variables and crop data. It also writes the following output files under the `output_dir/data_processed` folder:
+
+* `historic_vars_[crop-name].csv`: This file summarizes **historical** harvest area (ha), irrigation type, annual yield (kg/ha), CO2 (ppm), growing season, precipitation (mm/month) and temperature (degree C) by country and crop. For example, historical information for soybean is illustrated in [Table 4](#table4). The `grow_season` column is binary and value 1 indicates the `grow_month` from the same row is considered growing season for the crop.
+
+* `weather_[climate-model]_[climate-scenario]_[crop-name].csv`: This file includes aggregated **future** weather data for the specified climate model/climate scenario/crop. An example of climate data for soybean is shown in [Table 5](#table5). The output includes the minimum, maximum, and mean temperature, as well as precipitation, all calculated on a monthly basis for each year, based on the cropland-weighted monthly precipitation and temperature values.
+
 
 The followings are example outputs and diagnostic plot from `data_aggregation` function.
 
@@ -577,14 +608,7 @@ The yield regression applies the econometric model from [Waldhoff et al., (2020)
 
 Where, $i$ and $t$ index countries and years; $y$ and $m$ are the natural logarithms of yield and per capita GDP; $T^k$ and $P^k$ with $k \in \left( {Mean,Min,Max} \right)$ denote the mean, minimum, and maximum growing season monthly average daily temperature and total precipitation in each country and year; and $\mu$ is a regression parameter indicating country fixed effects that control for heterogeneous unobserved time-invariant influences that vary across countries; $\beta _1$ and $\beta _2$ define the response of log yield to average, minimum, and maximum temperature, while $\gamma _1$ and $\gamma _2$ define the response of log yield to average, minimum, and maximum precipitation.
 
-
-**Outputs of the function:** The `yield_regression` function has no return value. It also writes the following output files:
-
-* `reg_out_[crop-name]_[fit-name].csv`: This file is located under `output_dir/data_processed` folder and it contains the statistics of the regression analysis for a crop. [Table 6](#table6) show an example output of parameters of the fitted model for soybean.
-
-* `weather_yield_[crop-name].csv`: This file is located under `output_dir/data_processed` folder and it contains the values of the variables in the regression formula (e.g., min, max, mean temperature).
-
-* `model_[crop-name]_[fit-name].pdf`: This file is located under `output_dir/figures` folder and it is a diagnostic plot that shows model fitting between observed FAO data and fitted crop yield across global countries. An example of this comparison for soybean is illustrated in [Figure 2](#figure2).
+Running `yield_regression` is as simple as the code chunk below.
 
 ```{r eval=F, echo=T}
 
@@ -596,6 +620,16 @@ yield_regression(diagnostics = TRUE,
                  output_dir = output_dir)
 
 ```
+
+
+**Outputs of the function:** The `yield_regression` function has no return value. It also writes the following output files:
+
+* `reg_out_[crop-name]_[fit-name].csv`: This file is located under `output_dir/data_processed` folder and it contains the statistics of the regression analysis for a crop. [Table 6](#table6) show an example output of parameters of the fitted model for soybean.
+
+* `weather_yield_[crop-name].csv`: This file is located under `output_dir/data_processed` folder and it contains the values of the variables in the regression formula (e.g., min, max, mean temperature).
+
+* `model_[crop-name]_[fit-name].pdf`: This file is located under `output_dir/figures` folder and it is a diagnostic plot that shows model fitting between observed FAO data and fitted crop yield across global countries. An example of this comparison for soybean is illustrated in [Figure 2](#figure2).
+
 
 The followings are example outputs and diagnostic plot from `yield_regression` function.
 
@@ -628,18 +662,11 @@ knitr::kable(fit_model[1:10],
 
 ---
 
-Once the `gaia` model has completed fitting, the `gaia::yield_shock_projection` function calculates the projected annual yield shocks based on the input climate data. The climate impact on yield, known as yield shock, refers to the fractional change in a crop's yield within a specific country during a future period, relative to the baseline yield expected under stable climate conditions. This concept is mathematically defined in Equations 3 to 6 of [Waldhoff et al., (2020)](https://doi.org/10.1088/1748-9326/abadcb). For coarse-scale models like GCAM, `gaia` also computes smoothed yield shocks using a user-specified smoothing window (the default window is 20 years). In the smoothed outputs, the yield shocks at the base year will be set to 1. The results are provided in both `CSV` outputs and diagnostic plots.
+Once the `gaia` model has completed fitting, the `gaia::yield_shock_projection` function calculates the projected annual yield shocks based on the input climate data. The climate impact on yield, known as yield shock, refers to the fractional change in a crop's yield within a specific country during a future period, relative to the baseline yield that would otherwise obtain under a stable climate. This concept is mathematically defined in Equations 3 to 6 of [Waldhoff et al., (2020)](https://doi.org/10.1088/1748-9326/abadcb).
 
-**Outputs of the function:** The `yield_shock_projection` function returns a data frame of formatted smoothed annual crop yield shocks under climate impacts. It also writes the following output files:
+For coarse-scale models like GCAM, `gaia` also computes smoothed yield shocks using a user-specified smoothing window (the default window is 20 years). In the smoothed outputs, the yield shocks at the base year will be set to 1. The results are provided in both `CSV` outputs and diagnostic plots.
 
-* `yield_impacts_annual/yield_[climate-model]_[climate-scenario]_[crop-name].csv`: This file includes annual crop yield shocks under climate variability. An example of annual soybean yield shocks (column yield_impact) is shown in [Table 7](#table7).
-
-* `yield_impacts_smooth/yield_[climate-model]_[climate-scenario]_[crop-name].csv`: This file includes smoothed annual crop yield shocks under climate variability. The default smoothing window is 20 years. An example of smoothed annual soybean yield shocks is shown in [Table 8](#table8).
-
-* `annual_projected_climate_impacts_[climate-model]_[climate-scenario]_[crop-name]_[fit-name].pdf`: This is diagnostic plot for annual crop yield shocks for countries within different regions. It is located under `output_dir/figures` folder. A diagnostic plot of annual soybean yield shocks is illustrated in [Figure 3](#figure3).
-
-* `smooth_projected_climate_impacts_[climate-model]_[climate-scenario]_[crop-name]_[fit-name].pdf`: This is diagnostic plot for smoothed annual crop yield shocks for countries within different regions. It is located under `output_dir/figures` folder.
-
+To run `yield_shock_projection`, simply pass metadata such as climate model, climate scenario, base year, start and end year of the climate data, and smooth window to the function. The code chunk below shows an example.
 
 ```{r eval=F, echo=T}
 
@@ -658,6 +685,18 @@ out_yield_shock <- yield_shock_projection(use_default_coeff = FALSE,
                                           output_dir = output_dir)
 
 ```
+
+
+**Outputs of the function:** The `yield_shock_projection` function returns a data frame of formatted smoothed annual crop yield shocks under climate impacts. It also writes the following output files:
+
+* `yield_impacts_annual/yield_[climate-model]_[climate-scenario]_[crop-name].csv`: This file includes annual crop yield shocks under climate variability. An example of annual soybean yield shocks (column yield_impact) is shown in [Table 7](#table7).
+
+* `yield_impacts_smooth/yield_[climate-model]_[climate-scenario]_[crop-name].csv`: This file includes smoothed annual crop yield shocks under climate variability. The default smoothing window is 20 years. An example of smoothed annual soybean yield shocks is shown in [Table 8](#table8).
+
+* `annual_projected_climate_impacts_[climate-model]_[climate-scenario]_[crop-name]_[fit-name].pdf`: This is diagnostic plot for annual crop yield shocks for countries within different regions. It is located under `output_dir/figures` folder. A diagnostic plot of annual soybean yield shocks is illustrated in [Figure 3](#figure3).
+
+* `smooth_projected_climate_impacts_[climate-model]_[climate-scenario]_[crop-name]_[fit-name].pdf`: This is diagnostic plot for smoothed annual crop yield shocks for countries within different regions. It is located under `output_dir/figures` folder.
+
 
 The followings are example outputs and diagnostic plot from `yield_shock_projection` function.
 
@@ -711,13 +750,6 @@ knitr::kable(smooth_yield[1:10],
 
 The `gcam_agprodchange` function is specifically designed for the Global Change Analysis Model (GCAM) [(Calvin et al., 2019)](https://doi.org/10.5194/gmd-12-677-2019). GCAM requires the agricultural productivity growth rate (APG) as an input, which is calculated based on yield shocks and the baseline APG, varying according to different SSP scenarios. Additionally, the APG for GCAM must be at the region-basin scale. The `gaia::gcam_agprodchange` function directly remaps country-level yield shocks to region-basin APG. In the example below, since `climate_scenario = 'gcam-ref'`, it will use the APG without SSP impact (Reference scenario APC) to calculate the climate-impacted APG based on the yield shocks computed in the previous step.
 
-**Outputs of the function:** The `gcam_agprodchange` function returns a data frame of agricultural productivity change. It also writes the following output files:
-
-* `agyield_impact_[climate-model]_[ensemble-member]_[bias_adj]_[climate-scenario].xml`: This is the XML file of agricultural productivity change for all commodities for GCAM.
-
-* `figures_yield_impacts/[commodity.png]`: This is diagnostic plot for yield shocks for a GCAM commodity at specified `gcam_timestep` (e.g., 5 years) by basins within each GCAM region (e.g., region-basin intersection) separated by irrigated and rainfed crop types.
-
-* `figures_agprodchange/[commodity.png]`: This is diagnostic plot for APG for a GCAM commodity at specified `gcam_timestep` (e.g., 5 years) by basins within each GCAM region (e.g., region-basin intersection) separated by irrigated and rainfed crop types. An example of APG for soybean is shown in [Figure 4](#figure4) below.
 
 ```{r eval=F, echo=T}
 
@@ -739,7 +771,14 @@ gcam_apg <- gcam_agprodchange(data = out_yield_shock,
 
 <br />
 
-Once the run is complete, a folder named `[gcam-version]_agprodchange_[cfe]` (e.g., `gcam7_agprodchange_no-cfe`) will be created in your specified output location. This folder contains the `XML` file of the agricultural productivity growth rate (APG) for GCAM. Additionally, it includes diagnostic figures illustrating the APG by region-basin. An example of APG for soybean is shown in [Figure 4](#figure4) below.
+**Outputs of the function:** The `gcam_agprodchange` function returns a data frame of agricultural productivity change. It also writes the following output files to the folder named `[gcam-version]_agprodchange_[cfe]` (e.g., `gcam7_agprodchange_no-cfe`):
+
+* `agyield_impact_[climate-model]_[ensemble-member]_[bias_adj]_[climate-scenario].xml`: This is the XML file of agricultural productivity change for all commodities for GCAM.
+
+* `figures_yield_impacts/[commodity.png]`: This is diagnostic plot for yield shocks for a GCAM commodity at specified `gcam_timestep` (e.g., 5 years) by basins within each GCAM region (e.g., region-basin intersection) separated by irrigated and rainfed crop types.
+
+* `figures_agprodchange/[commodity.png]`: This is diagnostic plot for APG for a GCAM commodity at specified `gcam_timestep` (e.g., 5 years) by basins within each GCAM region (e.g., region-basin intersection) separated by irrigated and rainfed crop types. An example of APG for soybean is shown in [Figure 4](#figure4) below.
+
 
 <a name="figure4"></a>
 <p align="center"><img src="vignetteFigs/agprodchange_soybean.png"/></p>
