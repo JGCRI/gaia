@@ -57,7 +57,7 @@
       <h1>User Guide</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/JGCRI/gaia/blob/main/vignettes/vignette.Rmd" class="external-link"><code>vignettes/vignette.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JGCRI/gaia/blob/dev-joss-review-3/vignettes/vignette.Rmd" class="external-link"><code>vignettes/vignette.Rmd</code></a></small>
       <div class="d-none name"><code>vignette.Rmd</code></div>
     </div>
 
@@ -100,6 +100,40 @@ font-style: italic;
 
 </style>
 <!--------------------------><!--------------------------><div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<!-------------------------->
+<!-------------------------->
+<p align="center">
+<img src="vignetteFigs%2Fdivider.png"></p>
+<ol style="list-style-type: decimal">
+<li>Download and install:
+<ul>
+<li>R (<a href="https://www.r-project.org/" class="external-link uri">https://www.r-project.org/</a>)</li>
+<li>R studio (<a href="https://www.rstudio.com/" class="external-link uri">https://www.rstudio.com/</a>)</li>
+</ul>
+</li>
+<li>Open R studio:</li>
+</ol>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"JGCRI/gaia"</span><span class="op">)</span></span></code></pre></div>
+<p>or</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"JGCRI/gaia"</span><span class="op">)</span></span></code></pre></div>
+<p>Additional steps for UBUNTU from a terminal</p>
+<pre><code>sudo add-apt-repository ppa:ubuntugis/ppa
+sudo apt-get update
+sudo apt-get install libudunits2-dev libgdal-dev libgeos-dev libproj-dev libmagick++-dev</code></pre>
+<p>Additional steps for MACOSX from a terminal</p>
+<pre><code>brew install pkg-config
+brew install gdal</code></pre>
+<p><br></p>
+<!-------------------------->
+<!-------------------------->
+</div>
+<div class="section level2">
 <h2 id="workflow">Workflow<a class="anchor" aria-label="anchor" href="#workflow"></a>
 </h2>
 <!-------------------------->
@@ -121,15 +155,15 @@ can also execute individual functions to work through the main steps of
 the process (<a href="#figure1">Figure 1</a>).</p>
 <ol style="list-style-type: decimal">
 <li><p><a href="#weighted_climate"><code>weighted_climate</code></a>:
-Processes CMIP-ISIMIP climate NetCDF data and calculates
-cropland-weighted precipitation and temperature at the country level,
-differentiated by crop type and irrigation type. The function accepts
-both daily or monthly climate data that are consistent with the
-CMIP-ISIMIP NetCDF data format.</p></li>
+Processes CMIP climate NetCDF data in accordance with the <a href="https://www.isimip.org/protocol/preparing-simulation-files/" title="Here we specifically require the bias-adjusted and statistically downscaled CMIP climate data following ISIMIP's protocols" class="external-link">ISIMIP
+simulation protocols</a> and calculates cropland-weighted precipitation
+and temperature at the country level, differentiated by crop type and
+irrigation type. The function accepts both daily or monthly climate data
+in NetCDF format that follows ISIMIP protocols.</p></li>
 <li><p><a href="#crop_calendars"><code>crop_calendars</code></a>:
 Generates crop planting months for each country and crop based on crop
-calendar data <a href="https:/doi/org/10.1111/j.1466-8238.2010.00551.x">Sacks et al.,
-(2020)</a>.</p></li>
+calendar data <a href="https://doi.org/10.1111/j.1466-8238.2010.00551.x" class="external-link">Sacks et al.,
+(2010)</a>.</p></li>
 <li><p><a href="#data_aggregation"><code>data_aggregation</code></a>:
 Calculates crop growing seasons using climate variables processed by
 <code>weighted_climate</code> and crop calendars for both historical and
@@ -175,75 +209,122 @@ variations using empirical econometric model.
 <p align="center">
 <img src="vignetteFigs%2Fdivider.png"></p>
 <p><code>gaia</code> requires global climate data from the
-Inter-Sectoral Impact Model Intercomparison Project (<a href="https://www.isimip.org/" class="external-link">ISIMIP</a>) or data formatted similarly
-to ISIMIP data. Additionally, <code>gaia</code> supports climate data
-aggregated to a monthly time step. Due to the large size of daily time
-step climate data, we have provided an example of monthly aggregated
-climate data covering the period from 2015 to 2100.</p>
+Inter-Sectoral Impact Model Intercomparison Project (<a href="https://www.isimip.org/" class="external-link">ISIMIP</a>) or data formatted according
+to ISIMIP protocols. Additionally, <code>gaia</code> supports climate
+data in both daily and monthly time step. Due to the large size of
+global climate data, we provide two types of example datasets tailored
+to different user needs.</p>
+<ul>
+<li>
+<a href="#example-data-1-quick-start-dataset">Example Data 1</a>:
+This pre-processed climate dataset allows users to quickly run
+<code>gaia</code> without the need to process raw climate NetCDF data.
+It is an output from the <code><a href="../reference/weighted_climate.html">gaia::weighted_climate</a></code> function,
+which converts raw climate NetCDF data into cropland-weighted climate
+data by country. This dataset includes both historical and future
+pre-processed cropland-weighted precipitation and temperature by
+country. If you want to quickly test <code>gaia</code> and view the
+outputs, this is the easiest way to get started.</li>
+<li>
+<a href="#example-data-2-raw-climate-data">Example Data 2</a>: This
+climate dataset is designed for users who want to process raw climate
+NetCDF data using the <code><a href="../reference/weighted_climate.html">gaia::weighted_climate</a></code> function. It
+includes global monthly precipitation and temperature NetCDF files at a
+0.5-degree resolution, covering the period from 2015 to 2100. Processing
+this data may take about an hour. If you intend to use your own climate
+datasets, this example will help you get set up.</li>
+</ul>
 <p><br></p>
 <div class="section level3">
-<h3 id="example-data-1">Example Data 1<a class="anchor" aria-label="anchor" href="#example-data-1"></a>
+<h3 id="example-data-1-quick-start-dataset">Example Data 1: Quick Start Dataset<a class="anchor" aria-label="anchor" href="#example-data-1-quick-start-dataset"></a>
 </h3>
-<p>Download the example data using the instructions below. This dataset
-includes both historical climate observations and future climate
-projections, already weighted by cropland areas and provided in .txt
-format. The cropland-area-weighted, country-level climate data contains
-monthly precipitation and temperature for 26 crop types, distinguishing
-between irrigated and rainfed areas.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<p>Download the example data 1 using the instructions below. This
+dataset includes both historical climate observations and future climate
+projections, weighted by cropland areas and formatted in a tabular
+structure (see <a href="#table1">Table 1</a>), as required by
+<code>gaia</code>. The cropland-area-weighted, country-level climate
+data contains monthly precipitation and temperature for 26 crop types,
+distinguishing between irrigated and rainfed areas.</p>
+<p>There are two options to download the data:</p>
+<ul>
+<li>Option 1: Please use this <a href="https://zenodo.org/records/13976521/files/weighted_climate.zip?download=1" class="external-link">download
+url</a> and set the <code>data_dir</code> to the directory of the
+downloaded folder;</li>
+<li>Option 2: Use <code><a href="../reference/get_example_data.html">gaia::get_example_data</a></code> function following
+the code chunk below.</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load gaia</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JGCRI/gaia" class="external-link">gaia</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Path to the output folder. Change it to your desired location</span></span>
-<span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">'gaia_output'</span><span class="op">)</span></span>
+<span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="st">'gaia_output'</span></span>
 <span></span>
 <span><span class="co"># Cropland-weighted historical and future climate data</span></span>
 <span><span class="va">data_dir</span> <span class="op">&lt;-</span> <span class="fu">gaia</span><span class="fu">::</span><span class="fu"><a href="../reference/get_example_data.html">get_example_data</a></span><span class="op">(</span></span>
 <span>  download_url <span class="op">=</span> <span class="st">'https://zenodo.org/records/13976521/files/weighted_climate.zip?download=1'</span>,</span>
 <span>  data_dir <span class="op">=</span> <span class="va">output_dir</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Path to the folder that holds cropland-area-weighted precipitation and temperature TXT files</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Then, set the paths to historical and future climate data folder.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Path to the folder that holds cropland-area-weighted precipitation and temperature TXT files</span></span>
 <span><span class="co"># historical climate observation</span></span>
 <span><span class="va">climate_hist_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">'climate_hist'</span><span class="op">)</span></span>
 <span><span class="co"># future projected climate</span></span>
 <span><span class="va">climate_impact_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">'canesm5'</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
 <div class="alert alert-info">
-<p><strong>NOTE!</strong> We recommend using the default historical
-climate data provided in <a href="#example-data-1">example data 1</a>,
-as it is based on WATCH climate observations (<a href="https://doi.org/10.1175/2011JHM1369.1" class="external-link">Weedon et al., (2011)</a>).
-If you do not plan to adjust any assumptions for empirical model
-fitting, you can opt to use the default regression model, pre-fitted
-with the WATCH historical climate data, by setting the argument
-<code>use_default_coeff = TRUE</code>. After loading the
+<p><strong>NOTE!</strong> The default example historical climate data
+provided in <a href="#example-data-1-quick-start-dataset">example data
+1</a> is based on WATCH climate observations (<a href="https://doi.org/10.1175/2011JHM1369.1" class="external-link">Weedon et al., (2011)</a>),
+which were used in <a href="https://doi.org/10.1088/1748-9326/abadcb" class="external-link">Waldhoff et al.,
+(2020)</a> for empirical model fitting. If you do not intend to modify
+any assumptions or historical climate forcing for empirical model
+fitting, you can use the default regression model in <code>gaia</code>,
+which is pre-fitted with WATCH historical climate data, by setting the
+argument <code>use_default_coeff = TRUE</code>. After loading the
 <code>gaia</code> package, type <code>coef_default</code> to view the
-parameters of the default fitted model..</p>
+parameters of the default pre-fitted model. Alternatively, if you prefer
+to use different historical climate data other than the one from <a href="#example-data-1-quick-start-dataset">example data 1</a>, you can
+use <code>weighted_climate</code> function to generate cropland-weighted
+historical monthly precipitation and temperature following the <a href="#weighted_climate">weighted_climate instruction</a> under Example
+3.</p>
 </div>
 <p><br></p>
 </div>
 <div class="section level3">
-<h3 id="example-data-2">Example Data 2<a class="anchor" aria-label="anchor" href="#example-data-2"></a>
+<h3 id="example-data-2-raw-climate-data">Example Data 2: Raw Climate Data<a class="anchor" aria-label="anchor" href="#example-data-2-raw-climate-data"></a>
 </h3>
-<p>To use a different climate model or scenario, you can provide your
-own climate data in NetCDF format. Note that <code>gaia</code> adheres
-to the ISIMIP climate data format as its standard, so your NetCDF files
-should be formatted accordingly. You can download our example monthly
-precipitation and temperature NetCDF files using the code below.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p>Download the example data 2 using the instructions below. This
+dataset includes future global monthly precipitation and temperature
+from 2015 to 2100 at 0.5-degree resolution. To use a different climate
+model or scenario, you can provide your own climate data in NetCDF
+format. Note that <code>gaia</code> adheres to the ISIMIP climate data
+format as its standard, so your NetCDF files should be formatted
+accordingly if the data is not directly downloaded from ISIMIP.</p>
+<p>There are two options to download the data:</p>
+<ul>
+<li>Option 1: Please use this <a href="https://zenodo.org/records/13976521/files/gaia_example_climate.zip?download=1" class="external-link">download
+url</a> and set the <code>data_dir</code> to the directory of the
+downloaded folder;</li>
+<li>Option 2: Use <code><a href="../reference/get_example_data.html">gaia::get_example_data</a></code> function following
+the code chunk below.</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load gaia</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JGCRI/gaia" class="external-link">gaia</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Path to the output folder. Change it to your desired location</span></span>
-<span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">'gaia_output'</span><span class="op">)</span></span>
+<span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="st">'gaia_output'</span></span>
 <span></span>
 <span><span class="co"># Future Climate Data</span></span>
 <span><span class="va">data_dir</span> <span class="op">&lt;-</span> <span class="fu">gaia</span><span class="fu">::</span><span class="fu"><a href="../reference/get_example_data.html">get_example_data</a></span><span class="op">(</span></span>
 <span>  download_url <span class="op">=</span> <span class="st">'https://zenodo.org/records/13976521/files/gaia_example_climate.zip?download=1'</span>,</span>
 <span>  data_dir <span class="op">=</span> <span class="va">output_dir</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Path to the precipitation and temperature NetCDF files</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Then, set the paths to each of the climate files.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Path to the precipitation and temperature NetCDF files</span></span>
 <span><span class="co"># NOTE: Each variable can have more than one file</span></span>
 <span><span class="co"># projected climate data</span></span>
 <span><span class="va">pr_projection_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">'pr_monthly_canesm5_w5e5_gcam-ref_2015_2100.nc'</span><span class="op">)</span></span>
@@ -272,51 +353,65 @@ Warning!
 This example demonstrates the complete <code>gaia</code> model workflow,
 including processing the raw climate NetCDF data. Due to the large size
 of the climate dataset, this process may take up to an hour. For a
-quicker demonstration, please refer to <a href="#example-2">Example
-2</a>.
+quicker demonstration, please refer to <a href="#example-data-2-raw-climate-data">Example 2</a>.
 </p>
 </div>
 <!-- <div class="alert alert-info"> -->
 <!-- <strong>NOTE!</strong> This example demonstrates the complete `gaia` model workflow, including processing the raw climate NetCDF data. Due to the large size of the climate dataset, this process may take up to an hour. For a quicker demonstration, please refer to [Example 2](#example-2). -->
 <!-- </div> -->
-<p>This example uses both <a href="#example-data-1">example data 1</a>
-and <a href="#example-data-2">example data 2</a>. You can run
-<code>gaia</code> using the single function <code>yield_impact</code>,
-which streamlines the entire workflow. For detailed explanations of each
-argument in <code>yield_impact</code>, please refer to the <a href="https://jgcri.github.io/gaia/reference/yield_impact.html" class="external-link">reference
+<p>This example guides users through the complete <code>gaia</code>
+workflow, from processing raw climate data to calculating yield shocks
+in response to future climate variations. Please note that we provide
+only the NetCDF files for <em>future</em> climate from <a href="#example-data-2-raw-climate-data">example data 2</a>. For
+historical model fitting, we use the pre-processed historical climate
+data from <a href="#example-data-1-quick-start-dataset">example data
+1</a> to reduce computational demands, especially for users without
+access to high-performance computing.</p>
+<p>If you have your own historical climate data for model fitting, you
+can easily integrate it by specifying the paths to your historical
+precipitation and temperature NetCDF files using the
+<code>pr_hist_ncdf</code> and <code>tas_hist_ncdf</code> arguments,
+respectively. Be sure to set <code>climate_hist_dir = NULL</code> to
+bypass the pre-processed historical dataset.</p>
+<p>You can run <code>gaia</code> using the single function
+<code>yield_impact</code> with our example data, which streamlines the
+entire workflow. For detailed explanations of each argument in
+<code>yield_impact</code>, please refer to the <a href="https://jgcri.github.io/gaia/reference/yield_impact.html" class="external-link">reference
 page</a>.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># load gaia</span></span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">library</span>(gaia)</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co"># Path to the output folder. Change it to your desired location</span></span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>output_dir <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">getwd</span>(), <span class="st">'gaia_output'</span>)</span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co"># Run gaia</span></span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co"># The full run with raw climate data can take up to an hour</span></span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>gaia<span class="sc">::</span><span class="fu">yield_impact</span>(</span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  <span class="at">pr_hist_ncdf =</span> <span class="cn">NULL</span>,                    <span class="co"># path to historical precipitation NetCDF file (must follow ISIMIP format); only if you wish to use your own historical precipitation observation</span></span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  <span class="at">tas_hist_ncdf =</span> <span class="cn">NULL</span>,                   <span class="co"># path to historical temperature NetCDF file (must follow ISIMIP format); only if you wish to use your own historical temperature observation</span></span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  <span class="at">pr_proj_ncdf =</span> pr_projection_file,      <span class="co"># path to future projected precipitation NetCDF file (must follow ISIMIP format)</span></span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>  <span class="at">tas_proj_ncdf =</span> tas_projection_file,    <span class="co"># path to future projected temperature NetCDF file (must follow ISIMIP format)</span></span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>  <span class="at">timestep =</span> <span class="st">'monthly'</span>,                   <span class="co"># specify the time step of the NetCDF data (monthly or daily)</span></span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>  <span class="at">climate_hist_dir =</span> climate_hist_dir,    <span class="co"># path to the folder that holds cropland weighted historical climate observations</span></span>
-<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>  <span class="at">historical_periods =</span> <span class="fu">c</span>(<span class="dv">1960</span><span class="sc">:</span><span class="dv">2001</span>),      <span class="co"># vector of historical years selected for fitting</span></span>
-<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>  <span class="at">climate_model =</span> <span class="st">'canesm5'</span>,              <span class="co"># label of climate model name</span></span>
-<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>  <span class="at">climate_scenario =</span> <span class="st">'gcam-ref'</span>,          <span class="co"># label of climate scenario name</span></span>
-<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>  <span class="at">member =</span> <span class="st">'r1i1p1f1'</span>,                    <span class="co"># label of ensemble member name</span></span>
-<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>  <span class="at">bias_adj =</span> <span class="st">'w5e5'</span>,                      <span class="co"># label of climate data for bias adjustment for the global climate model (GCM)</span></span>
-<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>  <span class="at">cfe =</span> <span class="st">'no-cfe'</span>,                         <span class="co"># label of CO2 fertilization effect in the formula (default is no CFE)</span></span>
-<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>  <span class="at">gcam_version =</span> <span class="st">'gcam7'</span>,                 <span class="co"># output is different depending on the GCAM version (gcam6 or gcam7)</span></span>
-<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a>  <span class="at">use_default_coeff =</span> <span class="cn">FALSE</span>,              <span class="co"># set to TRUE when there is no historical climate data available</span></span>
-<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a>  <span class="at">base_year =</span> <span class="dv">2015</span>                        <span class="co"># GCAM base year</span></span>
-<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a>  <span class="at">start_year =</span> <span class="dv">2015</span>,                      <span class="co"># start year of the projected climate data</span></span>
-<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a>  <span class="at">end_year =</span> <span class="dv">2100</span>,                        <span class="co"># end year of the projected climate data</span></span>
-<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a>  <span class="at">smooth_window =</span> <span class="dv">20</span>,                     <span class="co"># number of years as smoothing window</span></span>
-<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a>  <span class="at">co2_hist =</span> <span class="cn">NULL</span>,                        <span class="co"># historical annual CO2 concentration. If NULL, will use default value</span></span>
-<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a>  <span class="at">co2_proj =</span> <span class="cn">NULL</span>,                        <span class="co"># projected annual CO2 concentration. If NULL, will use default value</span></span>
-<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a>  <span class="at">diagnostics =</span> <span class="cn">TRUE</span>,                     <span class="co"># set to TRUE to output diagnostic plots</span></span>
-<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a>  <span class="at">output_dir =</span> output_dir                 <span class="co"># path to the output folder</span></span>
-<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a>)</span></code></pre></div>
+<p>Intermediate outputs will be generated and saved to the
+user-specified output folder.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># load gaia</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">library</span>(gaia)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co"># Path to the output folder. Change it to your desired location</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>output_dir <span class="ot">&lt;-</span> <span class="st">'gaia_output'</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co"># Run gaia</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co"># The full run with raw future climate data can take up to an hour</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>gaia<span class="sc">::</span><span class="fu">yield_impact</span>(</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>  <span class="at">pr_hist_ncdf =</span> <span class="cn">NULL</span>,                    <span class="co"># path to historical precipitation NetCDF file (must follow ISIMIP format); only if you wish to use your own historical precipitation observation</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>  <span class="at">tas_hist_ncdf =</span> <span class="cn">NULL</span>,                   <span class="co"># path to historical temperature NetCDF file (must follow ISIMIP format); only if you wish to use your own historical temperature observation</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>  <span class="at">pr_proj_ncdf =</span> pr_projection_file,      <span class="co"># path to future projected precipitation NetCDF file (must follow ISIMIP format)</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>  <span class="at">tas_proj_ncdf =</span> tas_projection_file,    <span class="co"># path to future projected temperature NetCDF file (must follow ISIMIP format)</span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>  <span class="at">timestep =</span> <span class="st">'monthly'</span>,                   <span class="co"># specify the time step of the NetCDF data (monthly or daily)</span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a>  <span class="at">climate_hist_dir =</span> climate_hist_dir,    <span class="co"># path to the folder that holds cropland weighted historical climate observations</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>  <span class="at">historical_periods =</span> <span class="fu">c</span>(<span class="dv">1960</span><span class="sc">:</span><span class="dv">2001</span>),      <span class="co"># vector of historical years selected for fitting</span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>  <span class="at">climate_model =</span> <span class="st">'canesm5'</span>,              <span class="co"># label of climate model name</span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a>  <span class="at">climate_scenario =</span> <span class="st">'gcam-ref'</span>,          <span class="co"># label of climate scenario name</span></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a>  <span class="at">member =</span> <span class="st">'r1i1p1f1'</span>,                    <span class="co"># label of ensemble member name</span></span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a>  <span class="at">bias_adj =</span> <span class="st">'w5e5'</span>,                      <span class="co"># label of climate data for bias adjustment for the global climate model (GCM)</span></span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a>  <span class="at">cfe =</span> <span class="st">'no-cfe'</span>,                         <span class="co"># label of CO2 fertilization effect in the formula (default is no CFE)</span></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a>  <span class="at">gcam_version =</span> <span class="st">'gcam7'</span>,                 <span class="co"># output is different depending on the GCAM version (gcam6 or gcam7)</span></span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a>  <span class="at">use_default_coeff =</span> <span class="cn">FALSE</span>,              <span class="co"># set to TRUE when there is no historical climate data available</span></span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a>  <span class="at">base_year =</span> <span class="dv">2015</span>                        <span class="co"># GCAM base year</span></span>
+<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a>  <span class="at">start_year =</span> <span class="dv">2015</span>,                      <span class="co"># start year of the projected climate data</span></span>
+<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a>  <span class="at">end_year =</span> <span class="dv">2100</span>,                        <span class="co"># end year of the projected climate data</span></span>
+<span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a>  <span class="at">smooth_window =</span> <span class="dv">20</span>,                     <span class="co"># number of years as smoothing window</span></span>
+<span id="cb9-28"><a href="#cb9-28" tabindex="-1"></a>  <span class="at">co2_hist =</span> <span class="cn">NULL</span>,                        <span class="co"># historical annual CO2 concentration. If NULL, will use default value</span></span>
+<span id="cb9-29"><a href="#cb9-29" tabindex="-1"></a>  <span class="at">co2_proj =</span> <span class="cn">NULL</span>,                        <span class="co"># projected annual CO2 concentration. If NULL, will use default value</span></span>
+<span id="cb9-30"><a href="#cb9-30" tabindex="-1"></a>  <span class="at">diagnostics =</span> <span class="cn">TRUE</span>,                     <span class="co"># set to TRUE to output diagnostic plots</span></span>
+<span id="cb9-31"><a href="#cb9-31" tabindex="-1"></a>  <span class="at">output_dir =</span> output_dir                 <span class="co"># path to the output folder</span></span>
+<span id="cb9-32"><a href="#cb9-32" tabindex="-1"></a>)</span></code></pre></div>
 <div class="alert alert-info">
 <p><strong>NOTE!</strong> The arguments <code>climate_model</code>,
 <code>climate_scenario</code>, <code>member</code>,
@@ -331,20 +426,19 @@ only used to populate climate data metadata in the outputs.</p>
 <h3 id="example-2">Example 2<a class="anchor" aria-label="anchor" href="#example-2"></a>
 </h3>
 <p>This example only uses the example of <strong>weighted climate
-data</strong> as described in <a href="#example-data-2">example data
-2</a>, which has been processed with cropland weights at the country
-level. This weighted climate data was generated using
-<code><a href="../reference/weighted_climate.html">gaia::weighted_climate</a></code>. This example serves as a guide to
-help users format their own data to match the weighted climate data
-structure if their raw climate data differs from the ISIMIP format.
-Running <code>gaia</code> directly with weighted climate data requires
-only a few minutes.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+data</strong> as described in <a href="#example-data-1-quick-start-dataset">example data 1</a>, which has
+been processed with cropland weights at the country level. This weighted
+climate data was generated using <code><a href="../reference/weighted_climate.html">gaia::weighted_climate</a></code>.
+This example serves as a guide to help users format their own data to
+match the weighted climate data structure if their raw climate data
+differs from the ISIMIP format. Running <code>gaia</code> directly with
+weighted climate data requires only a few minutes.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load gaia</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JGCRI/gaia" class="external-link">gaia</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Path to the output folder. Change it to your desired location</span></span>
-<span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">'gaia_output'</span><span class="op">)</span></span>
+<span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="st">'gaia_output'</span></span>
 <span></span>
 <span><span class="co"># Run gaia</span></span>
 <span><span class="fu">gaia</span><span class="fu">::</span><span class="fu"><a href="../reference/yield_impact.html">yield_impact</a></span><span class="op">(</span></span>
@@ -374,28 +468,62 @@ of the output, checkout <a href="#example-3">Example 3</a>!</p>
 <div class="section level3">
 <h3 id="example-3">Example 3<a class="anchor" aria-label="anchor" href="#example-3"></a>
 </h3>
-<p>As the <code>gaia</code> model runs, intermediate outputs will be
-generated and saved to the user-specified output folder. For testing
-purposes, if you follow <a href="#example-2">Example 2</a> as outlined
-above without modifying any input data or arguments, you can expect to
-see the following key results. Below, we provide additional instructions
-on using each function described in the <a href="#workflow">Workflow</a>
-section and explain the associated example outputs.</p>
+<p>Example 1 and 2 demonstrates how to use the wrapper function
+<code>yield_impact</code> to streamline the entire workflows shown in <a href="#figure1">Figure 1</a>. In Example 3, we provide additional
+instructions on using each function described in the <a href="#workflow">Workflow</a> section with the example data and explain
+the associated outputs and diagnostic plots if any. This section can
+also help you better understand each step, and allow you to make changes
+to certain steps if needed.</p>
 <p><br></p>
 <div class="section level4">
 <h4 id="weighted_climate">weighted_climate<a class="anchor" aria-label="anchor" href="#weighted_climate"></a>
 </h4>
 <hr>
-<p>Once you have downloaded <a href="#example-data-1">example data 1</a>
-to your desired location, you can use the <code>weighted_climate</code>
-function to calculate the cropland-weighted monthly precipitation and
-temperature for the projected climate. Please note that this step may
-take up to an hour to complete.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<p><code>weighted_climate</code> function calculates the
+cropland-weighted monthly precipitation and temperature for the
+projected climate. This function can be used if you wish to calculate
+cropland-weighted monthly precipitation and temperature using different
+climate forcing data. Please ensure that the climate NetCDF files
+follows the <a href="https://www.isimip.org/protocol/preparing-simulation-files/" title="Here we specifically require the bias-adjusted and statistically downscaled CMIP climate data following ISIMIP's protocols" class="external-link">ISIMIP
+simulation protocols</a>. Our <a href="#example-data-1-quick-start-dataset">example data 1</a> includes
+the standard ISIMIP-style climate data for users to check the data
+structure and format.</p>
+<div class="alert alert-info">
+<p><strong>NOTE!</strong> ISIMIP provides a range of bias-adjusted and
+statistically downscaled climate forcing data at a 0.5-degree
+resolution. Bias adjustment is the process of statistically modifying
+climate model outputs to better align with observed climate data,
+thereby reducing systematic errors or biases. To ensure consistency,
+simulated climate data should be bias-adjusted using the same historical
+climate observations that were used to fit the empirical model. For
+example, ISIMIP’s current CMIP6 climate outputs are bias-adjusted
+against the W5E5 v2.0 climate dataset using the ISIMIP3BASD v2.5.0
+approach.</p>
+<p>If you plan to use other climate observations or simulations that are
+not directly from ISIMIP, please ensure that you:</p>
+<ul>
+<li>Bias-adjust and statistically downscale your data to 0.5-degree
+resolution. You can follow ISIMIP’s official ISIMIP3BASD v2.5.0 approach
+(<a href="https://doi.org/10.5281/zenodo.4686991" class="external-link">Lange, 2021</a>; <a href="https://doi.org/10.5194/gmd-12-3055-2019" class="external-link">Lange, 2019</a>), or use
+the <a href="https://jgcri.github.io/basd/" class="external-link">basd software</a> developed
+by the Pacific Northwest National Laboratory.</li>
+<li>Format your data according to ISIMIP’s guidelines for <a href="https://www.isimip.org/protocol/preparing-simulation-files/" class="external-link">preparing
+simulation files</a> in terms of NetCDF headers, grid format, variables
+and dimensions, and the time axis.</li>
+</ul>
+</div>
+<p>The example below uses the monthly precipitation (mm) and temperature
+(degree C) projections from 2015 to 2100. To run this climate data
+processing, please provide the file paths for the precipitation and
+temperature NetCDF files using the <code>pr_ncdf</code> and
+<code>tas_ncdf</code> arguments, respectively, and adjust the other
+arguments accordingly to match the specifics of your climate data.</p>
+<p>Please note that this step may take up to an hour to complete.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JGCRI/gaia" class="external-link">gaia</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Path to the output folder where you wish to save the outputs. Change it accordingly</span></span>
-<span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">'gaia_output'</span><span class="op">)</span></span>
+<span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="st">'gaia_output'</span></span>
 <span></span>
 <span><span class="co"># calculate weigted climate</span></span>
 <span><span class="fu"><a href="../reference/weighted_climate.html">weighted_climate</a></span><span class="op">(</span>pr_ncdf <span class="op">=</span> <span class="va">pr_projection_file</span> ,</span>
@@ -406,20 +534,37 @@ take up to an hour to complete.</p>
 <span>                 time_periods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">2015</span>, <span class="fl">2100</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>                 output_dir <span class="op">=</span> <span class="va">output_dir</span>,</span>
 <span>                 name_append <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
-<p>This will create a folder based on the specified
+<p>The example above will create a folder based on the specified
 <code>climate_model</code> argument (e.g.,
 <code>output_dir/weighted_climate/canesm5</code>). Inside this folder,
 you will find files containing precipitation and temperature data
-weighted by the irrigated and rainfed cropland areas for 26 MIRCA crops.
-The file structure is organized in columns as follows:
-<code>[year, month, 1, 2, 3, ..., 265]</code>, where the numbers
-correspond to country IDs. To view the country names associated with
-these IDs, simply type <code><a href="../reference/country_id.html">gaia::country_id</a></code> in the R console
-after loading the <code>gaia</code> package. Below is an example of the
-structure for the weighted precipitation data for rainfed soybean
+weighted by the irrigated and rainfed cropland areas for 26 MIRCA crops
+at the country level. The file structure is organized in columns as
+follows: <code>[year, month, 1, 2, 3, ..., 265]</code>, where the
+numbers correspond to country IDs. To view the country names associated
+with these IDs, simply type <code><a href="../reference/country_id.html">gaia::country_id</a></code> in the R
+console after loading the <code>gaia</code> package.</p>
+<p><strong>Outputs of the function:</strong> The function has no return
+values. It writes the following output files to the
+<code>output_dir/weighted_climate</code> folder:</p>
+<ul>
+<li><p><code>[climate-model]_[climate-scenario]_month_precip_country_irc_[crop-number]_[start-year]_[end-year].csv</code>:
+This file is the irrigated cropland-area weighted precipitation for
+certain climate model, scenario, and crop.</p></li>
+<li><p><code>[climate-model]_[climate-scenario]_month_precip_country_rfd_[crop-number]_[start-year]_[end-year].csv</code>:
+This file is the rainfed cropland-area weighted precipitation for
+certain climate model, scenario, and crop.</p></li>
+<li><p><code>[climate-model]_[climate-scenario]_month_tmean_country_irc_[crop-number]_[start-year]_[end-year].csv</code>:
+This file is the irrigated cropland-area weighted temperature for
+certain climate model, scenario, and crop.</p></li>
+<li><p><code>[climate-model]_[climate-scenario]_month_tmean_country_rfd_[crop-number]_[start-year]_[end-year].csv</code>:
+This file is the rainfed cropland-area weighted temperature for certain
+climate model, scenario, and crop.</p></li>
+</ul>
+<p>Below is an example of the structure for the weighted precipitation
+data for rainfed soybean
 (<code>output_dir/weighted_climate/canesm5/anesm5_gcam-ref_month_precip_country_rfc_crop08_2015_2100.txt</code>).</p>
-<pre><code><span><span class="co">## Error in get(paste0(generic, ".", class), envir = get_method_env()) : </span></span>
-<span><span class="co">##   object 'type_sum.accel' not found</span></span></code></pre>
+<a name="table1"></a>
 <table class="table table table-striped" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption>
 <strong>Table 1.</strong> Soybean-area-weighted precipitation from the
@@ -10887,21 +11032,30 @@ country.
 <h4 id="crop_calendars">crop_calendars<a class="anchor" aria-label="anchor" href="#crop_calendars"></a>
 </h4>
 <hr>
-<p>The crop calendar outlines the planting and harvesting months for
-each predefined crop across different countries. Users can modify the
-crop calendar file to add additional crops, following the established
-format. Below is an example of the crop calendar structure. You can also
-access the crop calendar output at
-<code>output_dir/data_processed/crop_calendar.csv</code>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p>The <code>crop_calendars</code> function calculates crop calendars
+based on the SAGE global crop planting and harvesting dates data (<a href="https://doi.org/10.1111/j.1466-8238.2010.00551.x" class="external-link">Sacks et al.,
+2010</a>). The crop calendar outlines the planting and harvesting months
+for each predefined crop across all global countries. The code chunk
+below runs <code>crop_calendars</code>.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Path to the output folder where you wish to save the outputs. Change it accordingly</span></span>
-<span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">'gaia_output'</span><span class="op">)</span></span>
+<span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="st">'gaia_output'</span></span>
 <span></span>
 <span><span class="co"># calculate crop calendars</span></span>
 <span><span class="va">crop_cal</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/crop_calendars.html">crop_calendars</a></span><span class="op">(</span>output_dir <span class="op">=</span> <span class="va">output_dir</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># print result</span></span>
 <span><span class="va">crop_cal</span></span></code></pre></div>
+<p><strong>Outputs of the function:</strong> The function returns a data
+frame of crop calendars. It also writes the output in
+<code>output_dir/data_processed/crop_calendar.csv</code></p>
+<p>Below is an example of the crop calendar structure. The columns
+<code>[plant, harvest]</code> indicates the month of planting and
+harvesting for the crop with value 1 in the same row. For example, the
+first row in the table below indicates that the planting and harvesting
+month of wheat in Albania (iso: alb) is November and June. Users can
+filter to the certain crops by <code>filter(wheat == 1)</code> to better
+view the planting and harvesting month for countries with wheat.</p>
 <table class="table table table-striped" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption>
 <strong>Table 2.</strong> Crop calendar
@@ -11405,6 +11559,571 @@ alb
 </tr>
 </tfoot>
 </table>
+<p>Users can customize the crop calendar by adding new crops to the
+file, ensuring they follow the established format. The code snippet
+below shows an example on how to add a crop to the crop calendar. Once
+you’ve updated the crop calendar, be sure to save the modified file by
+overwriting the existing crop calendar CSV in your output folder. This
+ensures the changes will be applied in the subsequent steps.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># adding a new crop: yams. Construct the structure of the data with yams</span></span>
+<span><span class="va">crop_add</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>iso <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'cog'</span>, <span class="st">'gha'</span>, <span class="st">'lbr'</span><span class="op">)</span>,</span>
+<span>                        crops <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">crop_cal</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">crop_cal</span><span class="op">)</span> <span class="op">-</span> <span class="fl">2</span><span class="op">)</span><span class="op">]</span>, <span class="st">'yams'</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">crops</span> <span class="op">==</span> <span class="st">'yams'</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="st">'crops'</span>, values_from <span class="op">=</span> <span class="st">'value'</span>, values_fill <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># planting and harvesting month for countries with yams</span></span>
+<span><span class="va">crop_harvest_plant</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>iso <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'cog'</span>, <span class="st">'gha'</span>, <span class="st">'lbr'</span><span class="op">)</span>,</span>
+<span>                                 plant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>                                 harvest  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">9</span>, <span class="fl">10</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># complete the data structure with yams added</span></span>
+<span><span class="va">crop_add</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">crop_add</span>, <span class="va">crop_harvest_plant</span>, by <span class="op">=</span> <span class="st">'iso'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># bind the data to create updated crop calendars</span></span>
+<span><span class="va">crop_cal_update</span> <span class="op">&lt;-</span> <span class="va">crop_cal</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">crop_add</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/replace_na.html" class="external-link">replace_na</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>yams <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">plant</span>, <span class="op">-</span><span class="va">harvest</span>, <span class="fu">everything</span><span class="op">(</span><span class="op">)</span>, <span class="va">plant</span>, <span class="va">harvest</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># view updated crop calendar</span></span>
+<span><span class="va">crop_cal_update</span></span></code></pre></div>
+<table class="table table table-striped" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
+<caption>
+<strong>Table 3.</strong> Updated crop calendar with yams
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+iso
+</th>
+<th style="text-align:right;">
+wheat
+</th>
+<th style="text-align:right;">
+rice
+</th>
+<th style="text-align:right;">
+maize
+</th>
+<th style="text-align:right;">
+cassava
+</th>
+<th style="text-align:right;">
+soybean
+</th>
+<th style="text-align:right;">
+sugarcane
+</th>
+<th style="text-align:right;">
+sugarbeet
+</th>
+<th style="text-align:right;">
+cotton
+</th>
+<th style="text-align:right;">
+sorghum
+</th>
+<th style="text-align:right;">
+root_tuber
+</th>
+<th style="text-align:right;">
+sunflower
+</th>
+<th style="text-align:right;">
+yams
+</th>
+<th style="text-align:right;">
+plant
+</th>
+<th style="text-align:right;">
+harvest
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+alb
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+alb
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+alb
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+alb
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+alb
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+alb
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+alb
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+alb
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+alb
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+alb
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<span style="font-style: italic;">Note: </span>
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> This only shows the first 10 lines of the example data.
+</td>
+</tr>
+</tfoot>
+</table>
 <p><br></p>
 </div>
 <div class="section level4">
@@ -11416,19 +12135,9 @@ seasons using climate variables processed by
 <code>weighted_climate</code> along with crop calendars for both
 historical and projected periods. This function prepares climate and
 yield data for subsequent model fitting.</p>
-<p>The <code>data_aggregation</code> function creates two types of files
-in the output_dir/data_processed folder:</p>
-<ul>
-<li><p><code>historic_vars_[crop-name].csv</code>: This file contains
-historical data for each crop. For example, historical information for
-soybean is illustrated in Table 3.</p></li>
-<li><p><code>weather_[climate-model]_[climate-scenario]_[crop-name].csv</code>:
-This file includes aggregated climate data for the specified crop. An
-example of climate information for soybean is shown in Table 4.</p></li>
-</ul>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Path to the output folder where you wish to save the outputs. Change it accordingly</span></span>
-<span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">'gaia_output'</span><span class="op">)</span></span>
+<span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="st">'gaia_output'</span></span>
 <span></span>
 <span><span class="co"># aggregate crop and climate information at the country level</span></span>
 <span><span class="va">data_agg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/data_aggregation.html">data_aggregation</a></span><span class="op">(</span>climate_hist_dir <span class="op">=</span> <span class="va">climate_hist_dir</span>,</span>
@@ -11436,9 +12145,35 @@ example of climate information for soybean is shown in Table 4.</p></li>
 <span>                             climate_model <span class="op">=</span> <span class="st">'canesm5'</span>,</span>
 <span>                             climate_scenario <span class="op">=</span> <span class="st">'gcam-ref'</span>,</span>
 <span>                             output_dir <span class="op">=</span> <span class="va">output_dir</span><span class="op">)</span></span></code></pre></div>
+<p><strong>Outputs of the function:</strong> The
+<code>data_aggregation</code> function returns a list of historical and
+projected weather variables and crop data. It also writes the following
+output files under the <code>output_dir/data_processed</code>
+folder:</p>
+<ul>
+<li><p><code>historic_vars_[crop-name].csv</code>: This file summarizes
+<strong>historical</strong> harvest area (ha), irrigation type, annual
+yield (kg/ha), CO2 (ppm), growing season, precipitation (mm/month) and
+temperature (degree C) by country and crop. For example, historical
+information for soybean is illustrated in <a href="#table4">Table 4</a>.
+The <code>grow_season</code> column is binary and value 1 indicates the
+<code>grow_month</code> from the same row is considered growing season
+for the crop.</p></li>
+<li><p><code>weather_[climate-model]_[climate-scenario]_[crop-name].csv</code>:
+This file includes aggregated <strong>future</strong> weather data for
+the specified climate model/climate scenario/crop. An example of climate
+data for soybean is shown in <a href="#table5">Table 5</a>. The output
+includes the minimum, maximum, and mean temperature, as well as
+precipitation, all calculated on a monthly basis for each year, based on
+the cropland-weighted monthly precipitation and temperature
+values.</p></li>
+</ul>
+<p>The followings are example outputs and diagnostic plot from
+<code>data_aggregation</code> function.</p>
+<a name="table4"></a>
 <table class="table table table-striped" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption>
-<strong>Table 3.</strong> Aggregated historical information for soybean.
+<strong>Table 4.</strong> Aggregated historical information for soybean.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -11906,9 +12641,12 @@ rf
 </tr>
 </tfoot>
 </table>
+<p><br></p>
+<a name="table5"></a>
 <table class="table table table-striped" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption>
-<strong>Table 4.</strong> Aggregated weather information for soybean.
+<strong>Table 5.</strong> Aggregated future weather information for
+soybean.
 </caption>
 <thead><tr>
 <th style="text-align:right;">
@@ -12318,29 +13056,83 @@ Argentina
 <hr>
 <p>The <code><a href="../reference/yield_regression.html">gaia::yield_regression</a></code> function performs empirical
 model fitting and generates diagnostic plots comparing modeled yields to
-FAO recorded yields for each crop type at the GCAM region scale. An
-example of this comparison for soybean is illustrated in <a href="#figure2">Figure 2</a>.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+FAO recorded yields for each crop type at the GCAM region scale.</p>
+<p>The yield regression applies the econometric model from <a href="https://doi.org/10.1088/1748-9326/abadcb" class="external-link">Waldhoff et al.,
+(2020)</a>:</p>
+<p><span class="math display">$$\begin{align} {y_{i,t}} = &amp;\, {\mu
+_i} + \lambda t + \chi {m_{i,t}} + \beta _1^{Mean}T_{i,t}^{Mean} + \beta
+_2^{Mean}{\left( {T_{i,t}^{Mean}} \right)^2}\nonumber\\ &amp;+ \beta
+_1^{Min}T_{i,t}^{Min} + \beta _2^{Min}{\left( {T_{i,t}^{Min}} \right)^2}
++ \beta _1^{Max}T_{i,t}^{Max} \nonumber\hfill \\ &amp; + \beta
+_2^{Max}{\left( {T_{i,t}^{Max}} \right)^2} + \gamma
+_1^{Mean}P_{i,t}^{Mean} + \gamma _2^{Mean}{\left( {P_{i,t}^{Mean}}
+\right)^2} \nonumber\\ &amp;+ \gamma _1^{Min}P_{i,t}^{Min} + \gamma
+_2^{Min}{\left( {P_{i,t}^{Min}} \right)^2} + \gamma
+_1^{Max}P_{i,t}^{Max} \nonumber\\ &amp; + \gamma _2^{Max}{\left(
+{P_{i,t}^{Max}} \right)^2}. \nonumber\hfill \\ \end{align}$$</span> </p>
+<p>Where,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+index countries and years;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>y</mi><annotation encoding="application/x-tex">y</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+are the natural logarithms of yield and per capita GDP;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>T</mi><mi>k</mi></msup><annotation encoding="application/x-tex">T^k</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>P</mi><mi>k</mi></msup><annotation encoding="application/x-tex">P^k</annotation></semantics></math>
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>∈</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>M</mi><mi>e</mi><mi>a</mi><mi>n</mi><mo>,</mo><mi>M</mi><mi>i</mi><mi>n</mi><mo>,</mo><mi>M</mi><mi>a</mi><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">k \in \left( {Mean,Min,Max} \right)</annotation></semantics></math>
+denote the mean, minimum, and maximum growing season monthly average
+daily temperature and total precipitation in each country and year; and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>μ</mi><annotation encoding="application/x-tex">\mu</annotation></semantics></math>
+is a regression parameter indicating country fixed effects that control
+for heterogeneous unobserved time-invariant influences that vary across
+countries;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mn>1</mn></msub><annotation encoding="application/x-tex">\beta _1</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mn>2</mn></msub><annotation encoding="application/x-tex">\beta _2</annotation></semantics></math>
+define the response of log yield to average, minimum, and maximum
+temperature, while
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>γ</mi><mn>1</mn></msub><annotation encoding="application/x-tex">\gamma _1</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>γ</mi><mn>2</mn></msub><annotation encoding="application/x-tex">\gamma _2</annotation></semantics></math>
+define the response of log yield to average, minimum, and maximum
+precipitation.</p>
+<p>Running <code>yield_regression</code> is as simple as the code chunk
+below.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Path to the output folder where you wish to save the outputs. Change it accordingly</span></span>
-<span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">'gaia_output'</span><span class="op">)</span></span>
+<span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="st">'gaia_output'</span></span>
 <span></span>
 <span><span class="co"># perform empirical regression</span></span>
 <span><span class="fu"><a href="../reference/yield_regression.html">yield_regression</a></span><span class="op">(</span>diagnostics <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                 output_dir <span class="op">=</span> <span class="va">output_dir</span><span class="op">)</span></span></code></pre></div>
-<p align="center">
-<img src="vignetteFigs%2Fmodel_soybean_fit.png"></p>
-<a name="figure2"></a>
-<p align="left" style="font-size:14px;">
-<strong>Figure 2:</strong> Model fitted yields versus FAO yields for
-soybean.
-</p>
-<p><br></p>
-<p>The parameters of the fitted model can be found in the file located
-at
-<code>output_dir/data_processed/reg_out_[crop-name]_fit_lnyield_mmm_quad_noco2_nogdp.csv</code>.</p>
+<p><strong>Outputs of the function:</strong> The
+<code>yield_regression</code> function has no return value. It also
+writes the following output files:</p>
+<ul>
+<li><p><code>reg_out_[crop-name]_[fit-name].csv</code>: This file is
+located under <code>output_dir/data_processed</code> folder and it
+contains the statistics of the regression analysis for a crop. <a href="#table6">Table 6</a> show an example output of parameters of the
+fitted model for soybean.</p></li>
+<li><p><code>weather_yield_[crop-name].csv</code>: This file is located
+under <code>output_dir/data_processed</code> folder and it contains the
+values of the variables in the regression formula (e.g., min, max, mean
+temperature).</p></li>
+<li><p><code>model_[crop-name]_[fit-name].pdf</code>: This file is
+located under <code>output_dir/figures</code> folder and it is a
+diagnostic plot that shows model fitting between observed FAO data and
+fitted crop yield across global countries. An example of this comparison
+for soybean is illustrated in <a href="#figure2">Figure 2</a>.</p></li>
+</ul>
+<p>The followings are example outputs and diagnostic plot from
+<code>yield_regression</code> function.</p>
+<a name="table6"></a>
 <table class="table table table-striped" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption>
-<strong>Table 5.</strong> Fitted model for soybean.
+<strong>Table 6.</strong> Fitted model for soybean.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -12545,6 +13337,14 @@ precip_mean_2
 </tfoot>
 </table>
 <p><br></p>
+<a name="figure2"></a>
+<p align="center">
+<img src="vignetteFigs%2Fmodel_soybean_fit.png"></p>
+<p align="left" style="font-size:14px;">
+<strong>Figure 2:</strong> Model fitted yields versus FAO yields for
+soybean.
+</p>
+<p><br></p>
 </div>
 <div class="section level4">
 <h4 id="yield_shock_projection">yield_shock_projection<a class="anchor" aria-label="anchor" href="#yield_shock_projection"></a>
@@ -12552,16 +13352,25 @@ precip_mean_2
 <hr>
 <p>Once the <code>gaia</code> model has completed fitting, the
 <code><a href="../reference/yield_shock_projection.html">gaia::yield_shock_projection</a></code> function calculates the
-projected annual yield shocks based on the input climate data. For
-coarse-scale models like GCAM, <code>gaia</code> also computes smoothed
-yield shocks using a user-specified smoothing window (the default window
-is 20 years). In the smoothed outputs, the yield shocks at the base year
-will be set to 1. The results are provided in both <code>CSV</code>
-outputs and diagnostic plots. An example of annual soybean yield shocks
-is illustrated in <a href="#figure3">Figure 3</a>.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+projected annual yield shocks based on the input climate data. The
+climate impact on yield, known as yield shock, refers to the fractional
+change in a crop’s yield within a specific country during a future
+period, relative to the baseline yield that would otherwise obtain under
+a stable climate. This concept is mathematically defined in Equations 3
+to 6 of <a href="https://doi.org/10.1088/1748-9326/abadcb" class="external-link">Waldhoff et
+al., (2020)</a>.</p>
+<p>For coarse-scale models like GCAM, <code>gaia</code> also computes
+smoothed yield shocks using a user-specified smoothing window (the
+default window is 20 years). In the smoothed outputs, the yield shocks
+at the base year will be set to 1. The results are provided in both
+<code>CSV</code> outputs and diagnostic plots.</p>
+<p>To run <code>yield_shock_projection</code>, simply pass metadata such
+as climate model, climate scenario, base year, start and end year of the
+climate data, and smooth window to the function. The code chunk below
+shows an example.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Path to the output folder where you wish to save the outputs. Change it accordingly</span></span>
-<span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">'gaia_output'</span><span class="op">)</span></span>
+<span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="st">'gaia_output'</span></span>
 <span></span>
 <span><span class="co"># calculate projected yield shocks</span></span>
 <span><span class="va">out_yield_shock</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/yield_shock_projection.html">yield_shock_projection</a></span><span class="op">(</span>use_default_coeff <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -12573,20 +13382,37 @@ is illustrated in <a href="#figure3">Figure 3</a>.</p>
 <span>                                          smooth_window <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>                                          diagnostics <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                                          output_dir <span class="op">=</span> <span class="va">output_dir</span><span class="op">)</span></span></code></pre></div>
-<p align="center">
-<img src="vignetteFigs%2Fannual_projected_soybean.png"></p>
-<a name="figure3"></a>
-<p align="left" style="font-size:14px;">
-<strong>Figure 3:</strong> Projected yield shocks for soybean.
-</p>
-<p><br></p>
-<p>The output data for annual and smoothed yield shocks projection are
-located under folders <code>output_dir/yield_impacts_annual</code>
-(Table 6) and <code>output_dir/yield_impacts_smooth</code> (Table
-7).</p>
+<p><strong>Outputs of the function:</strong> The
+<code>yield_shock_projection</code> function returns a data frame of
+formatted smoothed annual crop yield shocks under climate impacts. It
+also writes the following output files:</p>
+<ul>
+<li><p><code>yield_impacts_annual/yield_[climate-model]_[climate-scenario]_[crop-name].csv</code>:
+This file includes annual crop yield shocks under climate variability.
+An example of annual soybean yield shocks (column yield_impact) is shown
+in <a href="#table7">Table 7</a>.</p></li>
+<li><p><code>yield_impacts_smooth/yield_[climate-model]_[climate-scenario]_[crop-name].csv</code>:
+This file includes smoothed annual crop yield shocks under climate
+variability. The default smoothing window is 20 years. An example of
+smoothed annual soybean yield shocks is shown in <a href="#table8">Table
+8</a>.</p></li>
+<li><p><code>annual_projected_climate_impacts_[climate-model]_[climate-scenario]_[crop-name]_[fit-name].pdf</code>:
+This is diagnostic plot for annual crop yield shocks for countries
+within different regions. It is located under
+<code>output_dir/figures</code> folder. A diagnostic plot of annual
+soybean yield shocks is illustrated in <a href="#figure3">Figure
+3</a>.</p></li>
+<li><p><code>smooth_projected_climate_impacts_[climate-model]_[climate-scenario]_[crop-name]_[fit-name].pdf</code>:
+This is diagnostic plot for smoothed annual crop yield shocks for
+countries within different regions. It is located under
+<code>output_dir/figures</code> folder.</p></li>
+</ul>
+<p>The followings are example outputs and diagnostic plot from
+<code>yield_shock_projection</code> function.</p>
+<a name="table7"></a>
 <table class="table table table-striped" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption>
-<strong>Table 6.</strong> Annual yield shocks for soybean.
+<strong>Table 7.</strong> Annual yield shocks for soybean.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -12790,9 +13616,11 @@ soybean
 </tr>
 </tfoot>
 </table>
+<p><br></p>
+<a name="table8"></a>
 <table class="table table table-striped" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption>
-<strong>Table 7.</strong> 20-year smoothed yield shocks for soybean.
+<strong>Table 8.</strong> 20-year smoothed yield shocks for soybean.
 </caption>
 <thead><tr>
 <th style="text-align:left;">
@@ -15472,25 +16300,33 @@ nga
 </tfoot>
 </table>
 <p><br></p>
+<a name="figure3"></a>
+<p align="center">
+<img src="vignetteFigs%2Fannual_projected_soybean.png"></p>
+<p align="left" style="font-size:14px;">
+<strong>Figure 3:</strong> Projected yield shocks for soybean.
+</p>
+<p><br></p>
 </div>
 <div class="section level4">
 <h4 id="gcam_agprodchange">gcam_agprodchange<a class="anchor" aria-label="anchor" href="#gcam_agprodchange"></a>
 </h4>
 <hr>
 <p>The <code>gcam_agprodchange</code> function is specifically designed
-for the Global Change Analysis Model (GCAM). GCAM requires the
-agricultural productivity growth rate (APG) as an input, which is
-calculated based on yield shocks and the baseline APG, varying according
-to different SSP scenarios. Additionally, the APG for GCAM must be at
-the region-basin scale. The <code><a href="../reference/gcam_agprodchange.html">gaia::gcam_agprodchange</a></code>
-function directly remaps country-level yield shocks to region-basin APG.
-In the example below, since <code>climate_scenario = 'gcam-ref'</code>,
-it will use the APG without SSP impact (Reference scenario APC) to
-calculate the climate-impacted APG based on the yield shocks computed in
-the previous step.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+for the Global Change Analysis Model (GCAM) <a href="https://doi.org/10.5194/gmd-12-677-2019" class="external-link">(Calvin et al.,
+2019)</a>. GCAM requires the agricultural productivity growth rate (APG)
+as an input, which is calculated based on yield shocks and the baseline
+APG, varying according to different SSP scenarios. Additionally, the APG
+for GCAM must be at the region-basin scale. The
+<code><a href="../reference/gcam_agprodchange.html">gaia::gcam_agprodchange</a></code> function directly remaps
+country-level yield shocks to region-basin APG. In the example below,
+since <code>climate_scenario = 'gcam-ref'</code>, it will use the APG
+without SSP impact (Reference scenario APC) to calculate the
+climate-impacted APG based on the yield shocks computed in the previous
+step.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Path to the output folder where you wish to save the outputs. Change it accordingly</span></span>
-<span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">'gaia_output'</span><span class="op">)</span></span>
+<span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="st">'gaia_output'</span></span>
 <span></span>
 <span><span class="co"># calculate region-basin agricultural productivity growth rate for GCAM</span></span>
 <span><span class="va">gcam_apg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gcam_agprodchange.html">gcam_agprodchange</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">out_yield_shock</span>,</span>
@@ -15503,16 +16339,29 @@ the previous step.</p>
 <span>                              diagnostics <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                              output_dir <span class="op">=</span> <span class="va">output_dir</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
-<p>Once the run is complete, a folder named
-<code>[gcam-version]_agprodchange_[cfe]</code> (e.g.,
-<code>gcam7_agprodchange_no-cfe</code>) will be created in your
-specified output location. This folder contains the <code>XML</code>
-file of the agricultural productivity growth rate (APG) for GCAM.
-Additionally, it includes diagnostic figures illustrating the APG by
-region-basin. An example of APG for soybean is shown in <a href="#figure4">Figure 4</a> below.</p>
+<p><strong>Outputs of the function:</strong> The
+<code>gcam_agprodchange</code> function returns a data frame of
+agricultural productivity change. It also writes the following output
+files to the folder named <code>[gcam-version]_agprodchange_[cfe]</code>
+(e.g., <code>gcam7_agprodchange_no-cfe</code>):</p>
+<ul>
+<li><p><code>agyield_impact_[climate-model]_[ensemble-member]_[bias_adj]_[climate-scenario].xml</code>:
+This is the XML file of agricultural productivity change for all
+commodities for GCAM.</p></li>
+<li><p><code>figures_yield_impacts/[commodity.png]</code>: This is
+diagnostic plot for yield shocks for a GCAM commodity at specified
+<code>gcam_timestep</code> (e.g., 5 years) by basins within each GCAM
+region (e.g., region-basin intersection) separated by irrigated and
+rainfed crop types.</p></li>
+<li><p><code>figures_agprodchange/[commodity.png]</code>: This is
+diagnostic plot for APG for a GCAM commodity at specified
+<code>gcam_timestep</code> (e.g., 5 years) by basins within each GCAM
+region (e.g., region-basin intersection) separated by irrigated and
+rainfed crop types. An example of APG for soybean is shown in <a href="#figure4">Figure 4</a> below.</p></li>
+</ul>
+<a name="figure4"></a>
 <p align="center">
 <img src="vignetteFigs%2Fagprodchange_soybean.png"></p>
-<a name="figure4"></a>
 <p align="left" style="font-size:14px;">
 <strong>Figure 4:</strong> Agricultural productivity growth rate for
 soybean. Each line under a region indicates the APG for the region-basin
