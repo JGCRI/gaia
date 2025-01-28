@@ -628,11 +628,11 @@ knitr::kable(fit_model[1:10],
 
 ---
 
-Once the `gaia` model has completed fitting, the `gaia::yield_shock_projection` function calculates the projected annual yield shocks based on the input climate data. For coarse-scale models like GCAM, `gaia` also computes smoothed yield shocks using a user-specified smoothing window (the default window is 20 years). In the smoothed outputs, the yield shocks at the base year will be set to 1. The results are provided in both `CSV` outputs and diagnostic plots.
+Once the `gaia` model has completed fitting, the `gaia::yield_shock_projection` function calculates the projected annual yield shocks based on the input climate data. The climate impact on yield, known as yield shock, refers to the fractional change in a crop's yield within a specific country during a future period, relative to the baseline yield expected under stable climate conditions. This concept is mathematically defined in Equations 3 to 6 of [Waldhoff et al., (2020)](https://doi.org/10.1088/1748-9326/abadcb). For coarse-scale models like GCAM, `gaia` also computes smoothed yield shocks using a user-specified smoothing window (the default window is 20 years). In the smoothed outputs, the yield shocks at the base year will be set to 1. The results are provided in both `CSV` outputs and diagnostic plots.
 
 **Outputs of the function:** The `yield_shock_projection` function returns a data frame of formatted smoothed annual crop yield shocks under climate impacts. It also writes the following output files:
 
-* `yield_impacts_annual/yield_[climate-model]_[climate-scenario]_[crop-name].csv`: This file includes annual crop yield shocks under climate variability. An example of annual soybean yield shocks is shown in [Table 7](#table7).
+* `yield_impacts_annual/yield_[climate-model]_[climate-scenario]_[crop-name].csv`: This file includes annual crop yield shocks under climate variability. An example of annual soybean yield shocks (column yield_impact) is shown in [Table 7](#table7).
 
 * `yield_impacts_smooth/yield_[climate-model]_[climate-scenario]_[crop-name].csv`: This file includes smoothed annual crop yield shocks under climate variability. The default smoothing window is 20 years. An example of smoothed annual soybean yield shocks is shown in [Table 8](#table8).
 
