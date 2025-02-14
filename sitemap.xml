@@ -13,6 +13,7 @@
 <url><loc>/reference/agprodchange_ni_gcam6.html</loc></url>
 <url><loc>/reference/agprodchange_ni_gcam7.html</loc></url>
 <url><loc>/reference/agprodchange_ref.html</loc></url>
+<url><loc>/reference/clean_sage.html</loc></url>
 <url><loc>/reference/clean_yield.html</loc></url>
 <url><loc>/reference/climate_impact.html</loc></url>
 <url><loc>/reference/co2_historical.html</loc></url>
@@ -52,6 +53,7 @@
 <url><loc>/reference/prep_regression.html</loc></url>
 <url><loc>/reference/regression_fixed_effects.html</loc></url>
 <url><loc>/reference/smooth_impacts.html</loc></url>
+<url><loc>/reference/verify_crop.html</loc></url>
 <url><loc>/reference/weather_agg.html</loc></url>
 <url><loc>/reference/weather_clean.html</loc></url>
 <url><loc>/reference/weighted_climate.html</loc></url>
