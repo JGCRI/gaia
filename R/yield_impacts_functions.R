@@ -14,7 +14,9 @@
 
 clean_yield <- function(fao_yield = NULL,
                         fao_to_mirca = NULL) {
-  AreaName <- crop <- NULL
+  Area <- `Area Code` <- `Item Code` <- Element <- Item <- country_code <-
+    iso <- year <- var <- value <- to_mirca <- crop_id <- crop_name <-
+    fao_crop_id <- crop <- area_harvest <- yield <- NULL
 
   # clean up FAOSTAT yield and harvest area data and left join the iso code
   df <- fao_yield %>%
@@ -531,7 +533,7 @@ plot_fit <- function(data = NULL,
   d <- data
 
   p <- ggplot2::ggplot(d, ggplot2::aes(x = yield, y = .data[[fit_name]], size = area_harvest, color = GCAM_region_name)) +
-    ggplot2::geom_point(shape = 21, stroke = 0.5) +
+    ggplot2::geom_point(shape = 21, stroke = 0.5, na.rm = T) +
     ggplot2::scale_size_area(max_size = 20) +
     ggplot2::guides(color = ggplot2::guide_legend(ncol = 1)) +
     col_scale_region +

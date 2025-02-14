@@ -61,7 +61,8 @@ crop_calendars <- function(crop_calendar_file = NULL,
     }
 
     # clean up crop calendar
-    d <- gaia::clean_sage(d = d)
+    d <- gaia::clean_sage(d = d,
+                          crop_select = crops$crop_mirca)
 
   }
 
@@ -93,8 +94,9 @@ crop_calendars <- function(crop_calendar_file = NULL,
 #' @export
 
 verify_crop <- function(crop_calendar_file = NULL,
-                        crop_select = c("cassava", "cotton", "maize", "rice", "root_tuber", "sorghum", "soybean", "sugarbeet", "sugarcane", "sunflower", "wheat")){
+                        crop_select = NULL){
 
+  crop_cal <- NULL
 
   # Step 1: Finalize crop_select
   # read the user provided crop calendar
@@ -164,12 +166,14 @@ verify_crop <- function(crop_calendar_file = NULL,
 #' Clean up the sage crop calendar by reassigning the iso name and
 #' make sure to keep one set of the plant and harvest for each country and crop
 #'
-#' @param d Default = NULL. data frame for crop calendar
+#' @param d Default = NULL. Data frame for crop calendar
+#' @param crop_select Default = NULL. Vector of strings for selected crops
 #' @returns A data frame of clean crop calendar
 #' @keywords internal
 #' @export
 
-clean_sage <- function(d = NULL){
+clean_sage <- function(d = NULL,
+                       crop_select = NULL){
 
   # ----------------------------------------------------------------------------
   # Deal with exceptions (countries by states or regions)
@@ -398,12 +402,10 @@ clean_sage <- function(d = NULL){
   d$soybean <- ifelse(d$country_name == "Argentina" & d$crop == "soybeans" & d$Qualifier == "", 0, d$soybean)
 
   # Somalia (two seasons, use the one with no qualifier code)
-  d$cotton <- ifelse(d$country_name == "Somalia" & d$crop == "cotton" & d$Qualifier == 2, 0, d$cotton)
-  d$millet <- ifelse(d$country_name == "Somalia" & d$crop == "millet" & d$Qualifier == 2, 0, d$millet) #MZ
+  d$cotton <- ifelse(d$country_name == "Somalia" & d$crop == "cotton" & d$Data.ID == 1741, 0, d$cotton)
 
   # Kenya (two obs, nearly the same)
   d$cotton <- ifelse(d$country_name == "Kenya" & d$crop == "cotton" & d$Data.ID == 1711, 0, d$cotton)
-  d$millet <- ifelse(d$country_name == "Kenya" & d$crop == "millet" & d$Qualifier == 2, 0, d$millet) #MZ
 
   # SORGHUM CORRECTIONS
   # Dominican Republic (iso ID -- dom) listed thrice for sorghum
@@ -441,68 +443,85 @@ clean_sage <- function(d = NULL){
   d$iso <- ifelse((d$country_name == "North Korea (central bowl)" & d$crop == "soybeans"), "prk", d$iso)
   d$soybean <- ifelse(d$country_name == "North Korea (central bowl)" & d$crop == "soybeans", 1, d$soybean)
 
+  # Millet Corrections (MZ)
+  if('millet' %in% crop_select){
+    d$millet <- ifelse(d$country_name == "Somalia" & d$crop == "millet" & d$Data.ID == 1738, 0, d$millet)
+    d$millet <- ifelse(d$country_name == "Kenya" & d$crop == "millet" & d$Data.ID == 336, 0, d$millet)
+  }
+
   # Barley Corrections (MZ)
-  d$barley <- ifelse(d$country_name == "Kenya" & d$crop == "barley" &  d$Data.ID == 340, 0, d$barley)
-  d$barley <- ifelse(d$country_name == "United Kingdom" & d$crop == "barley" &  d$Data.ID == 787, 0, d$barley)
-  d$barley <- ifelse(d$country_name == "Germany" & d$crop == "barley" &  d$Data.ID == 713, 0, d$barley)
+  if('barley' %in% crop_select){
+    d$barley <- ifelse(d$country_name == "Kenya" & d$crop == "barley" &  d$Data.ID == 340, 0, d$barley)
+    d$barley <- ifelse(d$country_name == "United Kingdom" & d$crop == "barley" &  d$Data.ID == 787, 0, d$barley)
+    d$barley <- ifelse(d$country_name == "Germany" & d$crop == "barley" &  d$Data.ID == 713, 0, d$barley)
+  }
 
   # Groundnuts Corrections (MZ)
-  d$groundnuts <- ifelse(d$country_name == "Nigeria" & d$crop == "groundnuts" &  d$Data.ID == 1730, 0, d$groundnuts)
-  d$groundnuts <- ifelse(d$country_name == "Somalia" & d$crop == "groundnuts" &  d$Data.ID == 1743, 0, d$groundnuts)
+  if('groundnuts' %in% crop_select){
+    d$groundnuts <- ifelse(d$country_name == "Nigeria" & d$crop == "groundnuts" &  d$Data.ID == 1730, 0, d$groundnuts)
+    d$groundnuts <- ifelse(d$country_name == "Somalia" & d$crop == "groundnuts" &  d$Data.ID == 1743, 0, d$groundnuts)
+  }
 
   # Rapeseed Corrections (MZ)
-  d$rape_seed <- ifelse(d$country_name == "Ukraine" & d$crop == "rapeseed" &  d$Data.ID == 779, 0, d$rape_seed)
+  if('rape_seed' %in% crop_select){
+    d$rape_seed <- ifelse(d$country_name == "Ukraine" & d$crop == "rapeseed" &  d$Data.ID == 779, 0, d$rape_seed)
+  }
 
   # PULSES CORRECTIONS
-  # Duplicate listing for Burundi (iso ID -- bdi)
-  # Seasonal production of pulses in Burundi: http://www.fao.org/docrep/004/w5956e/w5956e00.htm
-  d$iso <- ifelse( ( d$country_name == "Burundi" & d$crop == "pulses" & d$Data.ID == 83 ), "bdi", d$iso )
-  d$pulses <- ifelse( d$country_name == "Burundi" & d$crop == "pulses" & d$Data.ID == 83, 1, d$pulses )
-  d$pulses <- ifelse( d$country_name == "Burundi" & d$crop == "pulses" & d$Data.ID == 84, 0, d$pulses ) # MZ
-  # Duplicate listing for Ethiopia (iso ID -- eth)
-  # Ethiopia pulse production by month: http://www.fao.org/3/a-at305e.pdf
-  d$iso <- ifelse( ( d$country_name == "Ethiopia" & d$crop == "pulses" & d$Data.ID == 1695 ), "eth", d$iso )
-  d$pulses <- ifelse( d$country_name == "Ethiopia" & d$crop == "pulses" & d$Data.ID == 1695, 1, d$pulses )
-  d$pulses <- ifelse( d$country_name == "Ethiopia" & d$crop == "pulses" & d$Data.ID %in% c(1696, 1697), 0, d$pulses ) # MZ
-  # Duplicate listing for Haiti (iso ID -- hti)
-  # Haiti seasonality for pulse production: https://www.worldpulse.com/fr/node/9391
-  d$iso <- ifelse( ( d$country_name == "Haiti" & d$crop == "pulses" & d$Data.ID == 275 ), "hti", d$iso )
-  d$pulses <- ifelse( d$country_name == "Haiti" & d$crop == "pulses" & d$Data.ID == 275, 1, d$pulses )
-  d$pulses <- ifelse( d$country_name == "Haiti" & d$crop == "pulses" & d$Data.ID %in% c(276, 277), 0, d$pulses ) # MZ
-  # Duplicate listing for Kenya (iso ID -- ken)
-  # Case study of Kenya pulse production: https://www.investinkenya.co.ke/main/view_article/330
-  d$iso <- ifelse( ( d$country_name == "Kenya" & d$crop == "pulses" & d$Data.ID == 341 ), "ken", d$iso )
-  d$pulses <- ifelse( d$country_name == "Kenya" & d$crop == "pulses" & d$Data.ID == 341, 1, d$pulses )
-  d$pulses <- ifelse( d$country_name == "Kenya" & d$crop == "pulses" & d$Data.ID == 342, 0, d$pulses ) # MZ
-  # Duplicate listing for Nicaragua (iso ID -- nic)
-  # Pulse production by month in Nicaragua: http://www.fas.usda.gov/regions/nicaragua
-  d$iso <- ifelse( ( d$country_name == "Nicaragua" & d$crop == "pulses" & d$Data.ID == 446 ), "nic", d$iso )
-  d$pulses <- ifelse( d$country_name == "Nicaragua" & d$crop == "pulses" & d$Data.ID == 446, 1, d$pulses )
-  d$pulses <- ifelse( d$country_name == "Nicaragua" & d$crop == "pulses" & d$Data.ID %in% c(447, 448), 0, d$pulses ) # MZ
-  # Duplicate listing for Rwanda (iso ID -- rwa)
-  # Southern hemisphere; Rwanda pulse seasonality: http://allafrica.com/stories/201410090778.html
-  d$iso <- ifelse( ( d$country_name == "Rwanda" & d$crop == "pulses" & d$Data.ID == 504 ), "rwa", d$iso )
-  d$pulses <- ifelse( d$country_name == "Rwanda" & d$crop == "pulses" & d$Data.ID == 504, 1, d$pulses )
-  d$pulses <- ifelse( d$country_name == "Rwanda" & d$crop == "pulses" & d$Data.ID == 505, 0, d$pulses ) # MZ
-  # Duplicate listing for El Salvador (iso ID -- slv)
-  # Pulse study in Central America: https://www.goift.com/market/americas/central-america/el-salvador-central-america/page/7/
-  d$iso <- ifelse( ( d$country_name == "El Salvador" & d$crop == "pulses" & d$Data.ID == 211 ), "slv", d$iso )
-  d$pulses <- ifelse( d$country_name == "El Salvador" & d$crop == "pulses" & d$Data.ID == 211, 1, d$pulses )
-  d$pulses <- ifelse( d$country_name == "El Salvador" & d$crop == "pulses" & d$Data.ID == 210, 0, d$pulses ) # MZ
-  # Duplicate listing for Somalia (iso ID -- som)
-  # Seasonality of pulse production in Somalia: https://conservancy.umn.edu/bitstream/handle/11299/163161/JohnsonBrittney.pdf?sequence=1&isAllowed=y
-  d$iso <- ifelse( ( d$country_name == "Somalia" & d$crop == "pulses" & d$Data.ID == 1747 ), "som", d$iso )
-  d$pulses <- ifelse( d$country_name == "Somalia" & d$crop == "pulses" & d$Data.ID == 1747, 1, d$pulses )
-  d$pulses <- ifelse( d$country_name == "Somalia" & d$crop == "pulses" & d$Data.ID == 1748, 0, d$pulses ) # MZ
-  # California has the largest pulse production of all states
-  d$iso <- ifelse( ( d$country_name == "California" & d$crop == "pulses" & d$Data.ID == 1007 ), "usa", d$iso )
-  d$pulses <- ifelse( d$country_name == "California" & d$crop == "pulses" & d$Data.ID == 1007, 1, d$pulses )
-  # Maharashtra, of all Indian states listed (Gujarat, Himachal Pradesh, Kerala, Orissa, Rajasthan, Tamil Nadu), has 34% share of pulse production
-  d$iso <- ifelse( ( d$country_name == "Maharashtra" & d$crop == "pulses" & d$Data.ID == 1424 ), "ind", d$iso )
-  d$pulses <- ifelse( d$country_name == "Maharashtra" & d$crop == "pulses" & d$Data.ID == 1424, 1, d$pulses )
-  # Uganda (South) should be associate with iso ID == uga and Data.ID == 611
-  d$iso <- ifelse( ( d$country_name == "Uganda (South)" & d$crop == "pulses" & d$Data.ID == 611 ), "uga", d$iso )
-  d$pulses <- ifelse( d$country_name == "Uganda (South)" & d$crop == "pulses" & d$Data.ID == 611, 1, d$pulses )
+  if('pulses' %in% crop_select){
+
+    # Duplicate listing for Burundi (iso ID -- bdi)
+    # Seasonal production of pulses in Burundi: http://www.fao.org/docrep/004/w5956e/w5956e00.htm
+    d$iso <- ifelse( ( d$country_name == "Burundi" & d$crop == "pulses" & d$Data.ID == 83 ), "bdi", d$iso )
+    d$pulses <- ifelse( d$country_name == "Burundi" & d$crop == "pulses" & d$Data.ID == 83, 1, d$pulses )
+    d$pulses <- ifelse( d$country_name == "Burundi" & d$crop == "pulses" & d$Data.ID == 84, 0, d$pulses ) # MZ
+    # Duplicate listing for Ethiopia (iso ID -- eth)
+    # Ethiopia pulse production by month: http://www.fao.org/3/a-at305e.pdf
+    d$iso <- ifelse( ( d$country_name == "Ethiopia" & d$crop == "pulses" & d$Data.ID == 1695 ), "eth", d$iso )
+    d$pulses <- ifelse( d$country_name == "Ethiopia" & d$crop == "pulses" & d$Data.ID == 1695, 1, d$pulses )
+    d$pulses <- ifelse( d$country_name == "Ethiopia" & d$crop == "pulses" & d$Data.ID %in% c(1696, 1697), 0, d$pulses ) # MZ
+    # Duplicate listing for Haiti (iso ID -- hti)
+    # Haiti seasonality for pulse production: https://www.worldpulse.com/fr/node/9391
+    d$iso <- ifelse( ( d$country_name == "Haiti" & d$crop == "pulses" & d$Data.ID == 275 ), "hti", d$iso )
+    d$pulses <- ifelse( d$country_name == "Haiti" & d$crop == "pulses" & d$Data.ID == 275, 1, d$pulses )
+    d$pulses <- ifelse( d$country_name == "Haiti" & d$crop == "pulses" & d$Data.ID %in% c(276, 277), 0, d$pulses ) # MZ
+    # Duplicate listing for Kenya (iso ID -- ken)
+    # Case study of Kenya pulse production: https://www.investinkenya.co.ke/main/view_article/330
+    d$iso <- ifelse( ( d$country_name == "Kenya" & d$crop == "pulses" & d$Data.ID == 341 ), "ken", d$iso )
+    d$pulses <- ifelse( d$country_name == "Kenya" & d$crop == "pulses" & d$Data.ID == 341, 1, d$pulses )
+    d$pulses <- ifelse( d$country_name == "Kenya" & d$crop == "pulses" & d$Data.ID == 342, 0, d$pulses ) # MZ
+    # Duplicate listing for Nicaragua (iso ID -- nic)
+    # Pulse production by month in Nicaragua: http://www.fas.usda.gov/regions/nicaragua
+    d$iso <- ifelse( ( d$country_name == "Nicaragua" & d$crop == "pulses" & d$Data.ID == 446 ), "nic", d$iso )
+    d$pulses <- ifelse( d$country_name == "Nicaragua" & d$crop == "pulses" & d$Data.ID == 446, 1, d$pulses )
+    d$pulses <- ifelse( d$country_name == "Nicaragua" & d$crop == "pulses" & d$Data.ID %in% c(447, 448), 0, d$pulses ) # MZ
+    # Duplicate listing for Rwanda (iso ID -- rwa)
+    # Southern hemisphere; Rwanda pulse seasonality: http://allafrica.com/stories/201410090778.html
+    d$iso <- ifelse( ( d$country_name == "Rwanda" & d$crop == "pulses" & d$Data.ID == 504 ), "rwa", d$iso )
+    d$pulses <- ifelse( d$country_name == "Rwanda" & d$crop == "pulses" & d$Data.ID == 504, 1, d$pulses )
+    d$pulses <- ifelse( d$country_name == "Rwanda" & d$crop == "pulses" & d$Data.ID == 505, 0, d$pulses ) # MZ
+    # Duplicate listing for El Salvador (iso ID -- slv)
+    # Pulse study in Central America: https://www.goift.com/market/americas/central-america/el-salvador-central-america/page/7/
+    d$iso <- ifelse( ( d$country_name == "El Salvador" & d$crop == "pulses" & d$Data.ID == 211 ), "slv", d$iso )
+    d$pulses <- ifelse( d$country_name == "El Salvador" & d$crop == "pulses" & d$Data.ID == 211, 1, d$pulses )
+    d$pulses <- ifelse( d$country_name == "El Salvador" & d$crop == "pulses" & d$Data.ID == 210, 0, d$pulses ) # MZ
+    # Duplicate listing for Somalia (iso ID -- som)
+    # Seasonality of pulse production in Somalia: https://conservancy.umn.edu/bitstream/handle/11299/163161/JohnsonBrittney.pdf?sequence=1&isAllowed=y
+    d$iso <- ifelse( ( d$country_name == "Somalia" & d$crop == "pulses" & d$Data.ID == 1747 ), "som", d$iso )
+    d$pulses <- ifelse( d$country_name == "Somalia" & d$crop == "pulses" & d$Data.ID == 1747, 1, d$pulses )
+    d$pulses <- ifelse( d$country_name == "Somalia" & d$crop == "pulses" & d$Data.ID == 1748, 0, d$pulses ) # MZ
+    # California has the largest pulse production of all states
+    d$iso <- ifelse( ( d$country_name == "California" & d$crop == "pulses" & d$Data.ID == 1007 ), "usa", d$iso )
+    d$pulses <- ifelse( d$country_name == "California" & d$crop == "pulses" & d$Data.ID == 1007, 1, d$pulses )
+    # Maharashtra, of all Indian states listed (Gujarat, Himachal Pradesh, Kerala, Orissa, Rajasthan, Tamil Nadu), has 34% share of pulse production
+    d$iso <- ifelse( ( d$country_name == "Maharashtra" & d$crop == "pulses" & d$Data.ID == 1424 ), "ind", d$iso )
+    d$pulses <- ifelse( d$country_name == "Maharashtra" & d$crop == "pulses" & d$Data.ID == 1424, 1, d$pulses )
+    # Uganda (South) should be associate with iso ID == uga and Data.ID == 611
+    d$iso <- ifelse( ( d$country_name == "Uganda (South)" & d$crop == "pulses" & d$Data.ID == 611 ), "uga", d$iso )
+    d$pulses <- ifelse( d$country_name == "Uganda (South)" & d$crop == "pulses" & d$Data.ID == 611, 1, d$pulses )
+
+  }
+
 
   # Remove irrigated and other subcrops
   d$maize <- ifelse(d$maize == 1 & d$Qualifier != "", 0, d$maize) # Remove irrigated and other subcrops

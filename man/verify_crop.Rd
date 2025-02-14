@@ -4,11 +4,7 @@
 \alias{verify_crop}
 \title{verify_crop}
 \usage{
-verify_crop(
-  crop_calendar_file = NULL,
-  crop_select = c("cassava", "cotton", "maize", "rice", "root_tuber", "sorghum",
-    "soybean", "sugarbeet", "sugarcane", "sunflower", "wheat")
-)
+verify_crop(crop_calendar_file = NULL, crop_select = NULL)
 }
 \arguments{
 \item{crop_calendar_file}{Default = NULL. String for the path of the crop calendar file. If crop_cal is provided, crop_select will be set to crops in crop calendar. User provided crop_calendar_file can include any crops MIRCA2000 crops: "wheat", "maize", "rice", "barley", "rye", "millet", "sorghum", "soybean", "sunflower", "root_tuber", "cassava", "sugarcane", "sugarbeet", "oil_palm", "rape_seed", "groundnuts", "pulses", "citrus", "date_palm", "grapes", "cotton", "cocoa", "coffee", "others_perennial", "fodder_grasses", "other_annual"}

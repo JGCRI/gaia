@@ -4,10 +4,12 @@
 \alias{clean_sage}
 \title{clean_sage}
 \usage{
-clean_sage(d = NULL)
+clean_sage(d = NULL, crop_select = NULL)
 }
 \arguments{
-\item{d}{Default = NULL. data frame for crop calendar}
+\item{d}{Default = NULL. Data frame for crop calendar}
+
+\item{crop_select}{Default = NULL. Vector of strings for selected crops}
 }
 \value{
 A data frame of clean crop calendar

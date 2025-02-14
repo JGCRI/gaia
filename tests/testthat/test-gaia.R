@@ -17,7 +17,7 @@ data_dir_i <- gaia::get_example_data(
 
 test_that("crop_calendars function test", {
 
-  out_crop_calendars <- run_crop_calendars()
+  out_crop_calendars <- run_crop_calendars(output_dir = output_dir_i)
 
   testthat::expect_snapshot(out_crop_calendars)
 

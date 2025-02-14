@@ -17,6 +17,8 @@ bias_adj_i = 'w5e5'
 cfe_i = 'no-cfe'
 gcam_version_i = 'gcam7'
 
+crop_select_i = c("barley", "groundnuts", "millet", "pulses", "rape_seed", "rye")
+
 base_year_i = 2015
 start_year_i = 2015
 end_year_i = 2100
@@ -33,9 +35,13 @@ use_default_coeff_i <- F
 # Step 1: weighted_climate
 
 # Step 2: crop_calendar
-run_crop_calendars <- function(output_dir = output_dir_i){
+run_crop_calendars <- function(crop_calendar_file = NULL,
+                               crop_select = crop_select_i,
+                               output_dir = output_dir_i){
 
-  output <- gaia::crop_calendars(output_dir = output_dir)
+  output <- gaia::crop_calendars(crop_calendar_file = crop_calendar_file,
+                                 crop_select = crop_select,
+                                 output_dir = output_dir)
 
   return(output)
 }
