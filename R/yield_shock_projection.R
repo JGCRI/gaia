@@ -11,6 +11,7 @@
 #' @param end_year Default = NULL. Integer for the end year of the data
 #' @param gcam_timestep Default = 5. Integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)
 #' @param smooth_window Default = 20. Integer for smoothing window in years
+#' @param crop_select Default = NULL. Vector of strings for the selected crops from our database. If NULL, the default crops will be used in the crop calendar: c("cassava", "cotton", "maize", "rice", "root_tuber", "sorghum", "soybean", "sugarbeet", "sugarcane", "sunflower", "wheat"). The additional crops available for selection from our crop calendar database are: "barley", "groundnuts", "millet", "pulses", "rape_seed", "rye"
 #' @param diagnostics Default = TRUE. Logical for performing diagnostic plot
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @returns A data frame of formatted smoothed annual crop yield shocks under climate impacts
@@ -24,6 +25,7 @@ yield_shock_projection <- function(use_default_coeff = FALSE,
                                    end_year = NULL,
                                    gcam_timestep = 5,
                                    smooth_window = 20,
+                                   crop_select = NULL,
                                    diagnostics = TRUE,
                                    output_dir = file.path(getwd(), "output")) {
   message("Starting Step: yield_shock_projection")
@@ -40,8 +42,11 @@ yield_shock_projection <- function(use_default_coeff = FALSE,
     stringsAsFactors = FALSE
   )
 
+  if(is.null(crop_select)){
+    crop_select <- gaia::verify_crop(crop_select = crop_select)$crop_mirca
+  }
 
-  for (crop_i in mapping_mirca_sage$crop_mirca) {
+  for (crop_i in crop_select) {
     print(paste(climate_model, climate_scenario, crop_i, sep = " "))
 
     # calculate yield impact for each crop and country

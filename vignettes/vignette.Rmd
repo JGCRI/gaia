@@ -525,6 +525,19 @@ knitr::kable(crop_cal_update[1:10],
   footnote(general = 'This only shows the first 10 lines of the example data.')
 ```
 
+If you plan to use your own crop calendar data, make sure it follows the format in [Table 3](#table3). Then, simply provide the path to your crop calendar file in the `crop_calendar` function to run and the subsequent steps will use the crop calendar data you provided.
+
+```{r eval=F, echo=T}
+
+# Path to the output folder where you wish to save the outputs. Change it accordingly
+output_dir <- 'gaia_output'
+
+# crop calendars
+crop_cal <- crop_calendars(crop_calendar_file = 'path/to/your/crop/calendar/file',
+                           output_dir = output_dir)
+
+```
+
 <br />
 
 ### data_aggregation

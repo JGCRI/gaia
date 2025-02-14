@@ -14,7 +14,8 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #    download_url = 'https://zenodo.org/records/13976521/files/weighted_climate.zip?download=1',
 #    data_dir = output_dir
 #  )
-#  
+
+## ----eval=F-------------------------------------------------------------------
 #  # Path to the folder that holds cropland-area-weighted precipitation and temperature TXT files
 #  # historical climate observation
 #  climate_hist_dir <- file.path(data_dir, 'climate_hist')
@@ -36,6 +37,8 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #    data_dir = output_dir
 #  )
 #  
+
+## ----eval=F-------------------------------------------------------------------
 #  # Path to the precipitation and temperature NetCDF files
 #  # NOTE: Each variable can have more than one file
 #  # projected climate data
@@ -200,6 +203,16 @@ knitr::kable(crop_cal_update[1:10],
              caption = '**Table 3.** Updated crop calendar with yams') %>% 
   kable_styling(bootstrap_options = "striped", full_width = T, position = 'center') %>% 
   footnote(general = 'This only shows the first 10 lines of the example data.')
+
+## ----eval=F, echo=T-----------------------------------------------------------
+#  
+#  # Path to the output folder where you wish to save the outputs. Change it accordingly
+#  output_dir <- 'gaia_output'
+#  
+#  # crop calendars
+#  crop_cal <- crop_calendars(crop_calendar_file = 'path/to/your/crop/calendar/file',
+#                             output_dir = output_dir)
+#  
 
 ## ----eval=F, echo=T-----------------------------------------------------------
 #  

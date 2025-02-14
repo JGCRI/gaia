@@ -7,43 +7,89 @@
 #' Function to clean FAO yield data
 #'
 #' @param fao_yield Default = NULL. Data frame for the fao yield table
+#' @param fao_to_mirca Default = NULL. Data frame for the fao to mirca crop mapping
 #' @returns A data frame of formatted FAO yield data
 #' @keywords internal
 #' @export
 
-clean_yield <- function(fao_yield = NULL) {
+clean_yield <- function(fao_yield = NULL,
+                        fao_to_mirca = NULL) {
   AreaName <- crop <- NULL
 
-  d <- subset(fao_yield, select = c("AreaName", "ElementName", "ItemName", "Year", "Value"))
-  d <- subset(d, AreaName != "")
-  d <- subset(d, AreaName != "China, mainland")
-  d <- gaia::colname_replace(d, "AreaName", "country_name")
-  d <- gaia::colname_replace(d, "ElementName", "var")
-  d <- gaia::colname_replace(d, "ItemName", "crop")
-  d <- gaia::colname_replace(d, "Year", "year")
-  d <- gaia::colname_replace(d, "Value", "value")
-  d$crop <- tolower(d$crop)
-  d$var <- gsub("Area harvested", "area_harvest", d$var)
-  d$var <- gsub("Yield", "yield", d$var)
-  d <- subset(d, crop != "cottonseed") # Cotton seed has no data, FAO yields are for seed cotton
-  d$crop <- gsub("rice, paddy", "rice", d$crop)
-  d$crop <- gsub("soybeans", "soybean", d$crop)
-  d$crop <- gsub("sugar cane", "sugarcane", d$crop)
-  d$crop <- gsub("sugar beet", "sugarbeet", d$crop)
-  d$crop <- gsub("seed cotton", "cotton", d$crop)
-  d$crop <- gsub("sunflower seed", "sunflower", d$crop)
-  d$crop <- gsub(" ", "_", d$crop)
-  d <- data.table::dcast(d, country_name + crop + year ~ var, value.var = "value")
-  d <- merge(d, mapping_gcam_iso, by = "country_name", all.x = TRUE)
-  d <- gaia::iso_replace(d)
-  #   For these countries, root_tuber == cassava; others root_tuber == potato
-  d$crop <- ifelse(d$crop == "potatoes", "root_tuber", d$crop)
-  #   d$crop <- ifelse( ( ( d$iso == "ben" | d$iso ==  "cmr" | d$iso == "caf" | d$iso == "cog" | d$iso == "cod" | d$iso == "civ" | d$iso == "gab" | d$iso == "gha" |
-  #                           d$iso == "gin" | d$iso == "lbr" | d$iso == "nga" | d$iso == "sle" | d$iso == "som" | d$iso == "tgo" ) & d$crop == "cassava" ), "root_tuber", d$crop )
-  #   d$crop <- ifelse( ( ( d$iso == "ben" | d$iso ==  "cmr" | d$iso == "caf" | d$iso == "cog" | d$iso == "cod" | d$iso == "civ" | d$iso == "gab" | d$iso == "gha" |
-  #                           d$iso == "gin" | d$iso == "lbr" | d$iso == "nga" | d$iso == "sle" | d$iso == "som" | d$iso == "tgo" ) & d$crop == "potatoes" ), "potatoes", d$crop )
-  d <- subset(d, select = c("iso", "crop", "year", "area_harvest", "yield"))
-  return(d)
+  # clean up FAOSTAT yield and harvest area data and left join the iso code
+  df <- fao_yield %>%
+    dplyr::filter(`Item Code` %in% unique(fao_to_mirca$fao_crop_id),
+                  Element %in% c('Area harvested', 'Yield'),
+                  # Exclude entire China because FAOSTAT distinguishes China mainland, Taiwan, and Hongkong
+                  # GCAM also has Taiwan as individual region
+                  !Area %in% c('China'))  %>%
+    dplyr::select(country_code = `Area Code`, country_name = Area, var = Element,
+                  fao_crop_name = Item, fao_crop_id = `Item Code`,
+                  paste0('Y', 1961:2020)) %>%
+    dplyr::left_join(fao_iso %>% dplyr::select(country_code, iso),
+                     by = 'country_code') %>%
+    dplyr::filter(!is.na(iso))
+
+  # clean up the iso code which megers some FAOSTAT specific 'f' iso codes
+  df <- gaia::iso_replace(df)
+
+  # restructure data
+  df <- df %>%
+    tidyr::pivot_longer(cols = paste0('Y', 1961:2020),
+                        names_to = 'year', values_to = 'value') %>%
+    dplyr::mutate(year = as.integer(gsub('Y', '', year)),
+                  var = dplyr::case_when(var == 'Yield' ~ 'yield',
+                                         var == 'Area harvested' ~ 'area_harvest')) %>%
+    tidyr::pivot_wider(names_from = var, values_from = value)
+
+  # Join FAO to MIRCA2000 crops and aggregated by country, MIRCA2000 crop type
+  # for harvest areas, take sum of all FAO crops for each MIRCA2000 crop
+  # for yields, take mean of all FAO crops for each MIRCA2000 crop
+  df_mirca <- df %>%
+    dplyr::left_join(fao_to_mirca %>%
+                       tidyr::pivot_longer(cols = paste('crop', sprintf('%02d', 1:26), sep = ''),
+                                           names_to = 'crop_id', values_to = 'to_mirca') %>%
+                       dplyr::filter(to_mirca == 'X') %>%
+                       dplyr::left_join(crop_mirca %>% dplyr::select(crop_id, crop = crop_name)) %>%
+                       dplyr::select(fao_crop_id, crop) %>%
+                       dplyr::distinct(),
+                     by = 'fao_crop_id') %>%
+    dplyr::group_by(iso, crop, year) %>%
+    dplyr::summarise(area_harvest = sum(area_harvest, na.rm = T),
+                     yield = mean(yield, na.rm = T)) %>%
+    dplyr::filter(area_harvest > 0, yield > 0)
+  #
+  #
+  # d <- subset(fao_yield, select = c("Area", "Element", "Item", "Year", "Value"))
+  # d <- subset(d, Area != "")
+  # d <- subset(d, Area != "China, mainland")
+  # d <- gaia::colname_replace(d, "Area", "country_name")
+  # d <- gaia::colname_replace(d, "Element", "var")
+  # d <- gaia::colname_replace(d, "Item", "crop")
+  # d <- gaia::colname_replace(d, "Year", "year")
+  # d <- gaia::colname_replace(d, "Value", "value")
+  # d$crop <- tolower(d$crop)
+  # d$var <- gsub("Area harvested", "area_harvest", d$var)
+  # d$var <- gsub("Yield", "yield", d$var)
+  # d <- subset(d, crop != "cottonseed") # Cotton seed has no data, FAO yields are for seed cotton
+  # d$crop <- gsub("rice, paddy", "rice", d$crop)
+  # d$crop <- gsub("soybeans", "soybean", d$crop)
+  # d$crop <- gsub("sugar cane", "sugarcane", d$crop)
+  # d$crop <- gsub("sugar beet", "sugarbeet", d$crop)
+  # d$crop <- gsub("seed cotton, unginned", "cotton", d$crop)
+  # d$crop <- gsub("sunflower seed", "sunflower", d$crop)
+  # d$crop <- gsub(" ", "_", d$crop)
+  # d <- data.table::dcast(d, country_name + crop + year ~ var, value.var = "value")
+  # d <- merge(d, mapping_gcam_iso, by = "country_name", all.x = TRUE)
+  # d <- gaia::iso_replace(d)
+  # #   For these countries, root_tuber == cassava; others root_tuber == potato
+  # d$crop <- ifelse(d$crop == "potatoes", "root_tuber", d$crop)
+  # #   d$crop <- ifelse( ( ( d$iso == "ben" | d$iso ==  "cmr" | d$iso == "caf" | d$iso == "cog" | d$iso == "cod" | d$iso == "civ" | d$iso == "gab" | d$iso == "gha" |
+  # #                           d$iso == "gin" | d$iso == "lbr" | d$iso == "nga" | d$iso == "sle" | d$iso == "som" | d$iso == "tgo" ) & d$crop == "cassava" ), "root_tuber", d$crop )
+  # #   d$crop <- ifelse( ( ( d$iso == "ben" | d$iso ==  "cmr" | d$iso == "caf" | d$iso == "cog" | d$iso == "cod" | d$iso == "civ" | d$iso == "gab" | d$iso == "gha" |
+  # #                           d$iso == "gin" | d$iso == "lbr" | d$iso == "nga" | d$iso == "sle" | d$iso == "som" | d$iso == "tgo" ) & d$crop == "potatoes" ), "potatoes", d$crop )
+  # d <- subset(d, select = c("iso", "crop", "year", "area_harvest", "yield"))
+  return(df_mirca)
 }
 
 
@@ -241,7 +287,7 @@ data_merge <- function(data = NULL,
     data = d,
     save_path = file.path(output_dir, "data_processed"),
     file_name = paste0("historic_vars_", crop_name, ".csv"),
-    data_info = "Merged yield data"
+    data_info = "Merged historical yield data"
   )
 
   return(d)
@@ -670,6 +716,16 @@ climate_impact <- function(use_default_coeff = FALSE,
 
   # create base year vector
   baseYears <- c(paste("X", (start_year:end_year), sep = ""))
+
+  # check if the base year exists at all
+  missing_year <- setdiff(baseYears, colnames(d))
+  if(length(missing_year) > 0){
+
+    for(missing_year_i in missing_year){
+      d[[missing_year_i]] <- NA
+    }
+
+  }
 
   # if start year from the available data is 9 years or earlier before the base year
   # then historical years are determined as (base_year - 9) to base_year
