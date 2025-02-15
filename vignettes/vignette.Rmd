@@ -448,7 +448,7 @@ knitr::kable(input_climate[1:12],
 
 ---
 
-The `crop_calendars` function calculates crop calendars based on the SAGE global crop planting and harvesting dates data ([Sacks et al., 2010](https://doi.org/10.1111/j.1466-8238.2010.00551.x)).  The crop calendar outlines the planting and harvesting months for each predefined crop across all global countries. The code chunk below runs `crop_calendars`.
+The `crop_calendars` function calculates crop calendars based on the SAGE global crop planting and harvesting dates data ([Sacks et al., 2010](https://doi.org/10.1111/j.1466-8238.2010.00551.x)).  The crop calendar outlines the planting and harvesting months for each predefined crop across all global countries. The code chunk below runs `crop_calendars` for the default crops: cassava, cotton, maize, rice, root_tuber, sorghum, soybean, sugarbeet, sugarcane, sunflower, wheat.
 
 
 ```{r eval=F, echo=T}
@@ -486,29 +486,42 @@ knitr::kable(crop_cal[1:10],
   footnote(general = 'This only shows the first 10 lines of the example data.')
 ```
 
+Beside default crops, users can select additional available crops (barley, groundnuts, millet, pulses, rape_seed, and rye) using `crop_select` argument. The crops that are available for selection in `gaia` are based on the crop availability from both MIRCA2000 and SAGE crop types. Note that FAOSTAT crops are categorized into MIRCA2000 crop category. In summary, `gaia` uses MIRCA2000 crop category as standard crop types. The example below selects barley and millet in addition to the default ones.
 
-Users can customize the crop calendar by adding new crops to the file, ensuring they follow the established format. The code snippet below shows an example on how to add a crop to the crop calendar. Once you've updated the crop calendar, be sure to save the modified file by overwriting the existing crop calendar CSV in your output folder. This ensures the changes will be applied in the subsequent steps.
+```{r eval=F, echo=T}
+
+# calculate crop calendars
+crop_cal <- crop_calendars(crop_select = c("barley", "millet"),
+                           output_dir = output_dir)
+
+# print result
+crop_cal
+
+```
+
+Due to limited crops from SAGE, some crops that are available in MIRCA2000 are not included in the SAGE database, including oil_palm, citrus, date_palm, grapes, cocoa, coffee, others_perennial, fodder_grasses, and others_annual. However, if users have crop planting and harvesting month data for any of these crops for certain countries, providing the crop calendar file is another way to include new crops. Of course, it would be the best if users can provide the planting and harvesting months of a crop for all countries that grow such crop for better results from empirical model fitting. Simply follow the established crop calendar format similar to [Table 2](#table2). The code snippet below shows an example on how to add a crop to the crop calendar. The name of the new crops need to follow the format of the crops listed above (e.g., use oil_palm with underscore instead of oil palm).
 
 ```{r eval=T, echo=T, message=F, results='hide'}
 
-# adding a new crop: yams. Construct the structure of the data with yams
+# adding a new crop: oil_palm. The crop name should follow the crop names listed above.
+# Construct the structure of the data with oil_palm
 crop_add <- expand.grid(iso = c('cog', 'gha', 'lbr'),
-                        crops = c(names(crop_cal)[2:(ncol(crop_cal) - 2)], 'yams')) %>%
-  dplyr::mutate(value = ifelse(crops == 'yams', 1, 0)) %>% 
+                        crops = c(names(crop_cal)[2:(ncol(crop_cal) - 2)], 'oil_palm')) %>%
+  dplyr::mutate(value = ifelse(crops == 'oil_palm', 1, 0)) %>% 
   tidyr::pivot_wider(names_from = 'crops', values_from = 'value', values_fill = 0)
 
-# planting and harvesting month for countries with yams
+# planting and harvesting month for countries with oil_palm
 crop_harvest_plant <- data.frame(iso = c('cog', 'gha', 'lbr'),
                                  plant = c(2, 2, 2),
                                  harvest  = c(9, 10, 9))
 
-# complete the data structure with yams added
+# complete the data structure with oil_palm added
 crop_add <- dplyr::left_join(crop_add, crop_harvest_plant, by = 'iso')
 
 # bind the data to create updated crop calendars
 crop_cal_update <- crop_cal %>% 
   dplyr::bind_rows(crop_add) %>% 
-  tidyr::replace_na(list(yams = 0)) %>% 
+  tidyr::replace_na(list(oil_palm = 0)) %>% 
   dplyr::select(-plant, -harvest, everything(), plant, harvest)
 
 # view updated crop calendar
@@ -516,16 +529,31 @@ crop_cal_update
 
 ```
 
+[Table 3](#table3) shows the updated crop calendar with oil palm added.
+
 ```{r eval=T, echo=F}
 library(dplyr)
 library(kableExtra)
 knitr::kable(crop_cal_update[1:10], 
-             caption = '**Table 3.** Updated crop calendar with yams') %>% 
+             caption = '**Table 3.** Updated crop calendar with oil palm') %>% 
   kable_styling(bootstrap_options = "striped", full_width = T, position = 'center') %>% 
   footnote(general = 'This only shows the first 10 lines of the example data.')
 ```
 
-If you plan to use your own crop calendar data, make sure it follows the format in [Table 3](#table3). Then, simply provide the path to your crop calendar file in the `crop_calendar` function to run and the subsequent steps will use the crop calendar data you provided.
+Save the updated crop calendar table to CSV. Below is an option to use gaia's `output_data` function to write output. Users can also use other preferred ways to write output.
+
+```{r eval=F, echo=T}
+# Optional: save the update crop calendar to CSV if you haven't already
+# you can choose to use gaia's output_data function to write output
+gaia::output_data(
+  data = crop_cal_update,
+  file_name = 'crop_calendar_update.csv',
+  save_path = 'path/to/desired/folder'
+)
+
+```
+
+Once you've created your own crop calendar file, simply provide the path to your updated crop calendar file to `crop_calendar_file` argument in the `crop_calendar` function to run and the subsequent steps will use the crop calendar data you provided.
 
 ```{r eval=F, echo=T}
 
