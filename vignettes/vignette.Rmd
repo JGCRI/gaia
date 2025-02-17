@@ -448,7 +448,7 @@ knitr::kable(input_climate[1:12],
 
 ---
 
-The `crop_calendars` function calculates crop calendars based on the SAGE global crop planting and harvesting dates data ([Sacks et al., 2010](https://doi.org/10.1111/j.1466-8238.2010.00551.x)).  The crop calendar outlines the planting and harvesting months for each predefined crop across all global countries. The code chunk below runs `crop_calendars` for the default crops: cassava, cotton, maize, rice, root_tuber, sorghum, soybean, sugarbeet, sugarcane, sunflower, wheat.
+The `crop_calendars` function calculates crop calendars based on the SAGE global crop planting and harvesting dates data ([Sacks et al., 2010](https://doi.org/10.1111/j.1466-8238.2010.00551.x)).  The crop calendar outlines the planting and harvesting months for each predefined crop across all global countries.`gaia` uses MIRCA2000 crop category ([Portmann et al., 2010](https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2008gb003435)) as standard crop types. The code chunk below runs `crop_calendars` for the default crops in `gaia`: `cassava`, `cotton`, `maize`, `rice`, `root_tuber`, `sorghum`, `soybean`, `sugarbeet`, `sugarcane`, `sunflower`, `wheat.`
 
 
 ```{r eval=F, echo=T}
@@ -466,7 +466,7 @@ crop_cal
 
 **Outputs of the function:** The function returns a data frame of crop calendars. It also writes the output in `output_dir/data_processed/crop_calendar.csv`  
 
-Below is an example of the crop calendar structure. The columns `[plant, harvest]` indicates the month of planting and harvesting for the crop with value 1 in the same row. For example, the first row in the table below indicates that the planting and harvesting month of wheat in Albania (iso: alb) is November and June. Users can filter to the certain crops by `filter(wheat == 1)` to better view the planting and harvesting month for countries with wheat.
+[Table 2](#table2) provides an example of the crop calendar structure. The `[plant, harvest]` columns indicate the planting and harvesting months for the crops with a value of `1` in the same row. For example, in the the first row of the table, wheat in Albania (iso: alb) is planted in November and harvested June. Users can apply a filter, such as `filter(wheat == 1)`, to display the planting and harvesting months for countries where wheat is grown.
 
 
 ```{r eval=T, echo=F, message=F, results='hide'}
@@ -486,7 +486,9 @@ knitr::kable(crop_cal[1:10],
   footnote(general = 'This only shows the first 10 lines of the example data.')
 ```
 
-Beside default crops, users can select additional available crops (barley, groundnuts, millet, pulses, rape_seed, and rye) using `crop_select` argument. The crops that are available for selection in `gaia` are based on the crop availability from both MIRCA2000 and SAGE crop types. Note that FAOSTAT crops are categorized into MIRCA2000 crop category. In summary, `gaia` uses MIRCA2000 crop category as standard crop types. The example below selects barley and millet in addition to the default ones.
+**Select Additional Crops**
+
+Beside default crops, users can select additional available crops (`barley`, `groundnuts`, `millet`, `pulses`, `rape_seed`, and `rye`) using `crop_select` argument. The crops that are available for selection in `gaia` are based on the crop availability from both MIRCA2000 and SAGE crop types. Note that FAOSTAT crops are categorized into MIRCA2000 crop category. The example below selects barley and millet in addition to the default ones.
 
 ```{r eval=F, echo=T}
 
@@ -499,7 +501,11 @@ crop_cal
 
 ```
 
-Due to limited crops from SAGE, some crops that are available in MIRCA2000 are not included in the SAGE database, including oil_palm, citrus, date_palm, grapes, cocoa, coffee, others_perennial, fodder_grasses, and others_annual. However, if users have crop planting and harvesting month data for any of these crops for certain countries, providing the crop calendar file is another way to include new crops. Of course, it would be the best if users can provide the planting and harvesting months of a crop for all countries that grow such crop for better results from empirical model fitting. Simply follow the established crop calendar format similar to [Table 2](#table2). The code snippet below shows an example on how to add a crop to the crop calendar. The name of the new crops need to follow the format of the crops listed above (e.g., use oil_palm with underscore instead of oil palm).
+**Customized Crop Calendars**
+
+Due to limited crops from SAGE, some crops that are available in MIRCA2000 are not included in the SAGE database, including `oil_palm`, `citrus`, `date_palm`, `grapes`, `cocoa`, `coffee`, `others_perennial`, `fodder_grasses`, and `others_annual.` However, if users have the data of crop planting and harvesting months for any of these crops for certain countries, providing the crop calendar file is another way to include new crops. Of course, it is suggested that users provide the planting and harvesting months of a crop for all countries that grow such crop for better results from empirical model fitting.
+
+To add a new crop, simply follow the established crop calendar format similar to [Table 2](#table2). The code snippet below shows an example on how to add a crop to the crop calendar. The name of the new crops need to follow the format of the crops listed above (e.g., use `oil_palm` with underscore instead of `oil palm`).
 
 ```{r eval=T, echo=T, message=F, results='hide'}
 
@@ -565,6 +571,8 @@ crop_cal <- crop_calendars(crop_calendar_file = 'path/to/your/crop/calendar/file
                            output_dir = output_dir)
 
 ```
+
+Or, you can provide the path to your updated crop calendar file to `crop_calendar_file` argument in the `yield_impact` wrapper function to run the entire workflow with your updated crop calendar.
 
 <br />
 
