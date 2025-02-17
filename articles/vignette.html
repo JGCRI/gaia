@@ -11035,10 +11035,14 @@ country.
 <p>The <code>crop_calendars</code> function calculates crop calendars
 based on the SAGE global crop planting and harvesting dates data (<a href="https://doi.org/10.1111/j.1466-8238.2010.00551.x" class="external-link">Sacks et al.,
 2010</a>). The crop calendar outlines the planting and harvesting months
-for each predefined crop across all global countries. The code chunk
-below runs <code>crop_calendars</code> for the default crops: cassava,
-cotton, maize, rice, root_tuber, sorghum, soybean, sugarbeet, sugarcane,
-sunflower, wheat.</p>
+for each predefined crop across all global countries.<code>gaia</code>
+uses MIRCA2000 crop category (<a href="https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2008gb003435" class="external-link">Portmann
+et al., 2010</a>) as standard crop types. The code chunk below runs
+<code>crop_calendars</code> for the default crops in <code>gaia</code>:
+<code>cassava</code>, <code>cotton</code>, <code>maize</code>,
+<code>rice</code>, <code>root_tuber</code>, <code>sorghum</code>,
+<code>soybean</code>, <code>sugarbeet</code>, <code>sugarcane</code>,
+<code>sunflower</code>, <code>wheat.</code></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Path to the output folder where you wish to save the outputs. Change it accordingly</span></span>
 <span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="st">'gaia_output'</span></span>
@@ -11051,13 +11055,14 @@ sunflower, wheat.</p>
 <p><strong>Outputs of the function:</strong> The function returns a data
 frame of crop calendars. It also writes the output in
 <code>output_dir/data_processed/crop_calendar.csv</code></p>
-<p>Below is an example of the crop calendar structure. The columns
-<code>[plant, harvest]</code> indicates the month of planting and
-harvesting for the crop with value 1 in the same row. For example, the
-first row in the table below indicates that the planting and harvesting
-month of wheat in Albania (iso: alb) is November and June. Users can
-filter to the certain crops by <code>filter(wheat == 1)</code> to better
-view the planting and harvesting month for countries with wheat.</p>
+<p><a href="#table2">Table 2</a> provides an example of the crop
+calendar structure. The <code>[plant, harvest]</code> columns indicate
+the planting and harvesting months for the crops with a value of
+<code>1</code> in the same row. For example, in the the first row of the
+table, wheat in Albania (iso: alb) is planted in November and harvested
+June. Users can apply a filter, such as <code>filter(wheat == 1)</code>,
+to display the planting and harvesting months for countries where wheat
+is grown.</p>
 <table class="table table table-striped" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption>
 <strong>Table 2.</strong> Crop calendar
@@ -11561,14 +11566,15 @@ alb
 </tr>
 </tfoot>
 </table>
+<p><strong>Select Additional Crops</strong></p>
 <p>Beside default crops, users can select additional available crops
-(barley, groundnuts, millet, pulses, rape_seed, and rye) using
+(<code>barley</code>, <code>groundnuts</code>, <code>millet</code>,
+<code>pulses</code>, <code>rape_seed</code>, and <code>rye</code>) using
 <code>crop_select</code> argument. The crops that are available for
 selection in <code>gaia</code> are based on the crop availability from
 both MIRCA2000 and SAGE crop types. Note that FAOSTAT crops are
-categorized into MIRCA2000 crop category. In summary, <code>gaia</code>
-uses MIRCA2000 crop category as standard crop types. The example below
-selects barley and millet in addition to the default ones.</p>
+categorized into MIRCA2000 crop category. The example below selects
+barley and millet in addition to the default ones.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># calculate crop calendars</span></span>
 <span><span class="va">crop_cal</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/crop_calendars.html">crop_calendars</a></span><span class="op">(</span>crop_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"barley"</span>, <span class="st">"millet"</span><span class="op">)</span>,</span>
@@ -11576,20 +11582,24 @@ selects barley and millet in addition to the default ones.</p>
 <span></span>
 <span><span class="co"># print result</span></span>
 <span><span class="va">crop_cal</span></span></code></pre></div>
+<p><strong>Customized Crop Calendars</strong></p>
 <p>Due to limited crops from SAGE, some crops that are available in
-MIRCA2000 are not included in the SAGE database, including oil_palm,
-citrus, date_palm, grapes, cocoa, coffee, others_perennial,
-fodder_grasses, and others_annual. However, if users have crop planting
-and harvesting month data for any of these crops for certain countries,
-providing the crop calendar file is another way to include new crops. Of
-course, it would be the best if users can provide the planting and
-harvesting months of a crop for all countries that grow such crop for
-better results from empirical model fitting. Simply follow the
-established crop calendar format similar to <a href="#table2">Table
-2</a>. The code snippet below shows an example on how to add a crop to
-the crop calendar. The name of the new crops need to follow the format
-of the crops listed above (e.g., use oil_palm with underscore instead of
-oil palm).</p>
+MIRCA2000 are not included in the SAGE database, including
+<code>oil_palm</code>, <code>citrus</code>, <code>date_palm</code>,
+<code>grapes</code>, <code>cocoa</code>, <code>coffee</code>,
+<code>others_perennial</code>, <code>fodder_grasses</code>, and
+<code>others_annual.</code> However, if users have the data of crop
+planting and harvesting months for any of these crops for certain
+countries, providing the crop calendar file is another way to include
+new crops. Of course, it is suggested that users provide the planting
+and harvesting months of a crop for all countries that grow such crop
+for better results from empirical model fitting.</p>
+<p>To add a new crop, simply follow the established crop calendar format
+similar to <a href="#table2">Table 2</a>. The code snippet below shows
+an example on how to add a crop to the crop calendar. The name of the
+new crops need to follow the format of the crops listed above (e.g., use
+<code>oil_palm</code> with underscore instead of
+<code>oil palm</code>).</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># adding a new crop: oil_palm. The crop name should follow the crop names listed above.</span></span>
 <span><span class="co"># Construct the structure of the data with oil_palm</span></span>
@@ -12175,6 +12185,10 @@ use the crop calendar data you provided.</p>
 <span><span class="co"># crop calendars</span></span>
 <span><span class="va">crop_cal</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/crop_calendars.html">crop_calendars</a></span><span class="op">(</span>crop_calendar_file <span class="op">=</span> <span class="st">'path/to/your/crop/calendar/file'</span>,</span>
 <span>                           output_dir <span class="op">=</span> <span class="va">output_dir</span><span class="op">)</span></span></code></pre></div>
+<p>Or, you can provide the path to your updated crop calendar file to
+<code>crop_calendar_file</code> argument in the
+<code>yield_impact</code> wrapper function to run the entire workflow
+with your updated crop calendar.</p>
 <p><br></p>
 </div>
 <div class="section level4">
