@@ -55,7 +55,6 @@ Using average growing season temperature and precipitation, max and min months</
 <span>  end_year <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  gcam_timestep <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  smooth_window <span class="op">=</span> <span class="fl">20</span>,</span>
-<span>  crop_select <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  diagnostics <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  output_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"output"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -95,10 +94,6 @@ Using average growing season temperature and precipitation, max and min months</
 
 <dt id="arg-smooth-window">smooth_window<a class="anchor" aria-label="anchor" href="#arg-smooth-window"></a></dt>
 <dd><p>Default = 20. Integer for smoothing window in years</p></dd>
-
-
-<dt id="arg-crop-select">crop_select<a class="anchor" aria-label="anchor" href="#arg-crop-select"></a></dt>
-<dd><p>Default = NULL. Vector of strings for the selected crops from our database. If NULL, the default crops will be used in the crop calendar: c("cassava", "cotton", "maize", "rice", "root_tuber", "sorghum", "soybean", "sugarbeet", "sugarcane", "sunflower", "wheat"). The additional crops available for selection from our crop calendar database are: "barley", "groundnuts", "millet", "pulses", "rape_seed", "rye"</p></dd>
 
 
 <dt id="arg-diagnostics">diagnostics<a class="anchor" aria-label="anchor" href="#arg-diagnostics"></a></dt>
