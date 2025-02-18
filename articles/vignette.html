@@ -232,9 +232,11 @@ climate dataset is designed for users who want to process raw climate
 NetCDF data using the <code><a href="../reference/weighted_climate.html">gaia::weighted_climate</a></code> function. It
 includes global monthly precipitation and temperature NetCDF files at a
 0.5-degree resolution, covering the period from 2015 to 2030. This
-projected climate is from CanESM5 under SSP245 scenario. Processing this
-data may take some time. If you intend to use your own climate datasets,
-this example will help you get set up.</li>
+projected climate is bias-adjusted and statistically downscaled (via
+ISIMIP3BASD v2.5.0 approach <a href="https://doi.org/10.5281/zenodo.4686991" class="external-link">Lange, 2021</a>; <a href="https://doi.org/10.5194/gmd-12-3055-2019" class="external-link">Lange, 2019</a>) climate
+from CMIP6 model CanESM5 under SSP245 scenario (<a href="https://doi.org/10.22033/ESGF/CMIP6.3685" class="external-link">Swart et al., 2019</a>).
+Processing this data may take some time. If you intend to use your own
+climate datasets, this example will help you get set up.</li>
 </ul>
 <p><br></p>
 <div class="section level3">
@@ -11590,9 +11592,9 @@ alb
 <code>pulses</code>, <code>rape_seed</code>, and <code>rye</code>) using
 <code>crop_select</code> argument. The crops that are available for
 selection in <code>gaia</code> are based on the crop availability from
-both MIRCA2000 and SAGE crop types. Note that FAOSTAT crops are
-categorized into MIRCA2000 crop category. The example below selects
-barley and millet in addition to the default ones.</p>
+both MIRCA2000 and SAGE crop types. Note that <a href="https://www.fao.org/faostat/en/#data/QCL/metadata" class="external-link">FAOSTAT</a>
+crops are categorized into MIRCA2000 crop category. The example below
+selects barley and millet in addition to the default ones.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># calculate crop calendars</span></span>
 <span><span class="va">crop_cal</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/crop_calendars.html">crop_calendars</a></span><span class="op">(</span>crop_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"barley"</span>, <span class="st">"millet"</span><span class="op">)</span>,</span>
