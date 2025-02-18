@@ -17,25 +17,30 @@ data_dir_i <- gaia::get_example_data(
 
 test_that("crop_calendars function test", {
 
+  # test default crops
+  out_crop_calendars_default <- run_crop_calendars(crop_select = NULL,
+                                                   output_dir = output_dir_i)
+
+  # test all available crops
   out_crop_calendars <- run_crop_calendars(output_dir = output_dir_i)
 
+  testthat::expect_snapshot(out_crop_calendars_default)
   testthat::expect_snapshot(out_crop_calendars)
-
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'data_processed', 'crop_calendar.csv'))
 
 })
 
 test_that("data_aggregation function test", {
 
-  out_data_aggregation <- run_data_aggregation(data_dir = data_dir_i)
+  # test function with user provided co2
+  out_data_aggregation_custom <- run_data_aggregation(data_dir = data_dir_i)
 
+  # test function with default co2
+  out_data_aggregation <- run_data_aggregation(data_dir = data_dir_i,
+                                               co2_hist = NULL,
+                                               co2_proj = NULL,)
+
+  testthat::expect_snapshot(out_data_aggregation_custom)
   testthat::expect_snapshot(out_data_aggregation)
-
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'data_processed', 'weather_canesm5_gcam-ref_wheat.csv'))
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'data_processed', 'historic_vars_wheat.csv'))
 
 
 })
@@ -47,12 +52,6 @@ test_that("yield_regression function test", {
 
   testthat::expect_snapshot(out_yield_regression)
 
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'data_processed', 'reg_out_wheat_fit_lnyield_mmm_quad_noco2_nogdp.csv'))
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'data_processed', 'weather_yield_wheat.csv'))
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'figures', 'model_wheat_fit_lnyield_mmm_quad_noco2_nogdp.pdf'))
 })
 
 test_that("yield_shock_projection function test", {
@@ -61,18 +60,6 @@ test_that("yield_shock_projection function test", {
 
   testthat::expect_snapshot(out_yield_projections)
 
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'yield_impacts_annual', 'yield_canesm5_gcam-ref_wheat.csv'))
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'yield_impacts_smooth', 'yield_canesm5_gcam-ref_wheat.csv'))
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'data_processed', 'format_yield_change_rel2015.csv'))
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'figures', 'annual_projected_climate_impacts_canesm5_gcam-ref_wheat_fit_lnyield_mmm_quad_noco2_nogdp.pdf'))
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'figures', 'smooth_projected_climate_impacts_canesm5_gcam-ref_wheat_fit_lnyield_mmm_quad_noco2_nogdp.pdf'))
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'maps', 'map_canesm5_gcam-ref_wheat_2090.pdf'))
 })
 
 
@@ -83,10 +70,4 @@ test_that("gcam_agprodchange function test", {
 
   testthat::expect_snapshot(out_gcam_agprodchange)
 
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'gcam7_agprodchange_no-cfe', 'agyield_impact_canesm5_r1i1p1f1_w5e5v2_gcam-ref.xml'))
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'gcam7_agprodchange_no-cfe', 'figures_yield_impacts', 'Wheat.png'))
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'gcam7_agprodchange_no-cfe', 'figures_agprodchange', 'Wheat.png'))
 })
