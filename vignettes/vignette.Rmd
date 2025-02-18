@@ -161,7 +161,7 @@ The primary functionality of `gaia` is encapsulated in the `yield_impact` wrappe
 `gaia` requires global climate data from the Inter-Sectoral Impact Model Intercomparison Project ([ISIMIP](https://www.isimip.org/)) or data formatted according to ISIMIP protocols. Additionally, `gaia` supports climate data in both daily and monthly time step. Due to the large size of global climate data, we provide two types of example datasets tailored to different user needs.
 
 * [Example Data 1](#example-data-1-quick-start-dataset): This pre-processed climate dataset allows users to quickly run `gaia` **without** the need to process raw climate NetCDF data. It is an output from the `gaia::weighted_climate` function, which converts raw climate NetCDF data into cropland-weighted climate data by country. This dataset includes both historical and future pre-processed cropland-weighted precipitation and temperature by country. If you want to quickly test `gaia` and view the outputs, this is the easiest way to get started.
-* [Example Data 2](#example-data-2-raw-climate-data): This climate dataset is designed for users who want to process raw climate NetCDF data using the `gaia::weighted_climate` function. It includes global monthly precipitation and temperature NetCDF files at a 0.5-degree resolution, covering the period from 2015 to 2030. This projected climate is from CanESM5 under SSP245 scenario. Processing this data may take some time. If you intend to use your own climate datasets, this example will help you get set up.
+* [Example Data 2](#example-data-2-raw-climate-data): This climate dataset is designed for users who want to process raw climate NetCDF data using the `gaia::weighted_climate` function. It includes global monthly precipitation and temperature NetCDF files at a 0.5-degree resolution, covering the period from 2015 to 2030. This projected climate is bias-adjusted and statistically downscaled (via ISIMIP3BASD v2.5.0 approach [Lange, 2021](https://doi.org/10.5281/zenodo.4686991); [Lange, 2019](https://doi.org/10.5194/gmd-12-3055-2019)) climate from CMIP6 model CanESM5 under SSP245 scenario ([Swart et al., 2019](https://doi.org/10.22033/ESGF/CMIP6.3685)). Processing this data may take some time. If you intend to use your own climate datasets, this example will help you get set up.
 
 
 <br />
@@ -500,7 +500,7 @@ knitr::kable(crop_cal[1:10],
 
 **Select Additional Crops**
 
-Beside default crops, users can select additional available crops (`barley`, `groundnuts`, `millet`, `pulses`, `rape_seed`, and `rye`) using `crop_select` argument. The crops that are available for selection in `gaia` are based on the crop availability from both MIRCA2000 and SAGE crop types. Note that FAOSTAT crops are categorized into MIRCA2000 crop category. The example below selects barley and millet in addition to the default ones.
+Beside default crops, users can select additional available crops (`barley`, `groundnuts`, `millet`, `pulses`, `rape_seed`, and `rye`) using `crop_select` argument. The crops that are available for selection in `gaia` are based on the crop availability from both MIRCA2000 and SAGE crop types. Note that [FAOSTAT](https://www.fao.org/faostat/en/#data/QCL/metadata) crops are categorized into MIRCA2000 crop category. The example below selects barley and millet in addition to the default ones.
 
 ```{r eval=F, echo=T}
 

@@ -56,7 +56,7 @@ usethis::use_data(co2_projection, overwrite = TRUE)
 #-------------------------------------------------------------------------------
 # Reference Agricultural Productivity Change
 #-------------------------------------------------------------------------------
-
+# Reference APG files are from GCAM 6 and 7 depending on the version specified
 # for GCAM 6 and 7 at 5-year period
 for(gcam_version in c('gcam6', 'gcam7')){
 
@@ -222,6 +222,8 @@ mapping_fao_glu <- fao_glu_intersect_mapping %>%
 # MIRCA cropland area (m2)
 #-------------------------------------------------------------------------------
 
+# MIRCA2000
+# Portmann, F. T., Siebert, S., & Döll, P. (2010). MIRCA2000 (1.1) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.7422506
 # cropland area file list
 crop_area_list <- list.files(
   file.path(climate_data.dir, 'MIRCA2000', 'harvested_area_grids_26crops_30mn'),
@@ -336,6 +338,7 @@ fao_to_mirca <- gaia::input_data(
 #-------------------------------------------------------------------------------
 # FAOSTAT Country ISO mapping
 #-------------------------------------------------------------------------------
+# FAOSTAT data https://www.fao.org/faostat/en/#data/QCL
 fao_iso <- gaia::input_data(
   folder_path = file.path(model_data.dir, 'data_ext', 'FAO_Production_Crops_Livestock_E_All_Data'),
   input_file = 'FAOSTAT_Area_Code.csv',
