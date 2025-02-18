@@ -4,14 +4,12 @@
 #' using average growing season temperature and precipitation, max and min months
 #'
 #' @param formula Default = NULL. String for regression formula
-#' @param crop_select Default = NULL. Vector of strings for the selected crops from our database. If NULL, the default crops will be used in the crop calendar: c("cassava", "cotton", "maize", "rice", "root_tuber", "sorghum", "soybean", "sugarbeet", "sugarcane", "sunflower", "wheat"). The additional crops available for selection from our crop calendar database are: "barley", "groundnuts", "millet", "pulses", "rape_seed", "rye"
 #' @param diagnostics Default = TRUE. Logical for performing diagnostic plot
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @returns No return value, called for the side effects of processing and writing output files
 #' @export
 
 yield_regression <- function(formula = NULL,
-                             crop_select = NULL,
                              diagnostics = TRUE,
                              output_dir = file.path(getwd(), "output")) {
   # Decided not to use irrigation equipped land because data is so spotty
@@ -26,9 +24,9 @@ yield_regression <- function(formula = NULL,
   message(paste0("Starting step: yield_regression"))
   message(paste0("Using formula: ", formula))
 
-  if(is.null(crop_select)){
-    crop_select <- gaia::verify_crop(crop_select = crop_select)$crop_mirca
-  }
+  # get the selected crops
+  hist_var_files <- list.files(file.path(output_dir, "data_processed"), 'historic_vars')
+  crop_select <- gsub('.csv', '', gsub('historic_vars_', '', hist_var_files))
 
   # conduct regression for each crop
   for (crop_i in crop_select) {

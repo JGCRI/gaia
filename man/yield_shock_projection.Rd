@@ -13,7 +13,6 @@ yield_shock_projection(
   end_year = NULL,
   gcam_timestep = 5,
   smooth_window = 20,
-  crop_select = NULL,
   diagnostics = TRUE,
   output_dir = file.path(getwd(), "output")
 )
@@ -34,8 +33,6 @@ yield_shock_projection(
 \item{gcam_timestep}{Default = 5. Integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)}
 
 \item{smooth_window}{Default = 20. Integer for smoothing window in years}
-
-\item{crop_select}{Default = NULL. Vector of strings for the selected crops from our database. If NULL, the default crops will be used in the crop calendar: c("cassava", "cotton", "maize", "rice", "root_tuber", "sorghum", "soybean", "sugarbeet", "sugarcane", "sunflower", "wheat"). The additional crops available for selection from our crop calendar database are: "barley", "groundnuts", "millet", "pulses", "rape_seed", "rye"}
 
 \item{diagnostics}{Default = TRUE. Logical for performing diagnostic plot}
 

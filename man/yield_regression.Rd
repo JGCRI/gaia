@@ -6,15 +6,12 @@
 \usage{
 yield_regression(
   formula = NULL,
-  crop_select = NULL,
   diagnostics = TRUE,
   output_dir = file.path(getwd(), "output")
 )
 }
 \arguments{
 \item{formula}{Default = NULL. String for regression formula}
-
-\item{crop_select}{Default = NULL. Vector of strings for the selected crops from our database. If NULL, the default crops will be used in the crop calendar: c("cassava", "cotton", "maize", "rice", "root_tuber", "sorghum", "soybean", "sugarbeet", "sugarcane", "sunflower", "wheat"). The additional crops available for selection from our crop calendar database are: "barley", "groundnuts", "millet", "pulses", "rape_seed", "rye"}
 
 \item{diagnostics}{Default = TRUE. Logical for performing diagnostic plot}
 

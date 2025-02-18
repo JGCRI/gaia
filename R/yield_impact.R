@@ -127,7 +127,6 @@ yield_impact <- function(pr_hist_ncdf = NULL,
   # Step 4: Yield regressions and create figures
   if (!use_default_coeff) {
     gaia::yield_regression(
-      crop_select = crop_select,
       diagnostics = diagnostics,
       output_dir = output_dir
     )
@@ -144,7 +143,6 @@ yield_impact <- function(pr_hist_ncdf = NULL,
     end_year = end_year,
     gcam_timestep = gcam_timestep,
     smooth_window = smooth_window,
-    crop_select = crop_select,
     diagnostics = diagnostics,
     output_dir = output_dir
   )

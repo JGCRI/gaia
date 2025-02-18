@@ -2,6 +2,9 @@
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 
 ## ----eval=F-------------------------------------------------------------------
+#  data_dir <- 'path/to/downloaded/folder'
+
+## ----eval=F-------------------------------------------------------------------
 #  
 #  # load gaia
 #  library(gaia)
@@ -11,7 +14,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #  
 #  # Cropland-weighted historical and future climate data
 #  data_dir <- gaia::get_example_data(
-#    download_url = 'https://zenodo.org/records/13976521/files/weighted_climate.zip?download=1',
+#    download_url = 'https://zenodo.org/records/14888816/files/weighted_climate.zip?download=1',
 #    data_dir = output_dir
 #  )
 
@@ -24,6 +27,9 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #  
 
 ## ----eval=F-------------------------------------------------------------------
+#  data_dir <- 'path/to/downloaded/folder'
+
+## ----eval=F-------------------------------------------------------------------
 #  
 #  # load gaia
 #  library(gaia)
@@ -33,7 +39,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #  
 #  # Future Climate Data
 #  data_dir <- gaia::get_example_data(
-#    download_url = 'https://zenodo.org/records/13976521/files/gaia_example_climate.zip?download=1',
+#    download_url = 'https://zenodo.org/records/14888816/files/gaia_example_climate.zip?download=1',
 #    data_dir = output_dir
 #  )
 #  
@@ -42,8 +48,8 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #  # Path to the precipitation and temperature NetCDF files
 #  # NOTE: Each variable can have more than one file
 #  # projected climate data
-#  pr_projection_file <- file.path(data_dir, 'pr_monthly_canesm5_w5e5_gcam-ref_2015_2100.nc')
-#  tas_projection_file <- file.path(data_dir, 'tas_monthly_canesm5_w5e5_gcam-ref_2015_2100.nc')
+#  pr_projection_file <- file.path(data_dir, 'pr_monthly_canesm5_w5e5_ssp245_2015_2030.nc')
+#  tas_projection_file <- file.path(data_dir, 'tas_monthly_canesm5_w5e5_ssp245_2015_2030.nc')
 #  
 
 ## ----eval=F, echo=T-----------------------------------------------------------
@@ -65,7 +71,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #    climate_hist_dir = climate_hist_dir,    # path to the folder that holds cropland weighted historical climate observations
 #    historical_periods = c(1960:2001),      # vector of historical years selected for fitting
 #    climate_model = 'canesm5',              # label of climate model name
-#    climate_scenario = 'gcam-ref',          # label of climate scenario name
+#    climate_scenario = 'ssp245',            # label of climate scenario name
 #    member = 'r1i1p1f1',                    # label of ensemble member name
 #    bias_adj = 'w5e5',                      # label of climate data for bias adjustment for the global climate model (GCM)
 #    cfe = 'no-cfe',                         # label of CO2 fertilization effect in the formula (default is no CFE)
@@ -73,10 +79,11 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #    use_default_coeff = FALSE,              # set to TRUE when there is no historical climate data available
 #    base_year = 2015                        # GCAM base year
 #    start_year = 2015,                      # start year of the projected climate data
-#    end_year = 2100,                        # end year of the projected climate data
+#    end_year = 2030,                        # end year of the projected climate data
 #    smooth_window = 20,                     # number of years as smoothing window
 #    co2_hist = NULL,                        # historical annual CO2 concentration. If NULL, will use default value
 #    co2_proj = NULL,                        # projected annual CO2 concentration. If NULL, will use default value
+#    crop_select = NULL,                     # set to NULL for the default crops
 #    diagnostics = TRUE,                     # set to TRUE to output diagnostic plots
 #    output_dir = output_dir                 # path to the output folder
 #  )
@@ -96,7 +103,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #    climate_impact_dir = climate_impact_dir,# path to the folder that holds cropland weighted projected climate
 #    timestep = 'monthly',                   # specify the time step of the NetCDF data (monthly or daily)
 #    climate_model = 'canesm5',              # label of climate model name
-#    climate_scenario = 'gcam-ref',          # label of climate scenario name
+#    climate_scenario = 'ssp245',            # label of climate scenario name
 #    member = 'r1i1p1f1',                    # label of ensemble member name
 #    bias_adj = 'w5e5',                      # label of climate data for bias adjustment
 #    cfe = 'no-cfe',                         # label of CO2 fertilization effect in the formula (default is no CFE)
@@ -108,6 +115,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #    smooth_window = 20,                     # number of years as smoothing window
 #    co2_hist = NULL,                        # historical annual CO2 concentration. If NULL, will use default value
 #    co2_proj = NULL,                        # projected annual CO2 concentration. If NULL, will use default value
+#    crop_select = NULL,                     # set to NULL for the default crops
 #    diagnostics = TRUE,                     # set to TRUE to output diagnostic plots
 #    output_dir = output_dir                 # path to the output folder
 #  )
@@ -124,8 +132,8 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #                   tas_ncdf = tas_projection_file ,
 #                   timestep = 'monthly',
 #                   climate_model = 'canesm5',
-#                   climate_scenario = 'gcam-ref',
-#                   time_periods = seq(2015, 2100, 1),
+#                   climate_scenario = 'ssp245',
+#                   time_periods = seq(2015, 2030, 1),
 #                   output_dir = output_dir,
 #                   name_append = NULL)
 #  
@@ -133,7 +141,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 ## ----eval=T, echo=F, message=F, results='hide'--------------------------------
 
 input_climate <- gaia::input_data(folder_path = file.path(getwd(), 'vignetteFigs'),
-                                  input_file = 'canesm5_gcam-ref_month_precip_country_rfc_crop08_2015_2100.txt')
+                                  input_file = 'canesm5_ssp245_month_precip_country_rfc_crop08_2015_2100.txt')
 
 
 ## ----eval=TRUE, echo=FALSE----------------------------------------------------
@@ -159,7 +167,7 @@ knitr::kable(input_climate[1:12],
 ## ----eval=T, echo=F, message=F, results='hide'--------------------------------
 
 crop_cal <- gaia::input_data(folder_path = file.path(getwd(), 'vignetteFigs'),
-                              input_file = 'crop_calendar.csv')
+                             input_file = 'crop_calendar.csv')
 
 
 ## ----eval=T, echo=F-----------------------------------------------------------
@@ -170,26 +178,37 @@ knitr::kable(crop_cal[1:10],
   kable_styling(bootstrap_options = "striped", full_width = T, position = 'center') %>% 
   footnote(general = 'This only shows the first 10 lines of the example data.')
 
+## ----eval=F, echo=T-----------------------------------------------------------
+#  
+#  # calculate crop calendars
+#  crop_cal <- crop_calendars(crop_select = c("barley", "millet"),
+#                             output_dir = output_dir)
+#  
+#  # print result
+#  crop_cal
+#  
+
 ## ----eval=T, echo=T, message=F, results='hide'--------------------------------
 
-# adding a new crop: yams. Construct the structure of the data with yams
+# adding a new crop: oil_palm. The crop name should follow the crop names listed above.
+# Construct the structure of the data with oil_palm
 crop_add <- expand.grid(iso = c('cog', 'gha', 'lbr'),
-                        crops = c(names(crop_cal)[2:(ncol(crop_cal) - 2)], 'yams')) %>%
-  dplyr::mutate(value = ifelse(crops == 'yams', 1, 0)) %>% 
+                        crops = c(names(crop_cal)[2:(ncol(crop_cal) - 2)], 'oil_palm')) %>%
+  dplyr::mutate(value = ifelse(crops == 'oil_palm', 1, 0)) %>% 
   tidyr::pivot_wider(names_from = 'crops', values_from = 'value', values_fill = 0)
 
-# planting and harvesting month for countries with yams
+# planting and harvesting month for countries with oil_palm
 crop_harvest_plant <- data.frame(iso = c('cog', 'gha', 'lbr'),
                                  plant = c(2, 2, 2),
                                  harvest  = c(9, 10, 9))
 
-# complete the data structure with yams added
+# complete the data structure with oil_palm added
 crop_add <- dplyr::left_join(crop_add, crop_harvest_plant, by = 'iso')
 
 # bind the data to create updated crop calendars
 crop_cal_update <- crop_cal %>% 
   dplyr::bind_rows(crop_add) %>% 
-  tidyr::replace_na(list(yams = 0)) %>% 
+  tidyr::replace_na(list(oil_palm = 0)) %>% 
   dplyr::select(-plant, -harvest, everything(), plant, harvest)
 
 # view updated crop calendar
@@ -200,9 +219,19 @@ crop_cal_update
 library(dplyr)
 library(kableExtra)
 knitr::kable(crop_cal_update[1:10], 
-             caption = '**Table 3.** Updated crop calendar with yams') %>% 
+             caption = '**Table 3.** Updated crop calendar with oil palm') %>% 
   kable_styling(bootstrap_options = "striped", full_width = T, position = 'center') %>% 
   footnote(general = 'This only shows the first 10 lines of the example data.')
+
+## ----eval=F, echo=T-----------------------------------------------------------
+#  # Optional: save the update crop calendar to CSV if you haven't already
+#  # you can choose to use gaia's output_data function to write output
+#  gaia::output_data(
+#    data = crop_cal_update,
+#    file_name = 'crop_calendar_update.csv',
+#    save_path = 'path/to/desired/folder'
+#  )
+#  
 
 ## ----eval=F, echo=T-----------------------------------------------------------
 #  
@@ -223,14 +252,14 @@ knitr::kable(crop_cal_update[1:10],
 #  data_agg <- data_aggregation(climate_hist_dir = climate_hist_dir,
 #                               climate_impact_dir = climate_impact_dir,
 #                               climate_model = 'canesm5',
-#                               climate_scenario = 'gcam-ref',
+#                               climate_scenario = 'ssp245',
 #                               output_dir = output_dir)
 #  
 
 ## ----eval=T, echo=F, message=F, results='hide'--------------------------------
 
 crop_projection <- gaia::input_data(folder_path = file.path(getwd(), 'vignetteFigs'),
-                                    input_file = 'weather_canesm5_gcam-ref_soybean.csv')
+                                    input_file = 'weather_canesm5_ssp245_soybean.csv')
 
 crop_hist <- gaia::input_data(folder_path = file.path(getwd(), 'vignetteFigs'),
                               input_file = 'historic_vars_soybean.csv')
@@ -286,7 +315,7 @@ knitr::kable(fit_model[1:10],
 #  # calculate projected yield shocks
 #  out_yield_shock <- yield_shock_projection(use_default_coeff = FALSE,
 #                                            climate_model = 'canesm5',
-#                                            climate_scenario = 'gcam-ref',
+#                                            climate_scenario = 'ssp245',
 #                                            base_year = 2015,
 #                                            start_year = 2015,
 #                                            end_year = 2100,
@@ -298,10 +327,10 @@ knitr::kable(fit_model[1:10],
 ## ----eval=T, echo=F, message=F, results='hide'--------------------------------
 
 annual_yield <- gaia::input_data(folder_path = file.path(getwd(), 'vignetteFigs'),
-                                 input_file = 'annual_yield_canesm5_gcam-ref_soybean.csv')
+                                 input_file = 'annual_yield_canesm5_ssp245_soybean.csv')
 
 smooth_yield <- gaia::input_data(folder_path = file.path(getwd(), 'vignetteFigs'),
-                                 input_file = 'smoothed_yield_canesm5_gcam-ref_soybean.csv')
+                                 input_file = 'smoothed_yield_canesm5_ssp245_soybean.csv')
 
 
 ## ----eval=T, echo=F-----------------------------------------------------------
@@ -332,7 +361,7 @@ knitr::kable(smooth_yield[1:10],
 #  # calculate region-basin agricultural productivity growth rate for GCAM
 #  gcam_apg <- gcam_agprodchange(data = out_yield_shock,
 #                                climate_model = 'canesm5',
-#                                climate_scenario = 'gcam-ref',
+#                                climate_scenario = 'ssp245',
 #                                member = 'r1i1p1f1',
 #                                bias_adj = 'w5e5',
 #                                cfe = 'no-cfe',

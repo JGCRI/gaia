@@ -729,6 +729,9 @@ climate_impact <- function(use_default_coeff = FALSE,
 
   }
 
+  # subset data within start and end years
+  d <- subset(d, select = c('GCAM_region_name', 'iso', 'crop', baseYears))
+
   # if start year from the available data is 9 years or earlier before the base year
   # then historical years are determined as (base_year - 9) to base_year
   # else historical years are determined as start_year to base year
