@@ -662,10 +662,10 @@ The `gaia::yield_regression` function performs empirical model fitting and gener
 
 The yield regression applies the econometric model from [Waldhoff et al., (2020)](https://doi.org/10.1088/1748-9326/abadcb):
 
-\begin{align} {y_{i,t}} = &\, {\mu _i} + \lambda t + \chi {m_{i,t}} + \beta _1^{Mean}T_{i,t}^{Mean} + \beta _2^{Mean}{\left( {T_{i,t}^{Mean}} \right)^2}\nonumber\\ &+ \beta _1^{Min}T_{i,t}^{Min} + \beta _2^{Min}{\left( {T_{i,t}^{Min}} \right)^2} + \beta _1^{Max}T_{i,t}^{Max} \nonumber\hfill \\ & + \beta _2^{Max}{\left( {T_{i,t}^{Max}} \right)^2} + \gamma _1^{Mean}P_{i,t}^{Mean} + \gamma _2^{Mean}{\left( {P_{i,t}^{Mean}} \right)^2} \nonumber\\ &+ \gamma _1^{Min}P_{i,t}^{Min} + \gamma _2^{Min}{\left( {P_{i,t}^{Min}} \right)^2} + \gamma _1^{Max}P_{i,t}^{Max} \nonumber\\ & + \gamma _2^{Max}{\left( {P_{i,t}^{Max}} \right)^2}. \nonumber\hfill \\ \end{align}
+$$\begin{align} {y_{i,t}} = &\, {\mu _i} + \lambda t + \chi {m_{i,t}} + \beta _1^{Mean}T_{i,t}^{Mean} + \beta _2^{Mean}{\left( {T_{i,t}^{Mean}} \right)^2}\nonumber\\ &+ \beta _1^{Min}T_{i,t}^{Min} + \beta _2^{Min}{\left( {T_{i,t}^{Min}} \right)^2} + \beta _1^{Max}T_{i,t}^{Max} \nonumber\hfill \\ & + \beta _2^{Max}{\left( {T_{i,t}^{Max}} \right)^2} + \gamma _1^{Mean}P_{i,t}^{Mean} + \gamma _2^{Mean}{\left( {P_{i,t}^{Mean}} \right)^2} \nonumber\\ &+ \gamma _1^{Min}P_{i,t}^{Min} + \gamma _2^{Min}{\left( {P_{i,t}^{Min}} \right)^2} + \gamma _1^{Max}P_{i,t}^{Max} \nonumber\\ & + \gamma _2^{Max}{\left( {P_{i,t}^{Max}} \right)^2}. \nonumber\hfill \\ \end{align}
 				\tag{
 				1
-				}
+				}$$
 
 Where, $i$ and $t$ index countries and years; $y$ and $m$ are the natural logarithms of yield and per capita GDP; $T^k$ and $P^k$ with $k \in \left( {Mean,Min,Max} \right)$ denote the mean, minimum, and maximum growing season monthly average daily temperature and total precipitation in each country and year; and $\mu$ is a regression parameter indicating country fixed effects that control for heterogeneous unobserved time-invariant influences that vary across countries; $\beta _1$ and $\beta _2$ define the response of log yield to average, minimum, and maximum temperature, while $\gamma _1$ and $\gamma _2$ define the response of log yield to average, minimum, and maximum precipitation.
 
