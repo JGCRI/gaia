@@ -54,6 +54,7 @@ run_weighted_climate <- function(pr_ncdf = NULL,
                                  climate_model = "gcm",
                                  climate_scenario = "rcp",
                                  time_periods = NULL,
+                                 crop_names = NULL,
                                  output_dir = file.path(getwd(), "output", "weighted_climate_test"),
                                  name_append = NULL){
 
@@ -63,6 +64,7 @@ run_weighted_climate <- function(pr_ncdf = NULL,
                          climate_model = climate_model,
                          climate_scenario = climate_scenario,
                          time_periods = time_periods,
+                         crop_names = crop_names,
                          output_dir = output_dir,
                          name_append = name_append)
 

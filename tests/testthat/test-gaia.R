@@ -11,7 +11,7 @@ data_dir_i <- gaia::get_example_data(
   data_dir = output_dir_i)
 
 ncdf_dir_i <- gaia::get_example_data(
-  download_url = 'https://zenodo.org/records/14888816/files/gaia_example_climate.zip?download=1',
+  download_url = 'https://zenodo.org/records/14895875/files/gaia_test_climate.zip?download=1',
   data_dir = output_dir_i)
 
 
@@ -21,17 +21,24 @@ ncdf_dir_i <- gaia::get_example_data(
 
 test_that("weighted_climate function test", {
 
-  pr_ncdf_i <- file.path(ncdf_dir_i, 'pr_monthly_canesm5_w5e5_ssp245_2015_2030.nc')
-  tas_ncdf_i <- file.path(ncdf_dir_i, 'tas_monthly_canesm5_w5e5_ssp245_2015_2030.nc')
+  pr_ncdf_i <- file.path(ncdf_dir_i, 'pr_monthly_canesm5_w5e5_ssp245_2015_2015.nc')
+  tas_ncdf_i <- file.path(ncdf_dir_i, 'tas_monthly_canesm5_w5e5_ssp245_2015_2015.nc')
 
   run_weighted_climate(pr_ncdf = pr_ncdf_i,
                        tas_ncdf = tas_ncdf_i,
                        timestep = "monthly",
                        climate_model = "canesm5",
                        climate_scenario = "ssp245",
-                       time_periods = seq(2015, 2030, 1),
+                       time_periods = 2015,
+                       crop_names = 'irc_crop01',
                        output_dir = file.path(getwd(), "output", "weighted_climate_test"))
 
+  testthat::expect_snapshot_file(
+    file.path(getwd(), "output", "weighted_climate_test", "weighted_climate", "canesm5", "canesm5_ssp245_month_precip_country_irc_crop01_2015_2015.txt")
+  )
+  testthat::expect_snapshot_file(
+    file.path(getwd(), "output", "weighted_climate_test", "weighted_climate", "canesm5", "canesm5_ssp245_month_tmean_country_irc_crop01_2015_2015.txt")
+  )
 })
 
 test_that("crop_calendars function test", {
