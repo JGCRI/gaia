@@ -1,5 +1,13 @@
-# Save data to internal data/.rds file
+################################################################################
+#
+# This is the data preparation file for developer, which records all the raw
+# data sources and the initial clean ups of the data.
+#
+# Please note that this file is not meant for users to run.
+#
+################################################################################
 
+# load libraries
 library(tibble)
 library(dplyr)
 library(raster)
@@ -23,6 +31,7 @@ gcam7.dir <- 'C:/WorkSpace/github/gcam-core/input/gcamdata/outputs'
 #===============================================================================
 #'* External Data *
 #===============================================================================
+# Save data to data/.rds file
 
 #-------------------------------------------------------------------------------
 # Historical CO2 concentration

@@ -259,14 +259,14 @@ agprodchange_interp <- function(data = NULL,
 
     print(paste0(
       "Interpolating the reference agricultural productivity change to ",
-      gcam_timestep, " year time step between: ",
-      ref_timestep_interp_start, " to ", ref_timestep_interp_end
+      gcam_timestep, " year time step: ",
+      paste(unique(seq(min(year), max(year), gcam_timestep), max(year)), collapse = ', ')
     ))
 
     data_interp <- data %>%
       dplyr::mutate(year = as.numeric(gsub("X", "", year))) %>%
       dplyr::group_by(region, AgSupplySector, AgSupplySubsector, AgProductionTechnology) %>%
-      tidyr::complete(year = tidyr::full_seq(year, gcam_timestep)) %>%
+      tidyr::complete(year = unique(seq(min(year), max(year), gcam_timestep), max(year))) %>%
       dplyr::mutate(AgProdChange_ni = ifelse(is.na(AgProdChange_ni),
         approx(
           x = year[!is.na(AgProdChange_ni)],

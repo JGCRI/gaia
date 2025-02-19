@@ -219,7 +219,7 @@ climate_impact_dir <- file.path(data_dir, 'canesm5')
 
 ## Example Data 2: Raw Climate Data
 
-Download the example data 2 using the instructions below. This dataset includes future global monthly precipitation and temperature from 2015 to 2030 at 0.5-degree resolution, projected by CanESM5 global climate model under SSP245 scenario. To use a different climate model or scenario, users can provide their own climate data in NetCDF format. Note that `gaia` adheres to the ISIMIP climate data format as its standard, so your NetCDF files should be formatted accordingly if the data is not directly downloaded from ISIMIP.
+Download the example data 2 using the instructions below. This dataset includes future global monthly precipitation and temperature from 2015 to 2030 at 0.5-degree resolution, projected by CanESM5 global climate model under SSP245 scenario. To use a different climate model or scenario, users can provide their own climate data in NetCDF format. Note that `gaia` adheres to the ISIMIP climate data format as its standard, so your NetCDF files should be formatted accordingly if the data is not directly downloaded from ISIMIP. More details on ISIMIP format can be found in [weighted_climate](#weighted_climate) section.
 
 There are two options to download the data:
 

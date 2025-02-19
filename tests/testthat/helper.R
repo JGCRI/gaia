@@ -48,6 +48,25 @@ co2_proj_i <- data.table::data.table(
 # -------------------------------
 
 # Step 1: weighted_climate
+run_weighted_climate <- function(pr_ncdf = NULL,
+                                 tas_ncdf = NULL,
+                                 timestep = "monthly",
+                                 climate_model = "gcm",
+                                 climate_scenario = "rcp",
+                                 time_periods = NULL,
+                                 output_dir = file.path(getwd(), "output", "weighted_climate_test"),
+                                 name_append = NULL){
+
+  gaia::weighted_climate(pr_ncdf = pr_ncdf,
+                         tas_ncdf = tas_ncdf,
+                         timestep = timestep,
+                         climate_model = climate_model,
+                         climate_scenario = climate_scenario,
+                         time_periods = time_periods,
+                         output_dir = output_dir,
+                         name_append = name_append)
+
+}
 
 # Step 2: crop_calendar
 run_crop_calendars <- function(crop_calendar_file = NULL,
