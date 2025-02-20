@@ -18,6 +18,8 @@
 #' @param gcam_version Default = 'gcam7'. String for the GCAM version. Only support gcam6 and gcam7
 #' @param gcam_timestep Default = 5. Integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)
 #' @param gcamdata_dir Default = NULL. String for directory to the gcamdata folder within the specific GCAM version. The gcamdata need to be run with drake to have the CSV outputs beforehand.
+#' @param crop_calendar_file Default = NULL. String for the path of the crop calendar file. If crop_cal is provided, crop_select will be set to crops in crop calendar. User provided crop_calendar_file can include any crops MIRCA2000 crops: "wheat", "maize", "rice", "barley", "rye", "millet", "sorghum", "soybean", "sunflower", "root_tuber", "cassava", "sugarcane", "sugarbeet", "oil_palm", "rape_seed", "groundnuts", "pulses", "citrus", "date_palm", "grapes", "cotton", "cocoa", "coffee", "others_perennial", "fodder_grasses", "other_annual"
+#' @param crop_select Default = NULL. Vector of strings for the selected crops from our database. If NULL, the default crops will be used in the crop calendar: c("cassava", "cotton", "maize", "rice", "root_tuber", "sorghum", "soybean", "sugarbeet", "sugarcane", "sunflower", "wheat"). The additional crops available for selection from our crop calendar database are: "barley", "groundnuts", "millet", "pulses", "rape_seed", "rye"
 #' @param use_default_coeff Default = FALSE. Binary for using default regression coefficients. Set to TRUE will use the default coefficients instead of calculating coefficients from the historical climate data.
 #' @param base_year Default = 2015. Integer for the base year (for GCAM)
 #' @param start_year Default = NULL. Integer for the  start year of the projected data
@@ -47,6 +49,8 @@ yield_impact <- function(pr_hist_ncdf = NULL,
                          gcam_version = "gcam7",
                          gcam_timestep = 5,
                          gcamdata_dir = NULL,
+                         crop_calendar_file = NULL,
+                         crop_select = NULL,
                          use_default_coeff = FALSE,
                          base_year = 2015,
                          start_year = NULL,
@@ -86,7 +90,13 @@ yield_impact <- function(pr_hist_ncdf = NULL,
 
 
   # Step 2: Generate planting months for each country
-  gaia::crop_calendars(output_dir = output_dir)
+  crop_cal <- gaia::crop_calendars(
+    crop_calendar_file = crop_calendar_file,
+    crop_select = crop_select,
+    output_dir = output_dir)
+
+  # update finalized selected crops
+  crop_select <- names(crop_cal)[!names(crop_cal) %in% c('iso', 'plant', 'harvest')]
 
   # Step 3: Process multiple models to analyze historical weather variables and crop yields
   if (all(

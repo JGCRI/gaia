@@ -24,8 +24,12 @@ yield_regression <- function(formula = NULL,
   message(paste0("Starting step: yield_regression"))
   message(paste0("Using formula: ", formula))
 
+  # get the selected crops
+  hist_var_files <- list.files(file.path(output_dir, "data_processed"), 'historic_vars')
+  crop_select <- gsub('.csv', '', gsub('historic_vars_', '', hist_var_files))
+
   # conduct regression for each crop
-  for (crop_i in mapping_mirca_sage$crop_mirca) {
+  for (crop_i in crop_select) {
     # read in the historical crop data and weather data
     d_crop <- gaia::input_data(
       folder_path = file.path(output_dir, "data_processed"),

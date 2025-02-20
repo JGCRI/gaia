@@ -9,6 +9,7 @@
 #' @param climate_model Default = NULL. String for climate model (e.g., 'CanESM5')
 #' @param climate_scenario Default = NULL. String for climate scenario (e.g., 'ssp245')
 #' @param time_periods Default = NULL. Vector for years to subset from the climate data. If NULL, use the default climate data period
+#' @param crop_names Default = NULL. String vector for selected crops id names from MIRCA2000. If NULL, use all MIRCA 26 crops. Crop names should be strings like 'irc_crop01', 'rfc_crop01', ..., 'irc_crop26', 'rfc_crop26'
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @param name_append Default = NULL. String for name append to the output folder
 #' @returns No return value, called for the side effects of processing and writing output files
@@ -21,6 +22,7 @@ weighted_climate <- function(pr_ncdf = NULL,
                              climate_model = "gcm",
                              climate_scenario = "rcp",
                              time_periods = NULL,
+                             crop_names = NULL,
                              output_dir = file.path(getwd(), "output"),
                              name_append = NULL) {
   # ----------------------------------------------------------------------------
@@ -36,8 +38,10 @@ weighted_climate <- function(pr_ncdf = NULL,
     dir.create(save_dir, recursive = TRUE)
   }
 
-  crop_names <- names(mirca_harvest_area)
-  crop_names <- crop_names[!(crop_names %in% c("lon", "lat"))]
+  if(is.null(crop_names)){
+    crop_names <- names(mirca_harvest_area)
+    crop_names <- crop_names[!(crop_names %in% c("lon", "lat"))]
+  }
 
   # check if pr_ncdf is provided
   if (!is.null(pr_ncdf)) {
@@ -160,7 +164,7 @@ weighted_climate <- function(pr_ncdf = NULL,
     # convert precipitation from mm/s to mm/month
     pr <- pr %>%
       tidyr::pivot_wider(names_from = date, values_from = value) %>%
-      dplyr::mutate(dplyr::across(-c(lon, lat), ~ . * 60 * 60 * 24 * 30))
+      dplyr::mutate(dplyr::across(-c(lon, lat), ~ .x * 60 * 60 * 24 * 30))
 
     # get final start and end year
     pr_period <- paste0(min(all_periods), "_", max(all_periods))
@@ -213,7 +217,7 @@ weighted_climate <- function(pr_ncdf = NULL,
     # convert temperature from K to C
     tas <- tas %>%
       tidyr::pivot_wider(names_from = date, values_from = value) %>%
-      dplyr::mutate(dplyr::across(-c(lon, lat), ~ . - 273.15))
+      dplyr::mutate(dplyr::across(-c(lon, lat), ~ .x - 273.15))
 
     # get final start and end year
     tas_period <- paste0(min(all_periods), "_", max(all_periods))
@@ -331,32 +335,36 @@ weight_by_crop_area <- function(tbl = NULL,
   lon <- lat <- country_id <- country_name <- value <- NULL
 
   # capture and quote the unevaluated crop names expressions
-  crop_area <- dplyr::enquo(crop)
+  # crop_area <- dplyr::enquo(crop)
+  #
+  # crop_area_total <- paste0(crop, ".total")
+  # crop_area_total <- dplyr::enquo(crop_area_total)
 
+  crop_area <- as.character(crop)
   crop_area_total <- paste0(crop, ".total")
-  crop_area_total <- dplyr::enquo(crop_area_total)
 
   # calculate weighted monthly precipitation using cropland weights within country
   tbl_weighted <- crop_area_weight %>%
-    dplyr::select(lon, lat, country_id, country_name, !!crop_area, !!crop_area_total) %>%
+    dplyr::select(lon, lat, country_id, country_name, all_of(c(crop_area, crop_area_total))) %>%
     dplyr::left_join(tbl, by = c("lon", "lat")) %>%
-    dplyr::mutate(crop_area_weight = get(!!crop_area) / get(!!crop_area_total)) %>%
-    dplyr::mutate(dplyr::across(-c(lon, lat, country_id, country_name), ~ . * crop_area_weight)) %>%
+    dplyr::mutate(crop_area_weight = .data[[crop_area]] / .data[[crop_area_total]]) %>%
+    dplyr::mutate(dplyr::across(-c(lon, lat, country_id, country_name), ~ .x * crop_area_weight)) %>%
     dplyr::group_by(country_id, country_name) %>%
-    dplyr::summarise(dplyr::across(-c(lon, lat), sum, na.rm = TRUE)) %>%
+    dplyr::summarise(dplyr::across(-c(lon, lat), ~ sum(.x, na.rm = TRUE))) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(dplyr::across(
       -c(country_id, country_name, !!crop_area, !!crop_area_total),
-      ~ dplyr::na_if(., 0)
+      ~ dplyr::na_if(.x, 0)
     ))
 
   # transpose to required format
   tbl_transpose <- data.frame(country_id = seq(1, 265, 1)) %>%
     dplyr::left_join(tbl_weighted, by = "country_id") %>%
-    dplyr::select(-country_name, -!!crop_area, -!!crop_area_total, -crop_area_weight) %>%
+    # dplyr::select(-country_name, -!!crop_area, -!!crop_area_total, -crop_area_weight) %>%
+    dplyr::select(-country_name, -all_of(c(crop_area, crop_area_total)), -crop_area_weight) %>%
     dplyr::mutate(
       dplyr::across(-c(country_id), ~ tidyr::replace_na(.x, as.numeric(-9999))),
-      dplyr::across(-c(country_id), round, digits = 2)
+      dplyr::across(-c(country_id), ~ round(.x, digits = 2))
     ) %>%
     tidyr::pivot_longer(cols = !country_id, names_to = "date") %>%
     dplyr::mutate(

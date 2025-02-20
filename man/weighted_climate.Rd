@@ -11,6 +11,7 @@ weighted_climate(
   climate_model = "gcm",
   climate_scenario = "rcp",
   time_periods = NULL,
+  crop_names = NULL,
   output_dir = file.path(getwd(), "output"),
   name_append = NULL
 )
@@ -27,6 +28,8 @@ weighted_climate(
 \item{climate_scenario}{Default = NULL. String for climate scenario (e.g., 'ssp245')}
 
 \item{time_periods}{Default = NULL. Vector for years to subset from the climate data. If NULL, use the default climate data period}
+
+\item{crop_names}{Default = NULL. String vector for selected crops id names from MIRCA2000. If NULL, use all MIRCA 26 crops. Crop names should be strings like 'irc_crop01', 'rfc_crop01', ..., 'irc_crop26', 'rfc_crop26'}
 
 \item{output_dir}{Default = file.path(getwd(), 'output'). String for output directory}
 

@@ -40,8 +40,12 @@ yield_shock_projection <- function(use_default_coeff = FALSE,
     stringsAsFactors = FALSE
   )
 
+  # get the selected crops from the regression outputs
+  weather_yield_files <- list.files(file.path(output_dir, "data_processed"), 'weather_yield')
+  crop_select <- gsub('.csv', '', gsub('weather_yield_', '', weather_yield_files))
 
-  for (crop_i in mapping_mirca_sage$crop_mirca) {
+
+  for (crop_i in crop_select) {
     print(paste(climate_model, climate_scenario, crop_i, sep = " "))
 
     # calculate yield impact for each crop and country

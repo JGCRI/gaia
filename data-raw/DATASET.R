@@ -1,5 +1,13 @@
-# Save data to internal data/.rds file
+################################################################################
+#
+# This is the data preparation file for developer, which records all the raw
+# data sources and the initial clean ups of the data.
+#
+# Please note that this file is not meant for users to run.
+#
+################################################################################
 
+# load libraries
 library(tibble)
 library(dplyr)
 library(raster)
@@ -23,6 +31,7 @@ gcam7.dir <- 'C:/WorkSpace/github/gcam-core/input/gcamdata/outputs'
 #===============================================================================
 #'* External Data *
 #===============================================================================
+# Save data to data/.rds file
 
 #-------------------------------------------------------------------------------
 # Historical CO2 concentration
@@ -56,7 +65,7 @@ usethis::use_data(co2_projection, overwrite = TRUE)
 #-------------------------------------------------------------------------------
 # Reference Agricultural Productivity Change
 #-------------------------------------------------------------------------------
-
+# Reference APG files are from GCAM 6 and 7 depending on the version specified
 # for GCAM 6 and 7 at 5-year period
 for(gcam_version in c('gcam6', 'gcam7')){
 
@@ -222,6 +231,8 @@ mapping_fao_glu <- fao_glu_intersect_mapping %>%
 # MIRCA cropland area (m2)
 #-------------------------------------------------------------------------------
 
+# MIRCA2000
+# Portmann, F. T., Siebert, S., & Döll, P. (2010). MIRCA2000 (1.1) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.7422506
 # cropland area file list
 crop_area_list <- list.files(
   file.path(climate_data.dir, 'MIRCA2000', 'harvested_area_grids_26crops_30mn'),
@@ -294,17 +305,6 @@ sage <- sage %>%
 
 
 #-------------------------------------------------------------------------------
-# FAO Data - Harvested Area
-#-------------------------------------------------------------------------------
-fao_yield <- gaia::input_data(
-  folder_path = file.path(model_data.dir, 'data_raw'),
-  input_file = 'FAO_yield_ha.csv',
-  skip_number = 0
-)
-
-fao_yield <- gaia::clean_yield(fao_yield)
-
-#-------------------------------------------------------------------------------
 # FAO Data - Irrigation Equip
 #-------------------------------------------------------------------------------
 fao_irr_equip <- gaia::input_data(
@@ -330,38 +330,85 @@ gdp <- gdp %>%
   dplyr::rename(gdp_pcap_ppp = gdp_pcap_ppp_thous) %>%
   dplyr::select(-V1)
 
+#-------------------------------------------------------------------------------
+# Mapping of FAO crops to MIRCA2000
+#-------------------------------------------------------------------------------
+
+# Source: supporting information from Portmann, F. T., Siebert, S., & Döll, P. (2010). MIRCA2000—Global monthly irrigated and rainfed crop areas around the year 2000: A new high‐resolution data set for agricultural and hydrological modeling. Global biogeochemical cycles, 24(1). https://doi.org/10.1029/2008GB003435
+# Manually added the FAO Item Code based on the FAOSTAT data https://www.fao.org/faostat/en/#data/QCL, accessed Feb 2025
+# Note that FAOSTAT has updated the crop names/groups since MIRCA2000, so there are few FAO crops listed in Portmann et al., 2010 are not available from the latest FAOSTAT.
+fao_to_mirca <- gaia::input_data(
+  folder_path = file.path(model_data.dir, 'data_ext'),
+  input_file = 'mirca2000_fao_crop_mapping_edit.csv',
+  skip_number = 0) %>%
+  dplyr::filter(!is.na(fao_crop_id))
+# colnames(fao_to_mirca) <- c('fao_crop', paste('crop', sprintf('%02d', 1:26), sep = ''))
+
+#-------------------------------------------------------------------------------
+# FAOSTAT Country ISO mapping
+#-------------------------------------------------------------------------------
+# FAOSTAT data https://www.fao.org/faostat/en/#data/QCL
+fao_iso <- gaia::input_data(
+  folder_path = file.path(model_data.dir, 'data_ext', 'FAO_Production_Crops_Livestock_E_All_Data'),
+  input_file = 'FAOSTAT_Area_Code.csv',
+  skip_number = 0) %>%
+  dplyr::select(country_code = `Country Code`,
+                country_name = Country,
+                iso = `ISO3 Code`) %>%
+  dplyr::mutate(iso = tolower(iso)) %>%
+  dplyr::distinct()
+
+
+#-------------------------------------------------------------------------------
+# FAO Data - Harvested Area
+#-------------------------------------------------------------------------------
+# fao_yield <- gaia::input_data(
+#   folder_path = file.path(model_data.dir, 'data_raw'),
+#   input_file = 'FAO_yield_ha.csv',
+#   skip_number = 0
+# )
+
+# Latest full FAO production data from https://www.fao.org/faostat/en/#data/QCL, accessed Feb 2025
+fao_yield <- gaia::input_data(
+  folder_path = file.path(model_data.dir, 'data_ext', 'FAO_Production_Crops_Livestock_E_All_Data'),
+  input_file = 'Production_Crops_Livestock_E_All_Data_NOFLAG.csv',
+  skip_number = 0
+)
+
+fao_yield <- gaia::clean_yield(fao_yield = fao_yield,
+                               fao_to_mirca = fao_to_mirca)
 
 #-------------------------------------------------------------------------------
 # MIRCA Crop Mapping
 #-------------------------------------------------------------------------------
 crop_mirca <- tibble::tribble(
-  ~ crop_id, ~ crop, ~ crop_name,
-  "crop01", "wheat", "wheat",
-  "crop02", "maize", "maize",
-  "crop03", "rice", "rice",
-  "crop04", "barley", NA,
-  "crop05", "rye", NA,
-  "crop06", "millet", NA,
-  "crop07", "sorghum", "sorghum",
-  "crop08", "soybean", "soybean",
-  "crop09", "sunflower", "sunflower",
-  "crop10", "potatoes", "root_tuber",
-  "crop11", "cassava", "cassava",
-  "crop12", "sugarcane", "sugarcane",
-  "crop13", "sugarbeet", "sugarbeet",
-  "crop14", "oil palm", NA,
-  "crop15", "rape seed,canola", NA,
-  "crop16", "groundnuts,peanuts", NA,
-  "crop17", "pulses", NA,
-  "crop18", "citrus", NA,
-  "crop19", "date palm", NA,
-  "crop20", "grapes,vine", NA,
-  "crop21", "cotton", "cotton",
-  "crop22", "cocoa", NA,
-  "crop23", "coffee", NA,
-  "crop24", "others perennial", NA,
-  "crop25", "fodder grasses", NA,
-  "crop26", "other annual", NA
+  ~ crop_id, ~ crop,              ~ crop_name,        ~ crop_sage,
+  "crop01", "wheat",              "wheat",            "wheat",
+  "crop02", "maize",              "maize",            "maize",
+  "crop03", "rice",               "rice",             "rice",
+  "crop04", "barley",             "barley",           "barley",
+  "crop05", "rye",                "rye",              "rye",
+  "crop06", "millet",             "millet",           "millet",
+  "crop07", "sorghum",            "sorghum",          "sorghum",
+  "crop08", "soybean",            "soybean",          "soybeans",
+  "crop09", "sunflower",          "sunflower",        "sunflower",
+  "crop10", "potatoes",           "root_tuber",       "potatoes",
+  "crop11", "cassava",            "cassava",          "cassava",
+  "crop12", "sugarcane",          "sugarcane",        "sugarcane",
+  "crop13", "sugarbeet",          "sugarbeet",        "sugarbeets",
+  "crop14", "oil palm",           "oil_palm",         NA,
+  "crop15", "rape seed,canola",   "rape_seed",        "rapeseed",
+  "crop16", "groundnuts,peanuts", "groundnuts",       "groundnuts",
+  "crop17", "pulses",             "pulses",           "pulses",
+  "crop18", "citrus",             "citrus",           NA,
+  "crop19", "date palm",          "date_palm",        NA,
+  "crop20", "grapes,vine",        "grapes",           NA,
+  "crop21", "cotton",             "cotton",           "cotton",
+  "crop22", "cocoa",              "cocoa",            NA,
+  "crop23", "coffee",             "coffee",           NA,
+  "crop24", "others perennial",   "others_perennial", NA,
+  "crop25", "fodder grasses",     "fodder_grasses",   NA,
+  "crop26", "others annual",      "others_annual",    NA
 )
 
 
@@ -374,24 +421,41 @@ gcam_commod <- tibble::tribble(
   "biomass", "maize", "Grass",
   "biomass", "sorghum", "Grass",
   "biomass", "sugarcane", "Grass",
+  "biomass", "fodder_grasses", "Grass",
   "Corn", "maize", "C4",
   "FiberCrop", "cotton", "",
   "FodderHerb", "maize", "C4",
   "FodderHerb", "sorghum", "C4",
   "Fruits", "rice", "",
   "Fruits", "wheat", "",
+  "Fruits", "citrus", "Tree",
+  "Fruits", "date_palm", "Tree",
+  "Fruits", "grapes", "",
   "Legumes", "maize", "",
   "Legumes", "wheat", "",
+  "Legumes", "pulses", "",
   "MiscCrop", "rice", "",
   "MiscCrop", "wheat", "",
+  "MiscCrop", "coffee", "Tree",
+  "MiscCrop", "cocoa", "Tree",
+  "MiscCrop", "others_perennial", "",
+  "MiscCrop", "others_annual", "",
   "NutsSeeds", "rice", "",
   "NutsSeeds", "wheat", "",
+  "NutsSeeds", "groundnuts", "",
   "OilCrop", "soybean", "",
+  "OilCrop", "sunflower", "",
+  "OilCrop", "rape_seed", "",
+  "OilCrop", "groundnuts", "",
   "OilPalm", "rice", "",
-  "OilPalm", 'wheat', "",
+  "OilPalm", "wheat", "",
+  "OilPalm", "oil_palm", "Tree",
   "OtherGrain", "rice", "",
   "OtherGrain", "sorghum", "C4",
   "OtherGrain", "wheat", "",
+  "OtherGrain", "barley", "",
+  "OtherGrain", "rye", "",
+  "OtherGrain", "millet", "C4",
   "Rice", "rice", "",
   "RootTuber", "root_tuber", "",
   "RootTuber", "potato", "",
@@ -542,5 +606,5 @@ usethis::use_data(mapping_country, grid_fao_glu, mapping_fao_glu, mapping_gcam_i
                   mirca_harvest_area, sage, fao_yield, fao_irr_equip, gdp,
                   waldhoff_formula, y_hat, reg_vars, weight_var, n_sig, fit_name,
                   col_scale_region, col_fill_region, theme_basic,
-                  map_country,
+                  map_country, fao_to_mirca, fao_iso,
                   internal = TRUE, overwrite = TRUE )

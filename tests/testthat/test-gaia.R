@@ -7,35 +7,69 @@ testthat::skip_on_travis()
 output_dir_i <- file.path(getwd(), 'output')
 
 data_dir_i <- gaia::get_example_data(
-  download_url = 'https://zenodo.org/records/13976521/files/weighted_climate.zip?download=1',
+  download_url = 'https://zenodo.org/records/14888816/files/weighted_climate.zip?download=1',
   data_dir = output_dir_i)
 
+ncdf_dir_i <- gaia::get_example_data(
+  download_url = 'https://zenodo.org/records/14895875/files/gaia_test_climate.zip?download=1',
+  data_dir = output_dir_i)
+
+
+pr_ncdf_i <- file.path(ncdf_dir_i, 'pr_monthly_canesm5_w5e5_ssp245_2015_2015.nc')
+tas_ncdf_i <- file.path(ncdf_dir_i, 'tas_monthly_canesm5_w5e5_ssp245_2015_2015.nc')
+
+climate_hist_dir_i <- file.path(data_dir_i, 'climate_hist')
+climate_impact_dir_i <- file.path(data_dir_i, 'canesm5')
 
 # ------------------------------------
 # Testing Outputs from Major Functions
 # ------------------------------------
 
+test_that("weighted_climate function test", {
+
+  run_weighted_climate(pr_ncdf = pr_ncdf_i,
+                       tas_ncdf = tas_ncdf_i,
+                       timestep = "monthly",
+                       climate_model = "canesm5",
+                       climate_scenario = "ssp245",
+                       time_periods = 2015,
+                       crop_names = 'irc_crop01',
+                       output_dir = file.path(getwd(), "output", "weighted_climate_test"))
+
+  testthat::expect_snapshot_file(
+    file.path(getwd(), "output", "weighted_climate_test", "weighted_climate", "canesm5", "canesm5_ssp245_month_precip_country_irc_crop01_2015_2015.txt")
+  )
+  testthat::expect_snapshot_file(
+    file.path(getwd(), "output", "weighted_climate_test", "weighted_climate", "canesm5", "canesm5_ssp245_month_tmean_country_irc_crop01_2015_2015.txt")
+  )
+})
+
 test_that("crop_calendars function test", {
 
-  out_crop_calendars <- run_crop_calendars()
+  # test default crops
+  out_crop_calendars_default <- run_crop_calendars(crop_select = NULL,
+                                                   output_dir = output_dir_i)
 
+  # test all available crops
+  out_crop_calendars <- run_crop_calendars(output_dir = output_dir_i)
+
+  testthat::expect_snapshot(out_crop_calendars_default)
   testthat::expect_snapshot(out_crop_calendars)
-
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'data_processed', 'crop_calendar.csv'))
 
 })
 
 test_that("data_aggregation function test", {
 
-  out_data_aggregation <- run_data_aggregation(data_dir = data_dir_i)
+  # test function with user provided co2
+  out_data_aggregation_custom <- run_data_aggregation(data_dir = data_dir_i)
 
+  # test function with default co2
+  out_data_aggregation <- run_data_aggregation(data_dir = data_dir_i,
+                                               co2_hist = NULL,
+                                               co2_proj = NULL,)
+
+  testthat::expect_snapshot(out_data_aggregation_custom)
   testthat::expect_snapshot(out_data_aggregation)
-
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'data_processed', 'weather_canesm5_gcam-ref_wheat.csv'))
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'data_processed', 'historic_vars_wheat.csv'))
 
 
 })
@@ -47,12 +81,6 @@ test_that("yield_regression function test", {
 
   testthat::expect_snapshot(out_yield_regression)
 
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'data_processed', 'reg_out_wheat_fit_lnyield_mmm_quad_noco2_nogdp.csv'))
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'data_processed', 'weather_yield_wheat.csv'))
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'figures', 'model_wheat_fit_lnyield_mmm_quad_noco2_nogdp.pdf'))
 })
 
 test_that("yield_shock_projection function test", {
@@ -61,18 +89,6 @@ test_that("yield_shock_projection function test", {
 
   testthat::expect_snapshot(out_yield_projections)
 
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'yield_impacts_annual', 'yield_canesm5_gcam-ref_wheat.csv'))
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'yield_impacts_smooth', 'yield_canesm5_gcam-ref_wheat.csv'))
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'data_processed', 'format_yield_change_rel2015.csv'))
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'figures', 'annual_projected_climate_impacts_canesm5_gcam-ref_wheat_fit_lnyield_mmm_quad_noco2_nogdp.pdf'))
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'figures', 'smooth_projected_climate_impacts_canesm5_gcam-ref_wheat_fit_lnyield_mmm_quad_noco2_nogdp.pdf'))
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'maps', 'map_canesm5_gcam-ref_wheat_2090.pdf'))
 })
 
 
@@ -83,10 +99,110 @@ test_that("gcam_agprodchange function test", {
 
   testthat::expect_snapshot(out_gcam_agprodchange)
 
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'gcam7_agprodchange_no-cfe', 'agyield_impact_canesm5_r1i1p1f1_w5e5v2_gcam-ref.xml'))
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'gcam7_agprodchange_no-cfe', 'figures_yield_impacts', 'Wheat.png'))
-  # testthat::expect_snapshot_file(
-  #   testthat::test_path('output', 'gcam7_agprodchange_no-cfe', 'figures_agprodchange', 'Wheat.png'))
+})
+
+
+test_that("clean_yield test", {
+
+  fao_yield_i <- gaia::input_data(
+    folder_path = system.file('extdata', package = 'gaia'),
+    input_file = 'Production_Crops_Livestock_E_All_Data_NOFLAG.csv',
+    skip_number = 0
+  )
+
+  fao_yield_clean <- gaia::clean_yield(fao_yield = fao_yield_i,
+                                       fao_to_mirca = fao_to_mirca)
+
+  testthat::expect_snapshot(fao_yield_clean)
+
+})
+
+
+# ------------------------------------
+# Testing Errors
+# ------------------------------------
+test_that("agprodchange_ref test and error message", {
+
+  testthat::expect_error(
+    agprodchange_ref(
+      gcam_version = "gcam7",
+      gcam_timestep = 3,
+      base_year = 2015,
+      climate_scenario = 'ssp5',
+      gcamdata_dir = file.path(system.file('extdata', package = 'gaia'), 'gcamdata')
+    ),
+    class = 'error'
+  )
+
+  apg_ssp1 <- agprodchange_ref(
+    gcam_version = "gcam7",
+    gcam_timestep = 5,
+    base_year = 2015,
+    climate_scenario = 'ssp1',
+    gcamdata_dir = NULL
+  )
+
+  apg_ssp2 <- agprodchange_ref(
+    gcam_version = "gcam7",
+    gcam_timestep = 5,
+    base_year = 2015,
+    climate_scenario = 'ssp2',
+    gcamdata_dir = NULL
+  )
+
+  apg_ssp3 <- agprodchange_ref(
+    gcam_version = "gcam7",
+    gcam_timestep = 5,
+    base_year = 2015,
+    climate_scenario = 'ssp3',
+    gcamdata_dir = NULL
+  )
+
+  apg_ssp4 <- agprodchange_ref(
+    gcam_version = "gcam7",
+    gcam_timestep = 5,
+    base_year = 2015,
+    climate_scenario = 'ssp4',
+    gcamdata_dir = NULL
+  )
+
+  testthat::expect_snapshot(apg_ssp1)
+  testthat::expect_snapshot(apg_ssp2)
+  testthat::expect_snapshot(apg_ssp3)
+  testthat::expect_snapshot(apg_ssp4)
+
+})
+
+test_that("get_example_data message", {
+
+  testthat::expect_message(
+    get_example_data(
+      download_url = 'https://zenodo.org/records/14888816/files/weighted_climate.zip?download=1',
+      data_dir = output_dir_i
+    )
+  )
+
+
+})
+
+
+test_that("get_mirca2000_data message", {
+
+  testthat::expect_message(
+    get_mirca2000_data(
+      data_dir = file.path(output_dir_i, 'gcam7_agprodchange_no-cfe')
+    )
+  )
+
+
+})
+
+
+test_that("yield_impact function test", {
+
+  out_yield_impact <- run_yield_impact(climate_hist_dir = climate_hist_dir_i,
+                                       climate_impact_dir = climate_impact_dir_i)
+
+  testthat::expect_snapshot(out_yield_impact)
+
 })

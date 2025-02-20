@@ -4,10 +4,12 @@
 \alias{clean_yield}
 \title{clean_yield}
 \usage{
-clean_yield(fao_yield = NULL)
+clean_yield(fao_yield = NULL, fao_to_mirca = NULL)
 }
 \arguments{
 \item{fao_yield}{Default = NULL. Data frame for the fao yield table}
+
+\item{fao_to_mirca}{Default = NULL. Data frame for the fao to mirca crop mapping}
 }
 \value{
 A data frame of formatted FAO yield data

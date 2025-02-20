@@ -1,0 +1,20 @@
+"","GCAM_region_name","iso","crop","year","yield_impact"
+"1","Africa_Southern","tza","soybean",2015,0.96417089467183
+"2","Africa_Western","nga","soybean",2015,0.947433456221827
+"3","Argentina","arg","soybean",2015,0.969882319079907
+"4","Canada","can","soybean",2015,0.98615227925101
+"5","China","chn","soybean",2015,1.02118661046077
+"6","Colombia","col","soybean",2015,NA
+"7","EU-15","ita","soybean",2015,0.964565115932631
+"8","Europe_Non_EU","tur","soybean",2015,0.949143612744994
+"9","India","ind","soybean",2015,0.847072300980351
+"10","Mexico","mex","soybean",2015,0.994892538533702
+"11","South Africa","zaf","soybean",2015,NA
+"12","South America_Northern","guy","soybean",2015,0.956249009655326
+"13","South America_Northern","sur","soybean",2015,NA
+"14","South America_Southern","bol","soybean",2015,NA
+"15","South America_Southern","per","soybean",2015,NA
+"16","South America_Southern","pry","soybean",2015,NA
+"17","South America_Southern","ury","soybean",2015,NA
+"18","Southeast Asia","prk","soybean",2015,1.18555676826144
+"19","USA","usa","soybean",2015,1.00386526570209

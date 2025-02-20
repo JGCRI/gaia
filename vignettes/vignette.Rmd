@@ -59,6 +59,56 @@ font-style: italic;
 
 </style>
 ```
+
+
+<!-------------------------->
+<!-------------------------->
+
+# Installation
+
+<!-------------------------->
+<!-------------------------->
+
+<p align="center"><img src="vignetteFigs/divider.png"/></p>
+
+
+1. Download and install:
+    - R (https://www.r-project.org/)
+    - R studio (https://www.rstudio.com/)  
+
+
+2. Open R studio:
+
+```r
+install.packages("devtools")
+devtools::install_github("JGCRI/gaia")
+```
+
+or
+
+```r
+install.packages("remotes")
+remotes::install_github("JGCRI/gaia")
+```
+
+Additional steps for UBUNTU from a terminal
+
+```
+sudo add-apt-repository ppa:ubuntugis/ppa
+sudo apt-get update
+sudo apt-get install libudunits2-dev libgdal-dev libgeos-dev libproj-dev libmagick++-dev
+```
+
+Additional steps for MACOSX from a terminal
+
+```
+brew install pkg-config
+brew install gdal
+```
+
+<br/>
+
+
 <!-------------------------->
 <!-------------------------->
 
@@ -76,9 +126,9 @@ font-style: italic;
 The primary functionality of `gaia` is encapsulated in the `yield_impact` wrapper function, which executes the entire workflow from climate data processing to yield shock estimation. Users can also execute individual functions to work through the main steps of the process ([Figure 1](#figure1)).
 
 
-1. [`weighted_climate`](#weighted_climate): Processes CMIP-ISIMIP climate NetCDF data and calculates cropland-weighted precipitation and temperature at the country level, differentiated by crop type and irrigation type. The function accepts both daily or monthly climate data that are consistent with the CMIP-ISIMIP NetCDF data format.   
+1. [`weighted_climate`](#weighted_climate): Processes CMIP climate NetCDF data in accordance with the [ISIMIP simulation protocols](https://www.isimip.org/protocol/preparing-simulation-files/ "Here we specifically require the bias-adjusted and statistically downscaled CMIP climate data following ISIMIP's protocols") and calculates cropland-weighted precipitation and temperature at the country level, differentiated by crop type and irrigation type. The function accepts both daily or monthly climate data in NetCDF format that follows ISIMIP protocols.
 
-2. [`crop_calendars`](#crop_calendars): Generates crop planting months for each country and crop based on crop calendar data [Sacks et al., (2020)](https:/doi/org/10.1111/j.1466-8238.2010.00551.x).
+2. [`crop_calendars`](#crop_calendars): Generates crop planting months for each country and crop based on crop calendar data [Sacks et al., (2010)](https://doi.org/10.1111/j.1466-8238.2010.00551.x).
 
 3. [`data_aggregation`](#data_aggregation): Calculates crop growing seasons using climate variables processed by `weighted_climate` and crop calendars for both historical and projected periods. This function prepares climate and yield data for subsequent model fitting.
 
@@ -108,13 +158,27 @@ The primary functionality of `gaia` is encapsulated in the `yield_impact` wrappe
 <p align="center"><img src="vignetteFigs/divider.png"/></p>
 
 
-`gaia` requires global climate data from the Inter-Sectoral Impact Model Intercomparison Project ([ISIMIP](https://www.isimip.org/)) or data formatted similarly to ISIMIP data. Additionally, `gaia` supports climate data aggregated to a monthly time step. Due to the large size of daily time step climate data, we have provided an example of monthly aggregated climate data covering the period from 2015 to 2100.
+`gaia` requires global climate data from the Inter-Sectoral Impact Model Intercomparison Project ([ISIMIP](https://www.isimip.org/)) or data formatted according to ISIMIP protocols. Additionally, `gaia` supports climate data in both daily and monthly time step. Due to the large size of global climate data, we provide two types of example datasets tailored to different user needs.
+
+* [Example Data 1](#example-data-1-quick-start-dataset): This pre-processed climate dataset allows users to quickly run `gaia` **without** the need to process raw climate NetCDF data. It is an output from the `gaia::weighted_climate` function, which converts raw climate NetCDF data into cropland-weighted climate data by country. This dataset includes both historical and future pre-processed cropland-weighted precipitation and temperature by country. If you want to quickly test `gaia` and view the outputs, this is the easiest way to get started.
+* [Example Data 2](#example-data-2-raw-climate-data): This climate dataset is designed for users who want to process raw climate NetCDF data using the `gaia::weighted_climate` function. It includes global monthly precipitation and temperature NetCDF files at a 0.5-degree resolution, covering the period from 2015 to 2030. This projected climate is bias-adjusted and statistically downscaled (via ISIMIP3BASD v2.5.0 approach [Lange, 2021](https://doi.org/10.5281/zenodo.4686991); [Lange, 2019](https://doi.org/10.5194/gmd-12-3055-2019)) climate from CMIP6 model CanESM5 under SSP245 scenario ([Swart et al., 2019](https://doi.org/10.22033/ESGF/CMIP6.3685)). Processing this data may take some time. If you intend to use your own climate datasets, this example will help you get set up.
+
 
 <br />
 
-## Example Data 1
+## Example Data 1: Quick Start Dataset
 
-Download the example data using the instructions below. This dataset includes both historical climate observations and future climate projections, already weighted by cropland areas and provided in .txt format. The cropland-area-weighted, country-level climate data contains monthly precipitation and temperature for 26 crop types, distinguishing between irrigated and rainfed areas.
+Download the example data 1 using the instructions below. This dataset includes both historical climate observations (1951-2001) and future climate projections (2015-2100), weighted by cropland areas and formatted in a tabular structure (see [Table 1](#table1)), as required by `gaia`. The historical climate is from WATCH dataset and the projected climate is from CanESM5 global climate model under SSP245 scenario. The cropland-area-weighted, country-level climate data contains monthly precipitation and temperature for 26 crop types, distinguishing between irrigated and rainfed areas.
+
+There are two options to download the data:
+
+* **Option 1:** Please use this [download url](https://zenodo.org/records/14888816/files/weighted_climate.zip?download=1) and set the `data_dir` to the directory of the downloaded folder;
+
+```{r eval=F}
+data_dir <- 'path/to/downloaded/folder'
+```
+
+* **Option 2:** Use `gaia::get_example_data` function following the code chunk below.
 
 
 ```{r eval=F}
@@ -123,14 +187,19 @@ Download the example data using the instructions below. This dataset includes bo
 library(gaia)
 
 # Path to the output folder. Change it to your desired location
-output_dir <- file.path(getwd(), 'gaia_output')
+output_dir <- 'gaia_output'
 
 # Cropland-weighted historical and future climate data
 data_dir <- gaia::get_example_data(
-  download_url = 'https://zenodo.org/records/13976521/files/weighted_climate.zip?download=1',
+  download_url = 'https://zenodo.org/records/14888816/files/weighted_climate.zip?download=1',
   data_dir = output_dir
 )
+```
 
+
+Then, set the paths to historical and future climate data folder.
+
+```{r eval=F}
 # Path to the folder that holds cropland-area-weighted precipitation and temperature TXT files
 # historical climate observation
 climate_hist_dir <- file.path(data_dir, 'climate_hist')
@@ -143,15 +212,24 @@ climate_impact_dir <- file.path(data_dir, 'canesm5')
 <br />
 
 <div class="alert alert-info">
-<strong>NOTE!</strong> We recommend using the default historical climate data provided in [example data 1](#example-data-1), as it is based on WATCH climate observations ([Weedon et al., (2011)](https://doi.org/10.1175/2011JHM1369.1)). If you do not plan to adjust any assumptions for empirical model fitting, you can opt to use the default regression model, pre-fitted with the WATCH historical climate data, by setting the argument `use_default_coeff = TRUE`. After loading the `gaia` package, type `coef_default` to view the parameters of the default fitted model..
+<strong>NOTE!</strong> The default example historical climate data provided in [example data 1](#example-data-1-quick-start-dataset) is based on WATCH climate observations ([Weedon et al., (2011)](https://doi.org/10.1175/2011JHM1369.1)), which were used in [Waldhoff et al., (2020)](https://doi.org/10.1088/1748-9326/abadcb) for empirical model fitting. If you do not intend to modify any assumptions or historical climate forcing for empirical model fitting, you can use the default regression model in `gaia`, which is pre-fitted with WATCH historical climate data, by setting the argument `use_default_coeff = TRUE`. After loading the `gaia` package, type `coef_default` to view the parameters of the default pre-fitted model. Alternatively, if you prefer to use different historical climate data other than the one from [example data 1](#example-data-1-quick-start-dataset), you can use `weighted_climate` function to generate cropland-weighted historical monthly precipitation and temperature following the [weighted_climate instruction](#weighted_climate) under Example 3.
 </div>
 
 <br />
 
-## Example Data 2
+## Example Data 2: Raw Climate Data
 
-To use a different climate model or scenario, you can provide your own climate data in NetCDF format. Note that `gaia` adheres to the ISIMIP climate data format as its standard, so your NetCDF files should be formatted accordingly. You can download our example monthly precipitation and temperature NetCDF files using the code below.
+Download the example data 2 using the instructions below. This dataset includes future global monthly precipitation and temperature from 2015 to 2030 at 0.5-degree resolution, projected by CanESM5 global climate model under SSP245 scenario. To use a different climate model or scenario, users can provide their own climate data in NetCDF format. Note that `gaia` adheres to the ISIMIP climate data format as its standard, so your NetCDF files should be formatted accordingly if the data is not directly downloaded from ISIMIP. More details on ISIMIP format can be found in [weighted_climate](#weighted_climate) section.
 
+There are two options to download the data:
+
+* **Option 1:** Please use this [download url](https://zenodo.org/records/14888816/files/gaia_example_climate.zip?download=1) and set the `data_dir` to the directory of the downloaded folder;
+
+```{r eval=F}
+data_dir <- 'path/to/downloaded/folder'
+```
+
+* **Option 2:** Use `gaia::get_example_data` function following the code chunk below.
 
 ```{r eval=F}
 
@@ -159,19 +237,24 @@ To use a different climate model or scenario, you can provide your own climate d
 library(gaia)
 
 # Path to the output folder. Change it to your desired location
-output_dir <- file.path(getwd(), 'gaia_output')
+output_dir <- 'gaia_output'
 
 # Future Climate Data
 data_dir <- gaia::get_example_data(
-  download_url = 'https://zenodo.org/records/13976521/files/gaia_example_climate.zip?download=1',
+  download_url = 'https://zenodo.org/records/14888816/files/gaia_example_climate.zip?download=1',
   data_dir = output_dir
 )
 
+```
+
+Then, set the paths to each of the climate files.
+
+```{r eval=F}
 # Path to the precipitation and temperature NetCDF files
 # NOTE: Each variable can have more than one file
 # projected climate data
-pr_projection_file <- file.path(data_dir, 'pr_monthly_canesm5_w5e5_gcam-ref_2015_2100.nc')
-tas_projection_file <- file.path(data_dir, 'tas_monthly_canesm5_w5e5_gcam-ref_2015_2100.nc')
+pr_projection_file <- file.path(data_dir, 'pr_monthly_canesm5_w5e5_ssp245_2015_2030.nc')
+tas_projection_file <- file.path(data_dir, 'tas_monthly_canesm5_w5e5_ssp245_2015_2030.nc')
 
 ```
 
@@ -193,14 +276,21 @@ tas_projection_file <- file.path(data_dir, 'tas_monthly_canesm5_w5e5_gcam-ref_20
 <div class="alert alert-dismissible alert-warning">
   <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
   <h4 class="alert-heading">Warning!</h4>
-  <p class="mb-0">This example demonstrates the complete `gaia` model workflow, including processing the raw climate NetCDF data. Due to the large size of the climate dataset, this process may take up to an hour. For a quicker demonstration, please refer to [Example 2](#example-2).</p>
+  <p class="mb-0">This example demonstrates the complete `gaia` model workflow, including processing the raw climate NetCDF data. Due to the large size of the climate dataset, this process may take up to an hour. For a quicker demonstration, please refer to [Example 2](#example-data-2-raw-climate-data).</p>
 </div>
 
 <!-- <div class="alert alert-info"> -->
 <!-- <strong>NOTE!</strong> This example demonstrates the complete `gaia` model workflow, including processing the raw climate NetCDF data. Due to the large size of the climate dataset, this process may take up to an hour. For a quicker demonstration, please refer to [Example 2](#example-2). -->
 <!-- </div> -->
 
-This example uses both [example data 1](#example-data-1) and [example data 2](#example-data-2). You can run `gaia` using the single function `yield_impact`, which streamlines the entire workflow. For detailed explanations of each argument in `yield_impact`, please refer to the [reference page](https://jgcri.github.io/gaia/reference/yield_impact.html).
+This example guides users through the complete `gaia` workflow, from processing raw climate data to calculating yield shocks in response to future climate variations. Please note that we provide only the NetCDF files for *future* climate from [example data 2](#example-data-2-raw-climate-data). For historical model fitting, we use the pre-processed historical climate data from [example data 1](#example-data-1-quick-start-dataset) to reduce computational demands, especially for users without access to high-performance computing.
+
+If users have their own historical climate data for model fitting, they can easily integrate it by specifying the paths to their historical precipitation and temperature NetCDF files using the `pr_hist_ncdf` and `tas_hist_ncdf` arguments, respectively. Be sure to set `climate_hist_dir = NULL` to bypass the pre-processed historical dataset.
+
+Users can run `gaia` using the single function `yield_impact` with our example data, which streamlines the entire workflow. For detailed explanations of each argument in `yield_impact`, please refer to the [reference page](https://jgcri.github.io/gaia/reference/yield_impact.html).
+
+Intermediate outputs will be generated and saved to the user-specified output folder.
+
 
 ```{r eval=F, echo=T}
 
@@ -208,10 +298,10 @@ This example uses both [example data 1](#example-data-1) and [example data 2](#e
 library(gaia)
 
 # Path to the output folder. Change it to your desired location
-output_dir <- file.path(getwd(), 'gaia_output')
+output_dir <- 'gaia_output'
 
 # Run gaia
-# The full run with raw climate data can take up to an hour
+# The full run with raw future climate data can take up to an hour
 gaia::yield_impact(
   pr_hist_ncdf = NULL,                    # path to historical precipitation NetCDF file (must follow ISIMIP format); only if you wish to use your own historical precipitation observation
   tas_hist_ncdf = NULL,                   # path to historical temperature NetCDF file (must follow ISIMIP format); only if you wish to use your own historical temperature observation
@@ -221,7 +311,7 @@ gaia::yield_impact(
   climate_hist_dir = climate_hist_dir,    # path to the folder that holds cropland weighted historical climate observations
   historical_periods = c(1960:2001),      # vector of historical years selected for fitting
   climate_model = 'canesm5',              # label of climate model name
-  climate_scenario = 'gcam-ref',          # label of climate scenario name
+  climate_scenario = 'ssp245',            # label of climate scenario name
   member = 'r1i1p1f1',                    # label of ensemble member name
   bias_adj = 'w5e5',                      # label of climate data for bias adjustment for the global climate model (GCM)
   cfe = 'no-cfe',                         # label of CO2 fertilization effect in the formula (default is no CFE)
@@ -229,10 +319,11 @@ gaia::yield_impact(
   use_default_coeff = FALSE,              # set to TRUE when there is no historical climate data available
   base_year = 2015                        # GCAM base year
   start_year = 2015,                      # start year of the projected climate data
-  end_year = 2100,                        # end year of the projected climate data
+  end_year = 2030,                        # end year of the projected climate data
   smooth_window = 20,                     # number of years as smoothing window
   co2_hist = NULL,                        # historical annual CO2 concentration. If NULL, will use default value
   co2_proj = NULL,                        # projected annual CO2 concentration. If NULL, will use default value
+  crop_select = NULL,                     # set to NULL for the default crops
   diagnostics = TRUE,                     # set to TRUE to output diagnostic plots
   output_dir = output_dir                 # path to the output folder
 )
@@ -248,7 +339,7 @@ gaia::yield_impact(
 
 ## Example 2
 
-This example only uses the example of **weighted climate data** as described in [example data 2](#example-data-2), which has been processed with cropland weights at the country level. This weighted climate data was generated using `gaia::weighted_climate`. This example serves as a guide to help users format their own data to match the weighted climate data structure if their raw climate data differs from the ISIMIP format. Running `gaia` directly with weighted climate data requires only a few minutes.
+This example only uses the example of **weighted climate data** as described in [example data 1](#example-data-1-quick-start-dataset), which has been processed with cropland weights at the country level. This weighted climate data was generated using `gaia::weighted_climate`. This example serves as a guide to help users format their own data to match the weighted climate data structure if their raw climate data differs from the ISIMIP format. Running `gaia` directly with weighted climate data requires only a few minutes.
 
 ```{r eval=F, echo=T}
 
@@ -256,7 +347,7 @@ This example only uses the example of **weighted climate data** as described in 
 library(gaia)
 
 # Path to the output folder. Change it to your desired location
-output_dir <- file.path(getwd(), 'gaia_output')
+output_dir <- 'gaia_output'
 
 # Run gaia
 gaia::yield_impact(
@@ -264,7 +355,7 @@ gaia::yield_impact(
   climate_impact_dir = climate_impact_dir,# path to the folder that holds cropland weighted projected climate
   timestep = 'monthly',                   # specify the time step of the NetCDF data (monthly or daily)
   climate_model = 'canesm5',              # label of climate model name
-  climate_scenario = 'gcam-ref',          # label of climate scenario name
+  climate_scenario = 'ssp245',            # label of climate scenario name
   member = 'r1i1p1f1',                    # label of ensemble member name
   bias_adj = 'w5e5',                      # label of climate data for bias adjustment
   cfe = 'no-cfe',                         # label of CO2 fertilization effect in the formula (default is no CFE)
@@ -276,6 +367,7 @@ gaia::yield_impact(
   smooth_window = 20,                     # number of years as smoothing window
   co2_hist = NULL,                        # historical annual CO2 concentration. If NULL, will use default value
   co2_proj = NULL,                        # projected annual CO2 concentration. If NULL, will use default value
+  crop_select = NULL,                     # set to NULL for the default crops
   diagnostics = TRUE,                     # set to TRUE to output diagnostic plots
   output_dir = output_dir                 # path to the output folder
 )
@@ -289,7 +381,7 @@ Explore the results in your output folder. For a detailed explanation of the out
 
 ## Example 3
 
-As the `gaia` model runs, intermediate outputs will be generated and saved to the user-specified output folder. For testing purposes, if you follow [Example 2](#example-2) as outlined above without modifying any input data or arguments, you can expect to see the following key results. Below, we provide additional instructions on using each function described in the [Workflow](#workflow) section and explain the associated example outputs.
+Example 1 and 2 demonstrates how to use the wrapper function `yield_impact` to streamline the entire workflows shown in [Figure 1](#figure1). In Example 3, we provide additional instructions on using each function described in the [Workflow](#workflow) section with the example data and explain the associated outputs and diagnostic plots if any. This section can also help you better understand each step, and allow you to make changes to certain steps if needed.
 
 <br />
 
@@ -297,37 +389,64 @@ As the `gaia` model runs, intermediate outputs will be generated and saved to th
 
 ---
 
-Once you have downloaded [example data 1](#example-data-1) to your desired location, you can use the `weighted_climate` function to calculate the cropland-weighted monthly precipitation and temperature for the projected climate. Please note that this step may take up to an hour to complete.
+`weighted_climate` function calculates the cropland-weighted monthly precipitation and temperature for the projected climate. This function can be used if you wish to calculate cropland-weighted monthly precipitation and temperature using different climate forcing data. Please ensure that the climate NetCDF files follows the [ISIMIP simulation protocols](https://www.isimip.org/protocol/preparing-simulation-files/ "Here we specifically require the bias-adjusted and statistically downscaled CMIP climate data following ISIMIP's protocols"). Our [example data 1](#example-data-1-quick-start-dataset) includes the standard ISIMIP-style climate data for users to check the data structure and format.
+
+<div class="alert alert-info">
+<strong>NOTE!</strong> ISIMIP provides a range of bias-adjusted and statistically downscaled climate forcing data at a 0.5-degree resolution. Bias adjustment is the process of statistically modifying climate model outputs to better align with observed climate data, thereby reducing systematic errors or biases. To ensure consistency, simulated climate data should be bias-adjusted using the same historical climate observations that were used to fit the empirical model. For example, ISIMIP’s current CMIP6 climate outputs are bias-adjusted against the W5E5 v2.0 climate dataset using the ISIMIP3BASD v2.5.0 approach.
+
+If you plan to use other climate observations or simulations that are not directly from ISIMIP, please ensure that you:
+
+* Bias-adjust and statistically downscale your data to 0.5-degree resolution. You can follow ISIMIP’s official ISIMIP3BASD v2.5.0 approach ([Lange, 2021](https://doi.org/10.5281/zenodo.4686991); [Lange, 2019](https://doi.org/10.5194/gmd-12-3055-2019)), or use the [basd software](https://jgcri.github.io/basd/) developed by the Pacific Northwest National Laboratory.
+* Format your data according to ISIMIP's guidelines for [preparing simulation files](https://www.isimip.org/protocol/preparing-simulation-files/) in terms of NetCDF headers, grid format, variables and dimensions, and the time axis.
+</div>
+
+The example below uses the monthly precipitation (mm) and temperature (degree C) projections from 2015 to 2030 To run this climate data processing, please provide the file paths for the precipitation and temperature NetCDF files using the `pr_ncdf` and `tas_ncdf` arguments, respectively, and adjust the other arguments accordingly to match the specifics of your climate data.
+
+Please note that this step may take up to an hour to complete.
+
 
 ```{r eval=F, echo=T}
 library(gaia)
 
 # Path to the output folder where you wish to save the outputs. Change it accordingly
-output_dir <- file.path(getwd(), 'gaia_output')
+output_dir <- 'gaia_output'
 
 # calculate weigted climate
 weighted_climate(pr_ncdf = pr_projection_file ,
                  tas_ncdf = tas_projection_file ,
                  timestep = 'monthly',
                  climate_model = 'canesm5',
-                 climate_scenario = 'gcam-ref',
-                 time_periods = seq(2015, 2100, 1),
+                 climate_scenario = 'ssp245',
+                 time_periods = seq(2015, 2030, 1),
                  output_dir = output_dir,
                  name_append = NULL)
 
 ```
 
-This will create a folder based on the specified `climate_model` argument (e.g., `output_dir/weighted_climate/canesm5`). Inside this folder, you will find files containing precipitation and temperature data weighted by the irrigated and rainfed cropland areas for 26 MIRCA crops. The file structure is organized in columns as follows: `[year, month, 1, 2, 3, ..., 265]`, where the numbers correspond to country IDs. To view the country names associated with these IDs, simply type `gaia::country_id` in the R console after loading the `gaia` package. Below is an example of the structure for the weighted precipitation data for rainfed soybean (`output_dir/weighted_climate/canesm5/anesm5_gcam-ref_month_precip_country_rfc_crop08_2015_2100.txt`).
+The example above will create a folder based on the specified `climate_model` argument (e.g., `output_dir/weighted_climate/canesm5`). Inside this folder, you will find files containing precipitation and temperature data weighted by the irrigated and rainfed cropland areas for 26 MIRCA2000 crops at the country level. The file structure is organized in columns as follows: `[year, month, 1, 2, 3, ..., 265]`, where the numbers correspond to country IDs. To view the country names associated with these IDs, simply type `gaia::country_id` in the R console after loading the `gaia` package.
+
+**Outputs of the function:** The function has no return values. It writes the following output files to the `output_dir/weighted_climate` folder:
+
+* `[climate-model]_[climate-scenario]_month_precip_country_irc_[crop-number]_[start-year]_[end-year].csv`: This file is the irrigated cropland-area weighted precipitation for certain climate model, scenario, and crop.
+
+* `[climate-model]_[climate-scenario]_month_precip_country_rfd_[crop-number]_[start-year]_[end-year].csv`: This file is the rainfed cropland-area weighted precipitation for certain climate model, scenario, and crop.
+
+* `[climate-model]_[climate-scenario]_month_tmean_country_irc_[crop-number]_[start-year]_[end-year].csv`: This file is the irrigated cropland-area weighted temperature for certain climate model, scenario, and crop.
+
+* `[climate-model]_[climate-scenario]_month_tmean_country_rfd_[crop-number]_[start-year]_[end-year].csv`: This file is the rainfed cropland-area weighted temperature for certain climate model, scenario, and crop.
+
+Below is an example of the structure for the weighted precipitation data for rainfed soybean.
 
 ```{r eval=T, echo=F, message=F, results='hide'}
 
 input_climate <- gaia::input_data(folder_path = file.path(getwd(), 'vignetteFigs'),
-                                  input_file = 'canesm5_gcam-ref_month_precip_country_rfc_crop08_2015_2100.txt')
+                                  input_file = 'canesm5_ssp245_month_precip_country_rfc_crop08_2015_2100.txt')
 
 ```
 
+<a name="table1"></a>
 ```{r eval=TRUE, echo=FALSE}
-library(dplyr)
+library(tibble)
 library(kableExtra)
 knitr::kable(input_climate[1:12], 
              caption = '**Table 1.** Soybean-area-weighted precipitation from the weighted_climate function.') %>% 
@@ -341,12 +460,13 @@ knitr::kable(input_climate[1:12],
 
 ---
 
-The crop calendar outlines the planting and harvesting months for each predefined crop across different countries. Users can modify the crop calendar file to add additional crops, following the established format. Below is an example of the crop calendar structure. You can also access the crop calendar output at `output_dir/data_processed/crop_calendar.csv`.
+The `crop_calendars` function calculates crop calendars based on the SAGE global crop planting and harvesting dates data ([Sacks et al., 2010](https://doi.org/10.1111/j.1466-8238.2010.00551.x)).  The crop calendar outlines the planting and harvesting months for each predefined crop across all global countries.`gaia` uses MIRCA2000 crop category ([Portmann et al., 2010](https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2008gb003435)) as standard crop types. The code chunk below runs `crop_calendars` for the default crops in `gaia`: `cassava`, `cotton`, `maize`, `rice`, `root_tuber`, `sorghum`, `soybean`, `sugarbeet`, `sugarcane`, `sunflower`, `wheat.`
+
 
 ```{r eval=F, echo=T}
 
 # Path to the output folder where you wish to save the outputs. Change it accordingly
-output_dir <- file.path(getwd(), 'gaia_output')
+output_dir <- 'gaia_output'
 
 # calculate crop calendars
 crop_cal <- crop_calendars(output_dir = output_dir)
@@ -356,11 +476,15 @@ crop_cal
 
 ```
 
+**Outputs of the function:** The function returns a data frame of crop calendars. It also writes the output in `output_dir/data_processed/crop_calendar.csv`  
+
+[Table 2](#table2) provides an example of the crop calendar structure. The `[plant, harvest]` columns indicate the planting and harvesting months for the crops with a value of `1` in the same row. For example, in the the first row of the table, wheat in Albania (iso: alb) is planted in November and harvested June. Users can apply a filter, such as `filter(wheat == 1)`, to display the planting and harvesting months for countries where wheat is grown.
+
 
 ```{r eval=T, echo=F, message=F, results='hide'}
 
 crop_cal <- gaia::input_data(folder_path = file.path(getwd(), 'vignetteFigs'),
-                              input_file = 'crop_calendar.csv')
+                             input_file = 'crop_calendar.csv')
 
 ```
 
@@ -374,6 +498,94 @@ knitr::kable(crop_cal[1:10],
   footnote(general = 'This only shows the first 10 lines of the example data.')
 ```
 
+**Select Additional Crops**
+
+Beside default crops, users can select additional available crops (`barley`, `groundnuts`, `millet`, `pulses`, `rape_seed`, and `rye`) using `crop_select` argument. The crops that are available for selection in `gaia` are based on the crop availability from both MIRCA2000 and SAGE crop types. Note that [FAOSTAT](https://www.fao.org/faostat/en/#data/QCL/metadata) crops are categorized into MIRCA2000 crop category. The example below selects barley and millet in addition to the default ones.
+
+```{r eval=F, echo=T}
+
+# calculate crop calendars
+crop_cal <- crop_calendars(crop_select = c("barley", "millet"),
+                           output_dir = output_dir)
+
+# print result
+crop_cal
+
+```
+
+**Customized Crop Calendars**
+
+Due to limited crops from SAGE, some crops that are available in MIRCA2000 are not included in the SAGE database, including `oil_palm`, `citrus`, `date_palm`, `grapes`, `cocoa`, `coffee`, `others_perennial`, `fodder_grasses`, and `others_annual.` However, if users have the data of crop planting and harvesting months for any of these crops for certain countries, providing the crop calendar file is another way to include new crops. Of course, it is suggested that users provide the planting and harvesting months of a crop for all countries that grow such crop for better results from empirical model fitting.
+
+To add a new crop, simply follow the established crop calendar format similar to [Table 2](#table2). The code snippet below shows an example on how to add a crop to the crop calendar. The name of the new crops need to follow the format of the crops listed above (e.g., use `oil_palm` with underscore instead of `oil palm`).
+
+```{r eval=T, echo=T, message=F, results='hide'}
+
+# adding a new crop: oil_palm. The crop name should follow the crop names listed above.
+# Construct the structure of the data with oil_palm
+crop_add <- expand.grid(iso = c('cog', 'gha', 'lbr'),
+                        crops = c(names(crop_cal)[2:(ncol(crop_cal) - 2)], 'oil_palm')) %>%
+  dplyr::mutate(value = ifelse(crops == 'oil_palm', 1, 0)) %>% 
+  tidyr::pivot_wider(names_from = 'crops', values_from = 'value', values_fill = 0)
+
+# planting and harvesting month for countries with oil_palm
+crop_harvest_plant <- data.frame(iso = c('cog', 'gha', 'lbr'),
+                                 plant = c(2, 2, 2),
+                                 harvest  = c(9, 10, 9))
+
+# complete the data structure with oil_palm added
+crop_add <- dplyr::left_join(crop_add, crop_harvest_plant, by = 'iso')
+
+# bind the data to create updated crop calendars
+crop_cal_update <- crop_cal %>% 
+  dplyr::bind_rows(crop_add) %>% 
+  tidyr::replace_na(list(oil_palm = 0)) %>% 
+  dplyr::select(-plant, -harvest, everything(), plant, harvest)
+
+# view updated crop calendar
+crop_cal_update
+
+```
+
+[Table 3](#table3) shows the updated crop calendar with oil palm added.
+
+```{r eval=T, echo=F}
+library(dplyr)
+library(kableExtra)
+knitr::kable(crop_cal_update[1:10], 
+             caption = '**Table 3.** Updated crop calendar with oil palm') %>% 
+  kable_styling(bootstrap_options = "striped", full_width = T, position = 'center') %>% 
+  footnote(general = 'This only shows the first 10 lines of the example data.')
+```
+
+Save the updated crop calendar table to CSV. Below is an option to use gaia's `output_data` function to write output. Users can also use other preferred ways to write output.
+
+```{r eval=F, echo=T}
+# Optional: save the update crop calendar to CSV if you haven't already
+# you can choose to use gaia's output_data function to write output
+gaia::output_data(
+  data = crop_cal_update,
+  file_name = 'crop_calendar_update.csv',
+  save_path = 'path/to/desired/folder'
+)
+
+```
+
+Once you've created your own crop calendar file, simply provide the path to your updated crop calendar file to `crop_calendar_file` argument in the `crop_calendar` function to run and the subsequent steps will use the crop calendar data you provided.
+
+```{r eval=F, echo=T}
+
+# Path to the output folder where you wish to save the outputs. Change it accordingly
+output_dir <- 'gaia_output'
+
+# crop calendars
+crop_cal <- crop_calendars(crop_calendar_file = 'path/to/your/crop/calendar/file',
+                           output_dir = output_dir)
+
+```
+
+Or, you can provide the path to your updated crop calendar file to `crop_calendar_file` argument in the `yield_impact` wrapper function to run the entire workflow with your updated crop calendar.
+
 <br />
 
 ### data_aggregation
@@ -382,52 +594,62 @@ knitr::kable(crop_cal[1:10],
 
 The `data_aggregation` function calculates crop growing seasons using climate variables processed by `weighted_climate` along with crop calendars for both historical and projected periods. This function prepares climate and yield data for subsequent model fitting.
 
-The `data_aggregation` function creates two types of files in the output_dir/data_processed folder:
-
-* `historic_vars_[crop-name].csv`: This file contains historical data for each crop. For example, historical information for soybean is illustrated in Table 3.
-
-* `weather_[climate-model]_[climate-scenario]_[crop-name].csv`: This file includes aggregated climate data for the specified crop. An example of climate information for soybean is shown in Table 4.
-
-
 ```{r eval=F, echo=T}
 
 # Path to the output folder where you wish to save the outputs. Change it accordingly
-output_dir <- file.path(getwd(), 'gaia_output')
+output_dir <- 'gaia_output'
 
 # aggregate crop and climate information at the country level
 data_agg <- data_aggregation(climate_hist_dir = climate_hist_dir,
                              climate_impact_dir = climate_impact_dir,
                              climate_model = 'canesm5',
-                             climate_scenario = 'gcam-ref',
+                             climate_scenario = 'ssp245',
                              output_dir = output_dir)
 
 ```
 
+
+**Outputs of the function:** The `data_aggregation` function returns a list of historical and projected weather variables and crop data. It also writes the following output files under the `output_dir/data_processed` folder:
+
+* `historic_vars_[crop-name].csv`: This file summarizes **historical** harvest area (ha), irrigation type, annual yield (kg/ha), CO2 (ppm), growing season, precipitation (mm/month) and temperature (degree C) by country and crop. For example, historical information for soybean is illustrated in [Table 4](#table4). The `grow_season` column is binary and value 1 indicates the `grow_month` from the same row is considered growing season for the crop.
+
+* `weather_[climate-model]_[climate-scenario]_[crop-name].csv`: This file includes aggregated **future** weather data for the specified climate model/climate scenario/crop. An example of climate data for soybean is shown in [Table 5](#table5). The output includes the minimum, maximum, and mean temperature, as well as precipitation, all calculated on a monthly basis for each year, based on the cropland-weighted monthly precipitation and temperature values.
+
+
+The followings are example outputs and diagnostic plot from `data_aggregation` function.
+
 ```{r eval=T, echo=F, message=F, results='hide'}
 
 crop_projection <- gaia::input_data(folder_path = file.path(getwd(), 'vignetteFigs'),
-                                    input_file = 'weather_canesm5_gcam-ref_soybean.csv')
+                                    input_file = 'weather_canesm5_ssp245_soybean.csv')
 
 crop_hist <- gaia::input_data(folder_path = file.path(getwd(), 'vignetteFigs'),
                               input_file = 'historic_vars_soybean.csv')
 
 ```
 
+<a name="table4"></a>
 ```{r eval=T, echo=F}
 library(dplyr)
 library(kableExtra)
 
 knitr::kable(crop_hist[1:10], 
-             caption = '**Table 3.** Aggregated historical information for soybean.') %>% 
+             caption = '**Table 4.** Aggregated historical information for soybean.') %>% 
   kable_styling(bootstrap_options = "striped", full_width = T, position = 'center') %>% 
   footnote(general = 'This only shows the first 10 lines of the example data.')
+```
 
+<br />
+
+<a name="table5"></a>
+```{r eval=T, echo=F}
+library(dplyr)
+library(kableExtra)
 
 knitr::kable(crop_projection[1:10], 
-             caption = '**Table 4.** Aggregated weather information for soybean.') %>% 
+             caption = '**Table 5.** Aggregated future weather information for soybean.') %>% 
   kable_styling(bootstrap_options = "striped", full_width = T, position = 'center') %>% 
   footnote(general = 'This only shows the first 10 lines of the example data.')
-
 ```
 
 <br />
@@ -436,13 +658,23 @@ knitr::kable(crop_projection[1:10],
 
 ---
 
-The `gaia::yield_regression` function performs empirical model fitting and generates diagnostic plots comparing modeled yields to FAO recorded yields for each crop type at the GCAM region scale. An example of this comparison for soybean is illustrated in [Figure 2](#figure2).
+The `gaia::yield_regression` function performs empirical model fitting and generates diagnostic plots comparing modeled yields to FAO recorded yields for each crop type at the GCAM region scale. 
 
+The yield regression applies the econometric model from [Waldhoff et al., (2020)](https://doi.org/10.1088/1748-9326/abadcb):
+
+$$\begin{align} {y_{i,t}} = &\, {\mu _i} + \lambda t + \chi {m_{i,t}} + \beta _1^{Mean}T_{i,t}^{Mean} + \beta _2^{Mean}{\left( {T_{i,t}^{Mean}} \right)^2}\nonumber\\ &+ \beta _1^{Min}T_{i,t}^{Min} + \beta _2^{Min}{\left( {T_{i,t}^{Min}} \right)^2} + \beta _1^{Max}T_{i,t}^{Max} \nonumber\hfill \\ & + \beta _2^{Max}{\left( {T_{i,t}^{Max}} \right)^2} + \gamma _1^{Mean}P_{i,t}^{Mean} + \gamma _2^{Mean}{\left( {P_{i,t}^{Mean}} \right)^2} \nonumber\\ &+ \gamma _1^{Min}P_{i,t}^{Min} + \gamma _2^{Min}{\left( {P_{i,t}^{Min}} \right)^2} + \gamma _1^{Max}P_{i,t}^{Max} \nonumber\\ & + \gamma _2^{Max}{\left( {P_{i,t}^{Max}} \right)^2}. \nonumber\hfill \\ \end{align}
+				\tag{
+				1
+				}$$
+
+Where, $i$ and $t$ index countries and years; $y$ and $m$ are the natural logarithms of yield and per capita GDP; $T^k$ and $P^k$ with $k \in \left( {Mean,Min,Max} \right)$ denote the mean, minimum, and maximum growing season monthly average daily temperature and total precipitation in each country and year; and $\mu$ is a regression parameter indicating country fixed effects that control for heterogeneous unobserved time-invariant influences that vary across countries; $\beta _1$ and $\beta _2$ define the response of log yield to average, minimum, and maximum temperature, while $\gamma _1$ and $\gamma _2$ define the response of log yield to average, minimum, and maximum precipitation.
+
+Running `yield_regression` is as simple as the code chunk below.
 
 ```{r eval=F, echo=T}
 
 # Path to the output folder where you wish to save the outputs. Change it accordingly
-output_dir <- file.path(getwd(), 'gaia_output')
+output_dir <- 'gaia_output'
 
 # perform empirical regression
 yield_regression(diagnostics = TRUE,
@@ -451,13 +683,16 @@ yield_regression(diagnostics = TRUE,
 ```
 
 
-<p align="center"><img src="vignetteFigs/model_soybean_fit.png"/></p>
-<a name="figure2"></a>
-<p align="left" style="font-size:14px;"> **Figure 2:** Model fitted yields versus FAO yields for soybean. </p>
+**Outputs of the function:** The `yield_regression` function has no return value. It also writes the following output files:
 
-<br />
+* `reg_out_[crop-name]_[fit-name].csv`: This file is located under `output_dir/data_processed` folder and it contains the statistics of the regression analysis for a crop. [Table 6](#table6) show an example output of parameters of the fitted model for soybean.
 
-The parameters of the fitted model can be found in the file located at `output_dir/data_processed/reg_out_[crop-name]_fit_lnyield_mmm_quad_noco2_nogdp.csv`.
+* `weather_yield_[crop-name].csv`: This file is located under `output_dir/data_processed` folder and it contains the values of the variables in the regression formula (e.g., min, max, mean temperature).
+
+* `model_[crop-name]_[fit-name].pdf`: This file is located under `output_dir/figures` folder and it is a diagnostic plot that shows model fitting between observed FAO data and fitted crop yield across global countries. An example of this comparison for soybean is illustrated in [Figure 2](#figure2).
+
+
+The followings are example outputs and diagnostic plot from `yield_regression` function.
 
 ```{r eval=T, echo=F, message=F, results='hide'}
 
@@ -466,15 +701,21 @@ fit_model <- gaia::input_data(folder_path = file.path(getwd(), 'vignetteFigs'),
 
 ```
 
-
+<a name="table6"></a>
 ```{r eval=T, echo=F}
 library(dplyr)
 library(kableExtra)
 knitr::kable(fit_model[1:10], 
-             caption = '**Table 5.** Fitted model for soybean.') %>% 
+             caption = '**Table 6.** Fitted model for soybean.') %>% 
   kable_styling(bootstrap_options = "striped", full_width = T, position = 'center') %>% 
   footnote(general = 'This only shows the first 10 lines of the example data.')
 ```
+
+<br />
+
+<a name="figure2"></a>
+<p align="center"><img src="vignetteFigs/model_soybean_fit.png"/></p>
+<p align="left" style="font-size:14px;"> **Figure 2:** Model fitted yields versus FAO yields for soybean. </p>
 
 <br />
 
@@ -482,18 +723,21 @@ knitr::kable(fit_model[1:10],
 
 ---
 
-Once the `gaia` model has completed fitting, the `gaia::yield_shock_projection` function calculates the projected annual yield shocks based on the input climate data. For coarse-scale models like GCAM, `gaia` also computes smoothed yield shocks using a user-specified smoothing window (the default window is 20 years). In the smoothed outputs, the yield shocks at the base year will be set to 1. The results are provided in both `CSV` outputs and diagnostic plots. An example of annual soybean yield shocks is illustrated in [Figure 3](#figure3).
+Once the `gaia` model has completed fitting, the `gaia::yield_shock_projection` function calculates the projected annual yield shocks based on the input climate data. The climate impact on yield, known as yield shock, refers to the fractional change in a crop's yield within a specific country during a future period, relative to the baseline yield that would otherwise obtain under a stable climate. This concept is mathematically defined in Equations 3 to 6 of [Waldhoff et al., (2020)](https://doi.org/10.1088/1748-9326/abadcb).
 
+For coarse-scale models like GCAM, `gaia` also computes smoothed yield shocks using a user-specified smoothing window (the default window is 20 years). In the smoothed outputs, the yield shocks at the base year will be set to 1. The results are provided in both `CSV` outputs and diagnostic plots.
+
+To run `yield_shock_projection`, simply pass metadata such as climate model, climate scenario, base year, start and end year of the climate data, and smooth window to the function. The code chunk below shows an example.
 
 ```{r eval=F, echo=T}
 
 # Path to the output folder where you wish to save the outputs. Change it accordingly
-output_dir <- file.path(getwd(), 'gaia_output')
+output_dir <- 'gaia_output'
 
 # calculate projected yield shocks
 out_yield_shock <- yield_shock_projection(use_default_coeff = FALSE,
                                           climate_model = 'canesm5',
-                                          climate_scenario = 'gcam-ref',
+                                          climate_scenario = 'ssp245',
                                           base_year = 2015,
                                           start_year = 2015,
                                           end_year = 2100,
@@ -503,41 +747,61 @@ out_yield_shock <- yield_shock_projection(use_default_coeff = FALSE,
 
 ```
 
-<p align="center"><img src="vignetteFigs/annual_projected_soybean.png"/></p>
-<a name="figure3"></a>
-<p align="left" style="font-size:14px;"> **Figure 3:** Projected yield shocks for soybean. </p>
 
-<br />
+**Outputs of the function:** The `yield_shock_projection` function returns a data frame of formatted smoothed annual crop yield shocks under climate impacts. It also writes the following output files:
 
-The output data for annual and smoothed yield shocks projection are located under folders `output_dir/yield_impacts_annual` (Table 6)  and `output_dir/yield_impacts_smooth` (Table 7). 
+* `yield_impacts_annual/yield_[climate-model]_[climate-scenario]_[crop-name].csv`: This file includes annual crop yield shocks under climate variability. An example of annual soybean yield shocks (column yield_impact) is shown in [Table 7](#table7).
 
+* `yield_impacts_smooth/yield_[climate-model]_[climate-scenario]_[crop-name].csv`: This file includes smoothed annual crop yield shocks under climate variability. The default smoothing window is 20 years. An example of smoothed annual soybean yield shocks is shown in [Table 8](#table8).
+
+* `annual_projected_climate_impacts_[climate-model]_[climate-scenario]_[crop-name]_[fit-name].pdf`: This is diagnostic plot for annual crop yield shocks for countries within different regions. It is located under `output_dir/figures` folder. A diagnostic plot of annual soybean yield shocks is illustrated in [Figure 3](#figure3).
+
+* `smooth_projected_climate_impacts_[climate-model]_[climate-scenario]_[crop-name]_[fit-name].pdf`: This is diagnostic plot for smoothed annual crop yield shocks for countries within different regions. It is located under `output_dir/figures` folder.
+
+
+The followings are example outputs and diagnostic plot from `yield_shock_projection` function.
 
 ```{r eval=T, echo=F, message=F, results='hide'}
 
 annual_yield <- gaia::input_data(folder_path = file.path(getwd(), 'vignetteFigs'),
-                                 input_file = 'annual_yield_canesm5_gcam-ref_soybean.csv')
+                                 input_file = 'annual_yield_canesm5_ssp245_soybean.csv')
 
 smooth_yield <- gaia::input_data(folder_path = file.path(getwd(), 'vignetteFigs'),
-                                 input_file = 'smoothed_yield_canesm5_gcam-ref_soybean.csv')
+                                 input_file = 'smoothed_yield_canesm5_ssp245_soybean.csv')
 
 ```
 
+<a name="table7"></a>
 ```{r eval=T, echo=F}
 library(dplyr)
 library(kableExtra)
 
 knitr::kable(annual_yield[1:10], 
-             caption = '**Table 6.** Annual yield shocks for soybean.') %>% 
-  kable_styling(bootstrap_options = "striped", full_width = T, position = 'center') %>% 
-  footnote(general = 'This only shows the first 10 lines of the example data.')
-
-
-knitr::kable(smooth_yield[1:10], 
-             caption = '**Table 7.** 20-year smoothed yield shocks for soybean.') %>% 
+             caption = '**Table 7.** Annual yield shocks for soybean.') %>% 
   kable_styling(bootstrap_options = "striped", full_width = T, position = 'center') %>% 
   footnote(general = 'This only shows the first 10 lines of the example data.')
 
 ```
+
+<br />
+
+<a name="table8"></a>
+```{r eval=T, echo=F}
+library(dplyr)
+library(kableExtra)
+
+knitr::kable(smooth_yield[1:10], 
+             caption = '**Table 8.** 20-year smoothed yield shocks for soybean.') %>% 
+  kable_styling(bootstrap_options = "striped", full_width = T, position = 'center') %>% 
+  footnote(general = 'This only shows the first 10 lines of the example data.')
+
+```
+
+<br />
+
+<a name="figure3"></a>
+<p align="center"><img src="vignetteFigs/annual_projected_soybean.png"/></p>
+<p align="left" style="font-size:14px;"> **Figure 3:** Projected yield shocks for soybean. </p>
 
 <br />
 
@@ -545,17 +809,18 @@ knitr::kable(smooth_yield[1:10],
 
 ---
 
-The `gcam_agprodchange` function is specifically designed for the Global Change Analysis Model (GCAM). GCAM requires the agricultural productivity growth rate (APG) as an input, which is calculated based on yield shocks and the baseline APG, varying according to different SSP scenarios. Additionally, the APG for GCAM must be at the region-basin scale. The `gaia::gcam_agprodchange` function directly remaps country-level yield shocks to region-basin APG. In the example below, since `climate_scenario = 'gcam-ref'`, it will use the APG without SSP impact (Reference scenario APC) to calculate the climate-impacted APG based on the yield shocks computed in the previous step.
+The `gcam_agprodchange` function is specifically designed for the Global Change Analysis Model (GCAM) [(Calvin et al., 2019)](https://doi.org/10.5194/gmd-12-677-2019). GCAM requires the agricultural productivity growth rate (APG) as an input, which is calculated based on yield shocks and the baseline APG, varying according to different SSP scenarios. Additionally, the APG for GCAM must be at the region-basin scale. The `gaia::gcam_agprodchange` function directly remaps country-level yield shocks to region-basin APG. In the example below, since `climate_scenario = 'ssp245'`, it will automatically pick the baseline APG with SSP2 impact to calculate the climate-impacted APG based on the yield shocks computed in the previous step. If `climate_scenario` is set to other strings that does not indicate `ssp` scenario, `gaia` will use the baseline APG without any socioeconomic impact.
+
 
 ```{r eval=F, echo=T}
 
 # Path to the output folder where you wish to save the outputs. Change it accordingly
-output_dir <- file.path(getwd(), 'gaia_output')
+output_dir <- 'gaia_output'
 
 # calculate region-basin agricultural productivity growth rate for GCAM
 gcam_apg <- gcam_agprodchange(data = out_yield_shock,
                               climate_model = 'canesm5',
-                              climate_scenario = 'gcam-ref',
+                              climate_scenario = 'ssp245',
                               member = 'r1i1p1f1',
                               bias_adj = 'w5e5',
                               cfe = 'no-cfe',
@@ -567,10 +832,17 @@ gcam_apg <- gcam_agprodchange(data = out_yield_shock,
 
 <br />
 
-Once the run is complete, a folder named `[gcam-version]_agprodchange_[cfe]` (e.g., `gcam7_agprodchange_no-cfe`) will be created in your specified output location. This folder contains the `XML` file of the agricultural productivity growth rate (APG) for GCAM. Additionally, it includes diagnostic figures illustrating the APG by region-basin. An example of APG for soybean is shown in [Figure 4](#figure4) below.
+**Outputs of the function:** The `gcam_agprodchange` function returns a data frame of agricultural productivity change. It also writes the following output files to the folder named `[gcam-version]_agprodchange_[cfe]` (e.g., `gcam7_agprodchange_no-cfe`):
 
-<p align="center"><img src="vignetteFigs/agprodchange_soybean.png"/></p>
+* `agyield_impact_[climate-model]_[ensemble-member]_[bias_adj]_[climate-scenario].xml`: This is the XML file of agricultural productivity change for all commodities for GCAM.
+
+* `figures_yield_impacts/[commodity.png]`: This is diagnostic plot for yield shocks for a GCAM commodity at specified `gcam_timestep` (e.g., 5 years) by basins within each GCAM region (e.g., region-basin intersection) separated by irrigated and rainfed crop types.
+
+* `figures_agprodchange/[commodity.png]`: This is diagnostic plot for APG for a GCAM commodity at specified `gcam_timestep` (e.g., 5 years) by basins within each GCAM region (e.g., region-basin intersection) separated by irrigated and rainfed crop types. An example of APG for soybean is shown in [Figure 4](#figure4) below.
+
+
 <a name="figure4"></a>
+<p align="center"><img src="vignetteFigs/agprodchange_soybean.png"/></p>
 <p align="left" style="font-size:14px;"> **Figure 4:** Agricultural productivity growth rate for soybean. Each line under a region indicates the APG for the region-basin intersection. </p>
 
 <br />

@@ -29,6 +29,8 @@ data_aggregation <- function(climate_hist_dir = NULL,
     input_file = "crop_calendar.csv"
   )
 
+  crop_select <- names(crop_cal)[!names(crop_cal) %in% c('iso', 'plant', 'harvest')]
+
   # merge fao yield and fao irrigation equip data
   yield <- gaia::merge_data(fao_yield, fao_irr_equip, "iso", "year")
 
@@ -60,7 +62,7 @@ data_aggregation <- function(climate_hist_dir = NULL,
 
     crop_historic <- data.table::data.table()
 
-    for (crop_i in mapping_mirca_sage$crop_mirca) {
+    for (crop_i in crop_select) {
       crop_id <- crop_mirca$crop_id[grepl(crop_i, crop_mirca$crop_name)]
 
       # filter out the file for the crop
@@ -121,7 +123,7 @@ data_aggregation <- function(climate_hist_dir = NULL,
 
   crop_projection <- data.table::data.table()
 
-  for (crop_i in mapping_mirca_sage$crop_mirca) {
+  for (crop_i in crop_select) {
     crop_id <- crop_mirca$crop_id[grepl(crop_i, crop_mirca$crop_name)]
 
     # filter out the file for the crop
