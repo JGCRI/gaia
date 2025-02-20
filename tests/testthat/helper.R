@@ -166,3 +166,60 @@ run_gcam_agprodchange <- function(data = NULL,
 
   return(output)
 }
+
+
+# step-all: yield_impact
+run_yield_impact <- function(pr_hist_ncdf = NULL,
+                             tas_hist_ncdf = NULL,
+                             pr_proj_ncdf = NULL,
+                             tas_proj_ncdf = NULL,
+                             timestep = 'monthly',
+                             historical_periods = seq(1961, 2001),
+                             climate_hist_dir = NULL,
+                             climate_impact_dir = NULL,
+                             climate_model = climate_model_i,
+                             climate_scenario = climate_scenario_i,
+                             member = member_i,
+                             bias_adj = bias_adj_i,
+                             cfe = cfe_i,
+                             gcam_version = gcam_version_i,
+                             use_default_coeff = use_default_coeff_i,
+                             base_year = base_year_i,
+                             start_year = start_year_i,
+                             end_year = end_year_i,
+                             smooth_window = smooth_window_i,
+                             co2_hist = NULL,
+                             co2_proj = NULL,
+                             crop_select = crop_select_i,
+                             diagnostics = F,
+                             output_dir = output_dir_i){
+
+  output <-
+    gaia::yield_impact(pr_hist_ncdf = pr_hist_ncdf,
+                       tas_hist_ncdf = tas_hist_ncdf,
+                       pr_proj_ncdf = pr_proj_ncdf,
+                       tas_proj_ncdf = tas_proj_ncdf,
+                       timestep = timestep,
+                       historical_periods = historical_periods,
+                       climate_hist_dir = climate_hist_dir,
+                       climate_impact_dir = climate_impact_dir,
+                       climate_model = climate_model,
+                       climate_scenario = climate_scenario,
+                       member = member,
+                       bias_adj = bias_adj,
+                       cfe = cfe,
+                       gcam_version = gcam_version,
+                       use_default_coeff = use_default_coeff,
+                       base_year = base_year,
+                       start_year = start_year,
+                       end_year = end_year,
+                       smooth_window = smooth_window,
+                       co2_hist = co2_hist,
+                       co2_proj = co2_proj,
+                       crop_select = crop_select,
+                       diagnostics = diagnostics,
+                       output_dir = output_dir)
+
+  return(output)
+
+}

@@ -15,14 +15,17 @@ ncdf_dir_i <- gaia::get_example_data(
   data_dir = output_dir_i)
 
 
+pr_ncdf_i <- file.path(ncdf_dir_i, 'pr_monthly_canesm5_w5e5_ssp245_2015_2015.nc')
+tas_ncdf_i <- file.path(ncdf_dir_i, 'tas_monthly_canesm5_w5e5_ssp245_2015_2015.nc')
+
+climate_hist_dir_i <- file.path(data_dir_i, 'climate_hist')
+climate_impact_dir_i <- file.path(data_dir_i, 'canesm5')
+
 # ------------------------------------
 # Testing Outputs from Major Functions
 # ------------------------------------
 
 test_that("weighted_climate function test", {
-
-  pr_ncdf_i <- file.path(ncdf_dir_i, 'pr_monthly_canesm5_w5e5_ssp245_2015_2015.nc')
-  tas_ncdf_i <- file.path(ncdf_dir_i, 'tas_monthly_canesm5_w5e5_ssp245_2015_2015.nc')
 
   run_weighted_climate(pr_ncdf = pr_ncdf_i,
                        tas_ncdf = tas_ncdf_i,
@@ -114,6 +117,7 @@ test_that("clean_yield test", {
 
 })
 
+
 # ------------------------------------
 # Testing Errors
 # ------------------------------------
@@ -190,5 +194,15 @@ test_that("get_mirca2000_data message", {
     )
   )
 
+
+})
+
+
+test_that("yield_impact function test", {
+
+  out_yield_impact <- run_yield_impact(climate_hist_dir = climate_hist_dir_i,
+                                       climate_impact_dir = climate_impact_dir_i)
+
+  testthat::expect_snapshot(out_yield_impact)
 
 })
