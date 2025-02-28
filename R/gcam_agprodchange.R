@@ -562,11 +562,11 @@ gcam_agprodchange <- function(data = NULL,
   )
 
   # check if the baseline APC has the same time step as the input
-  years_ref <- sort(as.integer(gsub("X", "", unique(agprodchange_ni$year))))
-  ref_timestep <- unique(years_ref[2:length(years_ref)] - years_ref[1:length(years_ref) - 1])
-  if (ref_timestep != as.integer(gcam_timestep)) {
-    stop(paste0("The time step of the baseline agricultural productivity change (APC) data does not match the selected GCAM time step. Please provide the gcamdata_dir that holds the APC data with selected gcam_timestep = ", gcam_timestep))
-  }
+  # years_ref <- sort(as.integer(gsub("X", "", unique(agprodchange_ni$year))))
+  # ref_timestep <- unique(years_ref[2:length(years_ref)] - years_ref[1:length(years_ref) - 1])
+  # if (ref_timestep != as.integer(gcam_timestep)) {
+  #   stop(paste0("The time step of the baseline agricultural productivity change (APC) data does not match the selected GCAM time step. Please provide the gcamdata_dir that holds the APC data with selected gcam_timestep = ", gcam_timestep))
+  # }
 
   # linear interpolate at 5 year interval
   yield_impact <- dplyr::bind_rows(

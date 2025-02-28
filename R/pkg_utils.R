@@ -255,9 +255,10 @@ agprodchange_interp <- function(data = NULL,
 
   # check if the reference time step equals to user defined gcam_timestep
 
-  if (!any(grepl(gcam_timestep, ref_timestep)) | length(ref_timestep) != 1) {
+  if (any(ref_timestep != gcam_timestep) | length(ref_timestep) != 1) {
     warning(paste0(
-      "The time step of the reference agricultural productivity change data is different from the user defined gcam_timestep = ",
+      "The time step of the reference agricultural productivity change data: ", paste(ref_timestep, collapse = ", "),
+      ", different from the user defined gcam_timestep = ",
       gcam_timestep
     ))
 
@@ -365,19 +366,28 @@ agprodchange_ref <- function(gcam_version = "gcam7",
       agprodchange_ag
     ) %>%
       dplyr::mutate(year = paste0("X", year)) %>%
-      dplyr::rename(AgProdChange_ni = AgProdChange)
+      dplyr::rename(AgProdChange_ni = AgProdChange) %>%
+      dplyr::select(region, AgSupplySector, AgSupplySubsector, AgProductionTechnology, year, AgProdChange_ni)
+
+    year_ni <- unique(agprodchange_ni$year)
+    year_ni <- as.integer(gsub('X', '', year_ni))
 
     # add base year APG and assume it is 0
-    agprodchange_ni <- dplyr::bind_rows(
-      agprodchange_ni,
-      agprodchange_ni %>%
-        dplyr::select(-year, -AgProdChange_ni) %>%
-        dplyr::distinct() %>%
-        dplyr::mutate(
-          year = paste0("X", base_year),
-          AgProdChange_ni = 0
-        )
-    )
+    if(!(base_year %in% year_ni)){
+
+      agprodchange_ni <- dplyr::bind_rows(
+        agprodchange_ni,
+        agprodchange_ni %>%
+          dplyr::select(-year, -AgProdChange_ni) %>%
+          dplyr::distinct() %>%
+          dplyr::mutate(
+            year = paste0("X", base_year),
+            AgProdChange_ni = 0
+          )
+      )
+
+    }
+
   } else {
     # if user doesn't provide any gcamdata, then use default
     if (gcam_version == "gcam6") {
