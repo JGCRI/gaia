@@ -616,6 +616,21 @@ gcam_agprodchange <- function(data = NULL,
 
   any(is.na(yield_impact_gcam))
 
+
+  # ----------------------------------------------------------------------------
+  # Convert to XML
+  # ----------------------------------------------------------------------------
+
+  out_xml_name <- tolower(paste0(paste("agyield_impact", climate_model, member, bias_adj, climate_scenario, sep = "_"), ".xml"))
+  gcam_file <- file.path(output_dir, out_xml_name)
+
+  gcamdata::create_xml(gcam_file) %>%
+    gcamdata::add_xml_data(yield_impact_gcam, "AgProdChange") %>%
+    gcamdata::run_xml_conversion()
+
+  return(yield_impact_gcam)
+
+
   # ----------------------------------------------------------------------------
   # plot ag productivity change
   # ----------------------------------------------------------------------------
@@ -641,17 +656,4 @@ gcam_agprodchange <- function(data = NULL,
     }
   }
 
-
-  # ----------------------------------------------------------------------------
-  # Convert to XML
-  # ----------------------------------------------------------------------------
-
-  out_xml_name <- tolower(paste0(paste("agyield_impact", climate_model, member, bias_adj, climate_scenario, sep = "_"), ".xml"))
-  gcam_file <- file.path(output_dir, out_xml_name)
-
-  gcamdata::create_xml(gcam_file) %>%
-    gcamdata::add_xml_data(yield_impact_gcam, "AgProdChange") %>%
-    gcamdata::run_xml_conversion()
-
-  return(yield_impact_gcam)
 }

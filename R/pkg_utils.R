@@ -236,6 +236,10 @@ agprodchange_interp <- function(data = NULL,
   year <- region <- AgSupplySector <- AgSupplySubsector <- AgProductionTechnology <-
     AgProdChange_ni <- NULL
 
+  data <- data %>%
+    dplyr::select(region, AgSupplySector, AgSupplySubsector, AgProductionTechnology, year, AgProdChange_ni) %>%
+    dplyr::distinct()
+
   # check if the time step is the same with the APG no climate impact
   # for example, the default GCAM is 5 year and reference APG from GCAM starts from 2020
   # however, it the time step is 1 year, adding base year 2015 to the dataset will create a 5 year gap between 2015 and 2020
@@ -260,23 +264,57 @@ agprodchange_interp <- function(data = NULL,
     print(paste0(
       "Interpolating the reference agricultural productivity change to ",
       gcam_timestep, " year time step: ",
-      paste(unique(seq(min(year), max(year), gcam_timestep), max(year)), collapse = ', ')
+      paste(unique(seq(min(years_ref), max(years_ref), gcam_timestep), max(years_ref)), collapse = ', ')
     ))
 
-    data_interp <- data %>%
-      dplyr::mutate(year = as.numeric(gsub("X", "", year))) %>%
-      dplyr::group_by(region, AgSupplySector, AgSupplySubsector, AgProductionTechnology) %>%
-      tidyr::complete(year = unique(seq(min(year), max(year), gcam_timestep), max(year))) %>%
-      dplyr::mutate(AgProdChange_ni = ifelse(is.na(AgProdChange_ni),
-        approx(
-          x = year[!is.na(AgProdChange_ni)],
-          y = AgProdChange_ni[!is.na(AgProdChange_ni)],
-          xout = year
-        )$y,
-        AgProdChange_ni
-      )) %>%
-      dplyr::ungroup() %>%
-      dplyr::mutate(year = paste0("X", year))
+    # data_interp <- data %>%
+    #   dplyr::mutate(year = as.numeric(gsub("X", "", year))) %>%
+    #   dplyr::group_by(region, AgSupplySector, AgSupplySubsector, AgProductionTechnology) %>%
+    #   tidyr::complete(year = unique(c(seq(min(year), max(year), gcam_timestep), max(year)))) %>%
+    #   dplyr::mutate(AgProdChange_ni = ifelse(is.na(AgProdChange_ni),
+    #     approx(
+    #       x = year[!is.na(AgProdChange_ni)],
+    #       y = AgProdChange_ni[!is.na(AgProdChange_ni)],
+    #       xout = year
+    #     )$y,
+    #     AgProdChange_ni
+    #   )) %>%
+    #   dplyr::ungroup() %>%
+    #   dplyr::mutate(year = paste0("X", year))
+
+    # Convert to data.table
+    data_dt <- data.table::as.data.table(data)
+
+    # Remove the 'X' prefix from the year
+    data_dt[, year := as.numeric(sub("X", "", year))]
+
+    # Define the interpolation function
+    interp_function <- function(dt, gcam_timestep) {
+      # Create sequence of years
+      complete_years <- unique(c(seq(min(dt$year), max(dt$year), gcam_timestep), max(dt$year)))
+
+      # Interpolate for each group
+      dt <- dt[, .SD[year %in% complete_years], by = .(region, AgSupplySector, AgSupplySubsector, AgProductionTechnology)]
+
+      dt[, AgProdChange_ni := ifelse(is.na(AgProdChange_ni),
+                                     approx(
+                                       x = year[!is.na(AgProdChange_ni)],
+                                       y = AgProdChange_ni[!is.na(AgProdChange_ni)],
+                                       xout = complete_years
+                                     )$y,
+                                     AgProdChange_ni
+      ), by = .(region, AgSupplySector, AgSupplySubsector, AgProductionTechnology)]
+
+      return(dt)
+    }
+
+    # Apply the interpolation function
+    data_interp <- interp_function(data_dt, gcam_timestep)
+
+    # Re-add the 'X' prefix to the year
+    data_interp[, year := paste0("X", year)]
+
+
   } else {
     data_interp <- data
   }
