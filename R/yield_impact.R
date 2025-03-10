@@ -61,7 +61,7 @@ yield_impact <- function(pr_hist_ncdf = NULL,
                          diagnostics = TRUE,
                          output_dir = file.path(getwd(), "output")) {
   # Step 1a: Process standard NetCDF files from ISIMIP to country level historical climate
-  if (any(!is.null(pr_hist_ncdf), !is.null(tas_hist_ncdf))) {
+  if (any(!is.null(pr_hist_ncdf), !is.null(tas_hist_ncdf), use_default_coeff == F)) {
     gaia::weighted_climate(
       pr_ncdf = pr_hist_ncdf,
       tas_ncdf = tas_hist_ncdf,

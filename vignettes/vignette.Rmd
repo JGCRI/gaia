@@ -120,19 +120,19 @@ brew install gdal
 <p align="center"><img src="vignetteFigs/divider.png"/></p>
 
 
-`gaia` is designed with a climate-driven empirical model at its core, integrated into an efficient modular structure. This architecture streamlines the entire workflow. This workflow includes raw climate and crop data processing, empirical model fitting, yield shock projections under future climate scenarios, and agricultural productivity change calculation for GCAM. The modular design also facilitates comprehensive diagnostic outputs, enhancing the tool's utility for researchers and policymakers.
+`gaia` is designed with a climate-driven empirical model at its core, integrated into an efficient modular structure. This architecture streamlines the entire workflow. This workflow includes raw climate and crop data processing, empirical model fitting, yield shock projections under future climate scenarios, and agricultural productivity change calculation for the [Global Change Analysis Model (GCAM)](https://github.com/JGCRI/gcam-core) ([Calvin et al., 2019](https://doi.org/10.5194/gmd-12-677-2019)). The modular design also facilitates comprehensive diagnostic outputs, enhancing the tool's utility for researchers and policymakers.
 
 
 The primary functionality of `gaia` is encapsulated in the `yield_impact` wrapper function, which executes the entire workflow from climate data processing to yield shock estimation. Users can also execute individual functions to work through the main steps of the process ([Figure 1](#figure1)).
 
 
-1. [`weighted_climate`](#weighted_climate): Processes CMIP climate NetCDF data in accordance with the [ISIMIP simulation protocols](https://www.isimip.org/protocol/preparing-simulation-files/ "Here we specifically require the bias-adjusted and statistically downscaled CMIP climate data following ISIMIP's protocols") and calculates cropland-weighted precipitation and temperature at the country level, differentiated by crop type and irrigation type. The function accepts both daily or monthly climate data in NetCDF format that follows ISIMIP protocols.
+1. [`weighted_climate`](#weighted_climate): Processes CMIP6 daily or monthly climate NetCDF data in accordance with the [ISIMIP simulation protocols](https://www.isimip.org/protocol/preparing-simulation-files/ "Here we specifically require the bias-adjusted and statistically downscaled CMIP climate data following ISIMIP's protocols") and calculates cropland-weighted precipitation and temperature at the country level, differentiated by crop type and irrigation type.
 
 2. [`crop_calendars`](#crop_calendars): Generates crop planting months for each country and crop based on crop calendar data [Sacks et al., (2010)](https://doi.org/10.1111/j.1466-8238.2010.00551.x).
 
 3. [`data_aggregation`](#data_aggregation): Calculates crop growing seasons using climate variables processed by `weighted_climate` and crop calendars for both historical and projected periods. This function prepares climate and yield data for subsequent model fitting.
 
-4. [`yield_regression`](#yield_regression): Performs regression analysis fitted with historical annual crop yields, monthly growing season temperature and precipitation, CO2 concentrations, GDP per capita, and year. The default econometric model applied in `gaia` is from [Waldhoff et al., (2020)](https://doi.org/10.1088/1748-9326/abadcb). User can specify alternative formulas that are consistent with the data processed in `data_aggregation.`
+4. [`yield_regression`](#yield_regression): Performs regression analysis fitted with historical annual crop yields, growing season monthly temperature and precipitation, CO~2~ concentrations, and GDP per capita. The default econometric model applied in `gaia` is from [Waldhoff et al., (2020)](https://doi.org/10.1088/1748-9326/abadcb). User can specify alternative formulas that are consistent with the data processed in `data_aggregation`.
 
 5. [`yield_shock_projection`](#yield_shock_projection): Projects yield shocks for future climate scenarios using the fitted model and temperature, precipitation, and CO2 projections from the climate scenario.
 
@@ -158,17 +158,28 @@ The primary functionality of `gaia` is encapsulated in the `yield_impact` wrappe
 <p align="center"><img src="vignetteFigs/divider.png"/></p>
 
 
-`gaia` requires global climate data from the Inter-Sectoral Impact Model Intercomparison Project ([ISIMIP](https://www.isimip.org/)) or data formatted according to ISIMIP protocols. Additionally, `gaia` supports climate data in both daily and monthly time step. Due to the large size of global climate data, we provide two types of example datasets tailored to different user needs.
+`gaia` requires global climate data from the Inter-Sectoral Impact Model Intercomparison Project ([ISIMIP](https://www.isimip.org/)) or data formatted according to [ISIMIP simulation protocols](https://www.isimip.org/protocol/preparing-simulation-files). Additionally, `gaia` supports climate data in both daily and monthly time step. Due to the large size of global climate data, we provide two types of example datasets tailored to different user needs.
 
 * [Example Data 1](#example-data-1-quick-start-dataset): This pre-processed climate dataset allows users to quickly run `gaia` **without** the need to process raw climate NetCDF data. It is an output from the `gaia::weighted_climate` function, which converts raw climate NetCDF data into cropland-weighted climate data by country. This dataset includes both historical and future pre-processed cropland-weighted precipitation and temperature by country. If you want to quickly test `gaia` and view the outputs, this is the easiest way to get started.
-* [Example Data 2](#example-data-2-raw-climate-data): This climate dataset is designed for users who want to process raw climate NetCDF data using the `gaia::weighted_climate` function. It includes global monthly precipitation and temperature NetCDF files at a 0.5-degree resolution, covering the period from 2015 to 2030. This projected climate is bias-adjusted and statistically downscaled (via ISIMIP3BASD v2.5.0 approach [Lange, 2021](https://doi.org/10.5281/zenodo.4686991); [Lange, 2019](https://doi.org/10.5194/gmd-12-3055-2019)) climate from CMIP6 model CanESM5 under SSP245 scenario ([Swart et al., 2019](https://doi.org/10.22033/ESGF/CMIP6.3685)). Processing this data may take some time. If you intend to use your own climate datasets, this example will help you get set up.
 
+* [Example Data 2](#example-data-2-raw-climate-data): This climate dataset is designed for users who want to process raw climate NetCDF data using the `gaia::weighted_climate` function. It includes global monthly precipitation and temperature NetCDF files at a 0.5-degree resolution, covering the period from 2015 to 2030. The example climate data is derived from the CanESM5 global climate model (GCM) under the Shared Socioeconomic Pathway-Representative Concentration Pathway (SSP-RCP) 2-4.5 scenario ([O'Neil et al., 2016](https://doi.org/10.5194/gmd-9-3461-2016)), also referred to as SSP245, as part of the CMIP6 projections ([Swart et al., 2019](https://doi.org/10.22033/ESGF/CMIP6.3685)). This climate projection has been bias-adjusted and statistically downscaled using the ISIMIP3BASD v2.5.0 approach ([Lange, 2021](https://doi.org/10.5281/zenodo.4686991); [Lange, 2019](https://doi.org/10.5194/gmd-12-3055-2019)). Processing this data may take some time. Please note that the selection of GCMs and SSP-RCP scenarios is not part of `gaia` framework. This dataset is provided solely for demonstration purpose. Users should choose climate projections that align with their research objectives. If you intend to use your own climate datasets, this example will serve as a helpful reference for setting up your workflow.
+
+<a name="note1"></a>
+<div class="alert alert-info">
+<h4 class="alert-heading">NOTE!</h4>
+<p class="mb-0">ISIMIP provides a range of bias-adjusted and statistically downscaled climate forcing data at a 0.5-degree resolution. Bias adjustment is the process of statistically modifying climate model outputs to better align with observed climate data, thereby reducing systematic errors or biases. To ensure consistency, simulated climate data should be bias-adjusted using the same historical climate observations that were used to fit the empirical model. For example, ISIMIP’s current CMIP6 climate outputs are bias-adjusted against the W5E5 v2.0 climate dataset using the ISIMIP3BASD v2.5.0 approach.
+
+If you plan to use other climate observations or simulations that are not directly from ISIMIP, please ensure that you:
+
+* Bias-adjust and statistically downscale your data to 0.5-degree resolution. You can follow ISIMIP’s official ISIMIP3BASD v2.5.0 approach ([Lange, 2021](https://doi.org/10.5281/zenodo.4686991); [Lange, 2019](https://doi.org/10.5194/gmd-12-3055-2019)), or use the [basd software](https://jgcri.github.io/basd/) developed by the Pacific Northwest National Laboratory.
+* Format your data according to ISIMIP's guidelines for [preparing simulation files](https://www.isimip.org/protocol/preparing-simulation-files/) in terms of NetCDF headers, grid format, variables and dimensions, and the time axis.</p>
+</div>
 
 <br />
 
 ## Example Data 1: Quick Start Dataset
 
-Download the example data 1 using the instructions below. This dataset includes both historical climate observations (1951-2001) and future climate projections (2015-2100), weighted by cropland areas and formatted in a tabular structure (see [Table 1](#table1)), as required by `gaia`. The historical climate is from WATCH dataset and the projected climate is from CanESM5 global climate model under SSP245 scenario. The cropland-area-weighted, country-level climate data contains monthly precipitation and temperature for 26 crop types, distinguishing between irrigated and rainfed areas.
+Download the example data 1 using the instructions below. This dataset includes both historical climate observations (1951-2001) and future climate projections (2015-2100), weighted by cropland areas and formatted in a tabular structure (see [Table 1](#table1)), as required by `gaia`. The historical climate is from [Water and Global Change (WATCH)](https://www.isimip.org/gettingstarted/input-data-bias-adjustment/details/3/) forcing data ([Weedon et al., 2011](https://doi.org/10.1175/2011JHM1369.1)) and the climate projection is derived from [CanESM5 under SSP245 scenario](https://www.isimip.org/gettingstarted/input-data-bias-adjustment/details/94/) ([Swart et al., 2019](https://doi.org/10.22033/ESGF/CMIP6.3685)). The cropland-area-weighted, country-level climate data contains monthly precipitation and temperature for 26 crop types, distinguishing between irrigated and rainfed areas.
 
 There are two options to download the data:
 
@@ -211,8 +222,10 @@ climate_impact_dir <- file.path(data_dir, 'canesm5')
 
 <br />
 
+<a name="note2"></a>
 <div class="alert alert-info">
-<strong>NOTE!</strong> The default example historical climate data provided in [example data 1](#example-data-1-quick-start-dataset) is based on WATCH climate observations ([Weedon et al., (2011)](https://doi.org/10.1175/2011JHM1369.1)), which were used in [Waldhoff et al., (2020)](https://doi.org/10.1088/1748-9326/abadcb) for empirical model fitting. If you do not intend to modify any assumptions or historical climate forcing for empirical model fitting, you can use the default regression model in `gaia`, which is pre-fitted with WATCH historical climate data, by setting the argument `use_default_coeff = TRUE`. After loading the `gaia` package, type `coef_default` to view the parameters of the default pre-fitted model. Alternatively, if you prefer to use different historical climate data other than the one from [example data 1](#example-data-1-quick-start-dataset), you can use `weighted_climate` function to generate cropland-weighted historical monthly precipitation and temperature following the [weighted_climate instruction](#weighted_climate) under Example 3.
+  <h4 class="alert-heading">NOTE!</h4>
+  <p class="mb-0"> The default example historical climate data provided in [example data 1](#example-data-1-quick-start-dataset) is based on WATCH climate observations ([Weedon et al., (2011)](https://doi.org/10.1175/2011JHM1369.1)), which were used in [Waldhoff et al., (2020)](https://doi.org/10.1088/1748-9326/abadcb) for empirical model fitting. If you do not intend to modify any assumptions or historical climate forcing for empirical model fitting, you can use the default regression model in `gaia`, which is pre-fitted with WATCH historical climate data, by setting the argument `use_default_coeff = TRUE`. After loading the `gaia` package, type `coef_default` to view the parameters of the default pre-fitted model. Alternatively, if you prefer to use different historical climate data other than the one from [example data 1](#example-data-1-quick-start-dataset), you can use `weighted_climate` function to generate cropland-weighted historical monthly precipitation and temperature following the [weighted_climate instruction](#weighted_climate) under [Example 3](#example-3).</p>
 </div>
 
 <br />
@@ -275,8 +288,8 @@ tas_projection_file <- file.path(data_dir, 'tas_monthly_canesm5_w5e5_ssp245_2015
 
 <div class="alert alert-dismissible alert-warning">
   <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-  <h4 class="alert-heading">Warning!</h4>
-  <p class="mb-0">This example demonstrates the complete `gaia` model workflow, including processing the raw climate NetCDF data. Due to the large size of the climate dataset, this process may take up to an hour. For a quicker demonstration, please refer to [Example 2](#example-data-2-raw-climate-data).</p>
+  <h4 class="alert-heading">WARNING!</h4>
+  <p class="mb-0">This example demonstrates the complete `gaia` model workflow, including processing the raw climate NetCDF data. Due to the large size of the climate dataset, this process may take up to an hour. For a quicker demonstration, please refer to [Example 2](#example-2).</p>
 </div>
 
 <!-- <div class="alert alert-info"> -->
@@ -317,7 +330,7 @@ gaia::yield_impact(
   cfe = 'no-cfe',                         # label of CO2 fertilization effect in the formula (default is no CFE)
   gcam_version = 'gcam7',                 # output is different depending on the GCAM version (gcam6 or gcam7)
   use_default_coeff = FALSE,              # set to TRUE when there is no historical climate data available
-  base_year = 2015                        # GCAM base year
+  base_year = 2015,                       # GCAM base year
   start_year = 2015,                      # start year of the projected climate data
   end_year = 2030,                        # end year of the projected climate data
   smooth_window = 20,                     # number of years as smoothing window
@@ -332,7 +345,8 @@ gaia::yield_impact(
 
 
 <div class="alert alert-info">
-<strong>NOTE!</strong> The arguments `climate_model`, `climate_scenario`, `member`, `bias_adj`, and `cfe` require specific strings that provide climate model metadata in the output files. These arguments do not impact the `gaia` model simulation itself; they are only used to populate climate data metadata in the outputs.
+  <h4 class="alert-heading">NOTE!</h4>
+  <p class="mb-0"> The arguments `climate_model`, `climate_scenario`, `member`, `bias_adj`, and `cfe` require specific strings that provide climate model metadata in the output files. These arguments do not impact the `gaia` model simulation itself; they are only used to populate climate data metadata in the outputs.</p>
 </div>
 
 <br />
@@ -375,7 +389,11 @@ gaia::yield_impact(
 ```
 
 
-Explore the results in your output folder. For a detailed explanation of the output, checkout [Example 3](#example-3)!
+As stated in the previous [note](#note2), if users plan to use the WATCH forcing data from our [example data 1](#example-data-1-quick-start-dataset) for empirical model fitting, `gaia` has already stored the corresponding fitted coefficients. To use these pre-fitted regression coefficients, simply set `use_default_coeff = TRUE` and `climate_hist_dir = NULL` in the example above. This simply save some time to rerun the model regression. However, the pre-fitted coefficients are only available for limited selection of 17 crops, including barley, cassava, cotton, groundnuts, maize, millet, pulses, rape_seed, rice, root_tuber, rye, sorghum, soybean, sugarbeet, sugarcane, sunflower, and wheat.
+
+If you want to include new crops beyond these 17 crops, you will need to provide the data on their planting and harvesting times to update the crop calendars (see instructions in [crop_calendars](#crop_calendars)). Then, you need to provide historical climate forcing data following either [Example 1](#example-1) or [Example 2](#example-2) to conduct the empirical fitting for those new crops.
+
+Both [Example 1](#example-1) or [Example 2](#example-2) will generate intermediate and final outputs. Explore the results in your output folder. For a detailed explanation of the outputs, checkout [Example 3](#example-3)!
 
 <br />
 
@@ -390,15 +408,6 @@ Example 1 and 2 demonstrates how to use the wrapper function `yield_impact` to s
 ---
 
 `weighted_climate` function calculates the cropland-weighted monthly precipitation and temperature for the projected climate. This function can be used if you wish to calculate cropland-weighted monthly precipitation and temperature using different climate forcing data. Please ensure that the climate NetCDF files follows the [ISIMIP simulation protocols](https://www.isimip.org/protocol/preparing-simulation-files/ "Here we specifically require the bias-adjusted and statistically downscaled CMIP climate data following ISIMIP's protocols"). Our [example data 1](#example-data-1-quick-start-dataset) includes the standard ISIMIP-style climate data for users to check the data structure and format.
-
-<div class="alert alert-info">
-<strong>NOTE!</strong> ISIMIP provides a range of bias-adjusted and statistically downscaled climate forcing data at a 0.5-degree resolution. Bias adjustment is the process of statistically modifying climate model outputs to better align with observed climate data, thereby reducing systematic errors or biases. To ensure consistency, simulated climate data should be bias-adjusted using the same historical climate observations that were used to fit the empirical model. For example, ISIMIP’s current CMIP6 climate outputs are bias-adjusted against the W5E5 v2.0 climate dataset using the ISIMIP3BASD v2.5.0 approach.
-
-If you plan to use other climate observations or simulations that are not directly from ISIMIP, please ensure that you:
-
-* Bias-adjust and statistically downscale your data to 0.5-degree resolution. You can follow ISIMIP’s official ISIMIP3BASD v2.5.0 approach ([Lange, 2021](https://doi.org/10.5281/zenodo.4686991); [Lange, 2019](https://doi.org/10.5194/gmd-12-3055-2019)), or use the [basd software](https://jgcri.github.io/basd/) developed by the Pacific Northwest National Laboratory.
-* Format your data according to ISIMIP's guidelines for [preparing simulation files](https://www.isimip.org/protocol/preparing-simulation-files/) in terms of NetCDF headers, grid format, variables and dimensions, and the time axis.
-</div>
 
 The example below uses the monthly precipitation (mm) and temperature (degree C) projections from 2015 to 2030 To run this climate data processing, please provide the file paths for the precipitation and temperature NetCDF files using the `pr_ncdf` and `tas_ncdf` arguments, respectively, and adjust the other arguments accordingly to match the specifics of your climate data.
 

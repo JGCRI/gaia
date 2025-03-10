@@ -92,4 +92,4 @@ brew install gdal
 <!-- ------------------------>
 <!-- ------------------------>
 
-Whether you find a typo in the documentation, find a bug, or want to develop functionality that you think will make `gaia` more robust, you are welcome to contribute! The [contributing](https://github.com/JGCRI/gaia/blob/main/CONTRIBUTING.md) page will walk you through processes to contribute to `gaia`.
+Whether you find a typo in the documentation, find a bug, or want to develop functionality that you think will make `gaia` more robust, you are welcome to contribute! The [contributing](https://jgcri.github.io/gaia/CONTRIBUTING.html) page will walk you through processes to contribute to `gaia`.

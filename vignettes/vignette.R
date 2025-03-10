@@ -77,7 +77,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #    cfe = 'no-cfe',                         # label of CO2 fertilization effect in the formula (default is no CFE)
 #    gcam_version = 'gcam7',                 # output is different depending on the GCAM version (gcam6 or gcam7)
 #    use_default_coeff = FALSE,              # set to TRUE when there is no historical climate data available
-#    base_year = 2015                        # GCAM base year
+#    base_year = 2015,                       # GCAM base year
 #    start_year = 2015,                      # start year of the projected climate data
 #    end_year = 2030,                        # end year of the projected climate data
 #    smooth_window = 20,                     # number of years as smoothing window
@@ -88,6 +88,9 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #    output_dir = output_dir                 # path to the output folder
 #  )
 #  
+
+## ----eval=F, echo=F-----------------------------------------------------------
+#  crop_mirca$crop_name[!is.na(crop_mirca$crop_sage)]
 
 ## ----eval=F, echo=T-----------------------------------------------------------
 #  
