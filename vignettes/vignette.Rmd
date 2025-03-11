@@ -112,7 +112,7 @@ brew install gdal
 <!-------------------------->
 <!-------------------------->
 
-# Workflow
+# Workflow Overview
 
 <!-------------------------->
 <!-------------------------->
@@ -471,17 +471,21 @@ As stated in the previous [note](#note2), if users plan to use the WATCH forcing
 
 If you want to include new crops beyond these 17 crops, you will need to provide the data on their planting and harvesting times to update the crop calendars (see instructions in [crop_calendars](#crop_calendars)). Then, you need to provide historical climate forcing data following either [Example 1](#example-1) or [Example 2](#example-2) to conduct the empirical fitting for those new crops.
 
-Both [Example 1](#example-1) or [Example 2](#example-2) will generate intermediate and final outputs. Explore the results in your output folder. For a detailed explanation of the outputs, checkout [Example 3](#example-3)!
+Both [Example 1](#example-1) or [Example 2](#example-2) will generate intermediate and final outputs. Explore the results in your output folder. For a detailed explanation of the outputs, checkout [Explore Outputs](#explore-outputs) section!
 
 <br />
 
-## Example 3
+# Explore Outputs
 
-Example 1 and 2 demonstrates how to use the wrapper function `yield_impact` to streamline the entire workflows shown in [Figure 1](#figure1). In Example 3, we provide additional instructions on using each function described in the [Workflow](#workflow) section with the example data and explain the associated outputs and diagnostic plots if any. This section can also help you better understand each step, and allow you to make changes to certain steps if needed.
+[Example 1](#example-1) and [Example 2](#example-2) demonstrate how to use the wrapper function `yield_impact` to streamline the entire workflows shown in [Figure 1](#figure1).
+
+In this Section, we provide additional details on using each function described in the [Workflow Overview](#workflow-overview) section with the example data and explain the associated outputs and diagnostic plots if any. **This section can help you better understand the workflow and the structure of the outputs, and allow you to make changes to certain steps (e.g., crop calendars) if needed.**
+
+If you have run [Example 1](#example-1) or [Example 2](#example-2) successfully, you should have all the outputs available. However, you may choose to run the code snippet within each subsection to regenerate these outputs if you prefer.
 
 <br />
 
-### weighted_climate
+## weighted_climate
 
 ---
 
@@ -543,7 +547,7 @@ knitr::kable(input_climate[1:12],
 
 <br />
 
-### crop_calendars
+## crop_calendars
 
 ---
 
@@ -610,13 +614,13 @@ To add a new crop, simply follow the established crop calendar format similar to
 
 # adding a new crop: oil_palm. The crop name should follow the crop names listed above.
 # Construct the structure of the data with oil_palm
-crop_add <- expand.grid(iso = c('cog', 'gha', 'lbr'),
+crop_add <- expand.grid(iso = c('ago', 'gha', 'lbr'),
                         crops = c(names(crop_cal)[2:(ncol(crop_cal) - 2)], 'oil_palm')) %>%
   dplyr::mutate(value = ifelse(crops == 'oil_palm', 1, 0)) %>% 
   tidyr::pivot_wider(names_from = 'crops', values_from = 'value', values_fill = 0)
 
 # planting and harvesting month for countries with oil_palm
-crop_harvest_plant <- data.frame(iso = c('cog', 'gha', 'lbr'),
+crop_harvest_plant <- data.frame(iso = c('ago', 'gha', 'lbr'),
                                  plant = c(2, 2, 2),
                                  harvest  = c(9, 10, 9))
 
@@ -627,7 +631,8 @@ crop_add <- dplyr::left_join(crop_add, crop_harvest_plant, by = 'iso')
 crop_cal_update <- crop_cal %>% 
   dplyr::bind_rows(crop_add) %>% 
   tidyr::replace_na(list(oil_palm = 0)) %>% 
-  dplyr::select(-plant, -harvest, everything(), plant, harvest)
+  dplyr::select(-plant, -harvest, everything(), plant, harvest) %>% 
+  dplyr::arrange(iso)
 
 # view updated crop calendar
 crop_cal_update
@@ -675,7 +680,7 @@ Or, you can provide the path to your updated crop calendar file to `crop_calenda
 
 <br />
 
-### data_aggregation
+## data_aggregation
 
 ---
 
@@ -741,7 +746,7 @@ knitr::kable(crop_projection[1:10],
 
 <br />
 
-### yield_regression
+## yield_regression
 
 ---
 
@@ -804,7 +809,7 @@ knitr::kable(fit_model[1:10],
 
 <br />
 
-### yield_shock_projection
+## yield_shock_projection
 
 ---
 
@@ -890,7 +895,7 @@ knitr::kable(smooth_yield[1:10],
 
 <br />
 
-### gcam_agprodchange
+## gcam_agprodchange
 
 ---
 

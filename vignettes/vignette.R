@@ -192,13 +192,13 @@ knitr::kable(crop_cal[1:10],
 
 # adding a new crop: oil_palm. The crop name should follow the crop names listed above.
 # Construct the structure of the data with oil_palm
-crop_add <- expand.grid(iso = c('cog', 'gha', 'lbr'),
+crop_add <- expand.grid(iso = c('ago', 'gha', 'lbr'),
                         crops = c(names(crop_cal)[2:(ncol(crop_cal) - 2)], 'oil_palm')) %>%
   dplyr::mutate(value = ifelse(crops == 'oil_palm', 1, 0)) %>% 
   tidyr::pivot_wider(names_from = 'crops', values_from = 'value', values_fill = 0)
 
 # planting and harvesting month for countries with oil_palm
-crop_harvest_plant <- data.frame(iso = c('cog', 'gha', 'lbr'),
+crop_harvest_plant <- data.frame(iso = c('ago', 'gha', 'lbr'),
                                  plant = c(2, 2, 2),
                                  harvest  = c(9, 10, 9))
 
@@ -209,7 +209,8 @@ crop_add <- dplyr::left_join(crop_add, crop_harvest_plant, by = 'iso')
 crop_cal_update <- crop_cal %>% 
   dplyr::bind_rows(crop_add) %>% 
   tidyr::replace_na(list(oil_palm = 0)) %>% 
-  dplyr::select(-plant, -harvest, everything(), plant, harvest)
+  dplyr::select(-plant, -harvest, everything(), plant, harvest) %>% 
+  dplyr::arrange(iso)
 
 # view updated crop calendar
 crop_cal_update
