@@ -145,9 +145,11 @@ at its core, integrated into an efficient modular structure. This
 architecture streamlines the entire workflow. This workflow includes raw
 climate and crop data processing, empirical model fitting, yield shock
 projections under future climate scenarios, and agricultural
-productivity change calculation for GCAM. The modular design also
-facilitates comprehensive diagnostic outputs, enhancing the tool’s
-utility for researchers and policymakers.</p>
+productivity change calculation for the <a href="https://github.com/JGCRI/gcam-core" class="external-link">Global Change Analysis Model
+(GCAM)</a> (<a href="https://doi.org/10.5194/gmd-12-677-2019" class="external-link">Calvin et
+al., 2019</a>). The modular design also facilitates comprehensive
+diagnostic outputs, enhancing the tool’s utility for researchers and
+policymakers.</p>
 <p>The primary functionality of <code>gaia</code> is encapsulated in the
 <code>yield_impact</code> wrapper function, which executes the entire
 workflow from climate data processing to yield shock estimation. Users
@@ -155,11 +157,11 @@ can also execute individual functions to work through the main steps of
 the process (<a href="#figure1">Figure 1</a>).</p>
 <ol style="list-style-type: decimal">
 <li><p><a href="#weighted_climate"><code>weighted_climate</code></a>:
-Processes CMIP climate NetCDF data in accordance with the <a href="https://www.isimip.org/protocol/preparing-simulation-files/" title="Here we specifically require the bias-adjusted and statistically downscaled CMIP climate data following ISIMIP's protocols" class="external-link">ISIMIP
+Processes CMIP6 daily or monthly climate NetCDF data in accordance with
+the <a href="https://www.isimip.org/protocol/preparing-simulation-files/" title="Here we specifically require the bias-adjusted and statistically downscaled CMIP climate data following ISIMIP's protocols" class="external-link">ISIMIP
 simulation protocols</a> and calculates cropland-weighted precipitation
 and temperature at the country level, differentiated by crop type and
-irrigation type. The function accepts both daily or monthly climate data
-in NetCDF format that follows ISIMIP protocols.</p></li>
+irrigation type.</p></li>
 <li><p><a href="#crop_calendars"><code>crop_calendars</code></a>:
 Generates crop planting months for each country and crop based on crop
 calendar data <a href="https://doi.org/10.1111/j.1466-8238.2010.00551.x" class="external-link">Sacks et al.,
@@ -171,11 +173,11 @@ projected periods. This function prepares climate and yield data for
 subsequent model fitting.</p></li>
 <li><p><a href="#yield_regression"><code>yield_regression</code></a>:
 Performs regression analysis fitted with historical annual crop yields,
-monthly growing season temperature and precipitation, CO2
-concentrations, GDP per capita, and year. The default econometric model
+growing season monthly temperature and precipitation, CO<sub>2</sub>
+concentrations, and GDP per capita. The default econometric model
 applied in <code>gaia</code> is from <a href="https://doi.org/10.1088/1748-9326/abadcb" class="external-link">Waldhoff et al.,
 (2020)</a>. User can specify alternative formulas that are consistent
-with the data processed in <code>data_aggregation.</code></p></li>
+with the data processed in <code>data_aggregation</code>.</p></li>
 <li><p><a href="#yield_shock_projection"><code>yield_shock_projection</code></a>:
 Projects yield shocks for future climate scenarios using the fitted
 model and temperature, precipitation, and CO2 projections from the
@@ -210,13 +212,13 @@ variations using empirical econometric model.
 <img src="vignetteFigs%2Fdivider.png"></p>
 <p><code>gaia</code> requires global climate data from the
 Inter-Sectoral Impact Model Intercomparison Project (<a href="https://www.isimip.org/" class="external-link">ISIMIP</a>) or data formatted according
-to ISIMIP protocols. Additionally, <code>gaia</code> supports climate
-data in both daily and monthly time step. Due to the large size of
-global climate data, we provide two types of example datasets tailored
-to different user needs.</p>
+to <a href="https://www.isimip.org/protocol/preparing-simulation-files" class="external-link">ISIMIP
+simulation protocols</a>. Additionally, <code>gaia</code> supports
+climate data in both daily and monthly time step. Due to the large size
+of global climate data, we provide two types of example datasets
+tailored to different user needs.</p>
 <ul>
-<li>
-<a href="#example-data-1-quick-start-dataset">Example Data 1</a>:
+<li><p><a href="#example-data-1-quick-start-dataset">Example Data 1</a>:
 This pre-processed climate dataset allows users to quickly run
 <code>gaia</code> <strong>without</strong> the need to process raw
 climate NetCDF data. It is an output from the
@@ -225,19 +227,59 @@ NetCDF data into cropland-weighted climate data by country. This dataset
 includes both historical and future pre-processed cropland-weighted
 precipitation and temperature by country. If you want to quickly test
 <code>gaia</code> and view the outputs, this is the easiest way to get
-started.</li>
-<li>
-<a href="#example-data-2-raw-climate-data">Example Data 2</a>: This
-climate dataset is designed for users who want to process raw climate
-NetCDF data using the <code><a href="../reference/weighted_climate.html">gaia::weighted_climate</a></code> function. It
-includes global monthly precipitation and temperature NetCDF files at a
-0.5-degree resolution, covering the period from 2015 to 2030. This
-projected climate is bias-adjusted and statistically downscaled (via
-ISIMIP3BASD v2.5.0 approach <a href="https://doi.org/10.5281/zenodo.4686991" class="external-link">Lange, 2021</a>; <a href="https://doi.org/10.5194/gmd-12-3055-2019" class="external-link">Lange, 2019</a>) climate
-from CMIP6 model CanESM5 under SSP245 scenario (<a href="https://doi.org/10.22033/ESGF/CMIP6.3685" class="external-link">Swart et al., 2019</a>).
-Processing this data may take some time. If you intend to use your own
-climate datasets, this example will help you get set up.</li>
+started.</p></li>
+<li><p><a href="#example-data-2-raw-climate-data">Example Data 2</a>:
+This climate dataset is designed for users who want to process raw
+climate NetCDF data using the <code><a href="../reference/weighted_climate.html">gaia::weighted_climate</a></code>
+function. It includes global monthly precipitation and temperature
+NetCDF files at a 0.5-degree resolution, covering the period from 2015
+to 2030. The example climate data is derived from the CanESM5 global
+climate model (GCM) under the Shared Socioeconomic
+Pathway-Representative Concentration Pathway (SSP-RCP) 2-4.5 scenario
+(<a href="https://doi.org/10.5194/gmd-9-3461-2016" class="external-link">O’Neil et al.,
+2016</a>), also referred to as SSP245, as part of the CMIP6 projections
+(<a href="https://doi.org/10.22033/ESGF/CMIP6.3685" class="external-link">Swart et al.,
+2019</a>). This climate projection has been bias-adjusted and
+statistically downscaled using the ISIMIP3BASD v2.5.0 approach (<a href="https://doi.org/10.5281/zenodo.4686991" class="external-link">Lange, 2021</a>; <a href="https://doi.org/10.5194/gmd-12-3055-2019" class="external-link">Lange, 2019</a>).
+Processing this data may take some time. Please note that the selection
+of GCMs and SSP-RCP scenarios is not part of <code>gaia</code>
+framework. This dataset is provided solely for demonstration purpose.
+Users should choose climate projections that align with their research
+objectives. If you intend to use your own climate datasets, this example
+will serve as a helpful reference for setting up your workflow.</p></li>
 </ul>
+<a name="note1"></a>
+<div class="alert alert-info">
+<h5 class="alert-heading">
+NOTE!
+</h5>
+<p class="mb-0">
+</p>
+<p>ISIMIP provides a range of bias-adjusted and statistically downscaled
+climate forcing data at a 0.5-degree resolution. Bias adjustment is the
+process of statistically modifying climate model outputs to better align
+with observed climate data, thereby reducing systematic errors or
+biases. To ensure consistency, simulated climate data should be
+bias-adjusted using the same historical climate observations that were
+used to fit the empirical model. For example, ISIMIP’s current CMIP6
+climate outputs are bias-adjusted against the W5E5 v2.0 climate dataset
+using the ISIMIP3BASD v2.5.0 approach.</p>
+<p>If you plan to use other climate observations or simulations that are
+not directly from ISIMIP, please ensure that you:</p>
+<ul>
+<li>Bias-adjust and statistically downscale your data to 0.5-degree
+resolution. You can follow ISIMIP’s official ISIMIP3BASD v2.5.0 approach
+(<a href="https://doi.org/10.5281/zenodo.4686991" class="external-link">Lange, 2021</a>; <a href="https://doi.org/10.5194/gmd-12-3055-2019" class="external-link">Lange, 2019</a>), or use
+the <a href="https://jgcri.github.io/basd/" class="external-link">basd software</a> developed
+by the Pacific Northwest National Laboratory.</li>
+<li>Format your data according to ISIMIP’s guidelines for <a href="https://www.isimip.org/protocol/preparing-simulation-files/" class="external-link">preparing
+simulation files</a> in terms of NetCDF headers, grid format, variables
+and dimensions, and the time axis.
+
+</li>
+</ul>
+</div>
+
 <p><br></p>
 <div class="section level3">
 <h3 id="example-data-1-quick-start-dataset">Example Data 1: Quick Start Dataset<a class="anchor" aria-label="anchor" href="#example-data-1-quick-start-dataset"></a>
@@ -246,11 +288,13 @@ climate datasets, this example will help you get set up.</li>
 dataset includes both historical climate observations (1951-2001) and
 future climate projections (2015-2100), weighted by cropland areas and
 formatted in a tabular structure (see <a href="#table1">Table 1</a>), as
-required by <code>gaia</code>. The historical climate is from WATCH
-dataset and the projected climate is from CanESM5 global climate model
-under SSP245 scenario. The cropland-area-weighted, country-level climate
-data contains monthly precipitation and temperature for 26 crop types,
-distinguishing between irrigated and rainfed areas.</p>
+required by <code>gaia</code>. The historical climate is from <a href="https://www.isimip.org/gettingstarted/input-data-bias-adjustment/details/3/" class="external-link">Water
+and Global Change (WATCH)</a> forcing data (<a href="https://doi.org/10.1175/2011JHM1369.1" class="external-link">Weedon et al., 2011</a>)
+and the climate projection is derived from <a href="https://www.isimip.org/gettingstarted/input-data-bias-adjustment/details/94/" class="external-link">CanESM5
+under SSP245 scenario</a> (<a href="https://doi.org/10.22033/ESGF/CMIP6.3685" class="external-link">Swart et al., 2019</a>).
+The cropland-area-weighted, country-level climate data contains monthly
+precipitation and temperature for 26 crop types, distinguishing between
+irrigated and rainfed areas.</p>
 <p>There are two options to download the data:</p>
 <ul>
 <li>
@@ -285,10 +329,14 @@ function following the code chunk below.</li>
 <span><span class="co"># future projected climate</span></span>
 <span><span class="va">climate_impact_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">'canesm5'</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
+<a name="note2"></a>
 <div class="alert alert-info">
-<p><strong>NOTE!</strong> The default example historical climate data
-provided in <a href="#example-data-1-quick-start-dataset">example data
-1</a> is based on WATCH climate observations (<a href="https://doi.org/10.1175/2011JHM1369.1" class="external-link">Weedon et al., (2011)</a>),
+<h5 class="alert-heading">
+NOTE!
+</h5>
+<p class="mb-0">
+The default example historical climate data provided in <a href="#example-data-1-quick-start-dataset">example data 1</a> is based
+on WATCH climate observations (<a href="https://doi.org/10.1175/2011JHM1369.1" class="external-link">Weedon et al., (2011)</a>),
 which were used in <a href="https://doi.org/10.1088/1748-9326/abadcb" class="external-link">Waldhoff et al.,
 (2020)</a> for empirical model fitting. If you do not intend to modify
 any assumptions or historical climate forcing for empirical model
@@ -299,8 +347,8 @@ argument <code>use_default_coeff = TRUE</code>. After loading the
 parameters of the default pre-fitted model. Alternatively, if you prefer
 to use different historical climate data other than the one from <a href="#example-data-1-quick-start-dataset">example data 1</a>, you can
 use <code>weighted_climate</code> function to generate cropland-weighted
-historical monthly precipitation and temperature following the <a href="#weighted_climate">weighted_climate instruction</a> under Example
-3.</p>
+historical monthly precipitation and temperature following the <a href="#weighted_climate">weighted_climate instruction</a> under <a href="#example-3">Example 3</a>.
+</p>
 </div>
 <p><br></p>
 </div>
@@ -368,13 +416,14 @@ function following the code chunk below.</li>
 <div class="alert alert-dismissible alert-warning">
 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 <h5 class="alert-heading">
-Warning!
+WARNING!
 </h5>
 <p class="mb-0">
 This example demonstrates the complete <code>gaia</code> model workflow,
 including processing the raw climate NetCDF data. Due to the large size
 of the climate dataset, this process may take up to an hour. For a
-quicker demonstration, please refer to <a href="#example-data-2-raw-climate-data">Example 2</a>.
+quicker demonstration, please refer to <a href="#example-2">Example
+2</a>.
 </p>
 </div>
 <!-- <div class="alert alert-info"> -->
@@ -401,46 +450,52 @@ entire workflow. For detailed explanations of each argument in
 page</a>.</p>
 <p>Intermediate outputs will be generated and saved to the
 user-specified output folder.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># load gaia</span></span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">library</span>(gaia)</span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co"># Path to the output folder. Change it to your desired location</span></span>
-<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>output_dir <span class="ot">&lt;-</span> <span class="st">'gaia_output'</span></span>
-<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a></span>
-<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="co"># Run gaia</span></span>
-<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="co"># The full run with raw future climate data can take up to an hour</span></span>
-<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>gaia<span class="sc">::</span><span class="fu">yield_impact</span>(</span>
-<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>  <span class="at">pr_hist_ncdf =</span> <span class="cn">NULL</span>,                    <span class="co"># path to historical precipitation NetCDF file (must follow ISIMIP format); only if you wish to use your own historical precipitation observation</span></span>
-<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>  <span class="at">tas_hist_ncdf =</span> <span class="cn">NULL</span>,                   <span class="co"># path to historical temperature NetCDF file (must follow ISIMIP format); only if you wish to use your own historical temperature observation</span></span>
-<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>  <span class="at">pr_proj_ncdf =</span> pr_projection_file,      <span class="co"># path to future projected precipitation NetCDF file (must follow ISIMIP format)</span></span>
-<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>  <span class="at">tas_proj_ncdf =</span> tas_projection_file,    <span class="co"># path to future projected temperature NetCDF file (must follow ISIMIP format)</span></span>
-<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>  <span class="at">timestep =</span> <span class="st">'monthly'</span>,                   <span class="co"># specify the time step of the NetCDF data (monthly or daily)</span></span>
-<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>  <span class="at">climate_hist_dir =</span> climate_hist_dir,    <span class="co"># path to the folder that holds cropland weighted historical climate observations</span></span>
-<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>  <span class="at">historical_periods =</span> <span class="fu">c</span>(<span class="dv">1960</span><span class="sc">:</span><span class="dv">2001</span>),      <span class="co"># vector of historical years selected for fitting</span></span>
-<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a>  <span class="at">climate_model =</span> <span class="st">'canesm5'</span>,              <span class="co"># label of climate model name</span></span>
-<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a>  <span class="at">climate_scenario =</span> <span class="st">'ssp245'</span>,            <span class="co"># label of climate scenario name</span></span>
-<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a>  <span class="at">member =</span> <span class="st">'r1i1p1f1'</span>,                    <span class="co"># label of ensemble member name</span></span>
-<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a>  <span class="at">bias_adj =</span> <span class="st">'w5e5'</span>,                      <span class="co"># label of climate data for bias adjustment for the global climate model (GCM)</span></span>
-<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a>  <span class="at">cfe =</span> <span class="st">'no-cfe'</span>,                         <span class="co"># label of CO2 fertilization effect in the formula (default is no CFE)</span></span>
-<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a>  <span class="at">gcam_version =</span> <span class="st">'gcam7'</span>,                 <span class="co"># output is different depending on the GCAM version (gcam6 or gcam7)</span></span>
-<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a>  <span class="at">use_default_coeff =</span> <span class="cn">FALSE</span>,              <span class="co"># set to TRUE when there is no historical climate data available</span></span>
-<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a>  <span class="at">base_year =</span> <span class="dv">2015</span>                        <span class="co"># GCAM base year</span></span>
-<span id="cb11-25"><a href="#cb11-25" tabindex="-1"></a>  <span class="at">start_year =</span> <span class="dv">2015</span>,                      <span class="co"># start year of the projected climate data</span></span>
-<span id="cb11-26"><a href="#cb11-26" tabindex="-1"></a>  <span class="at">end_year =</span> <span class="dv">2030</span>,                        <span class="co"># end year of the projected climate data</span></span>
-<span id="cb11-27"><a href="#cb11-27" tabindex="-1"></a>  <span class="at">smooth_window =</span> <span class="dv">20</span>,                     <span class="co"># number of years as smoothing window</span></span>
-<span id="cb11-28"><a href="#cb11-28" tabindex="-1"></a>  <span class="at">co2_hist =</span> <span class="cn">NULL</span>,                        <span class="co"># historical annual CO2 concentration. If NULL, will use default value</span></span>
-<span id="cb11-29"><a href="#cb11-29" tabindex="-1"></a>  <span class="at">co2_proj =</span> <span class="cn">NULL</span>,                        <span class="co"># projected annual CO2 concentration. If NULL, will use default value</span></span>
-<span id="cb11-30"><a href="#cb11-30" tabindex="-1"></a>  <span class="at">crop_select =</span> <span class="cn">NULL</span>,                     <span class="co"># set to NULL for the default crops</span></span>
-<span id="cb11-31"><a href="#cb11-31" tabindex="-1"></a>  <span class="at">diagnostics =</span> <span class="cn">TRUE</span>,                     <span class="co"># set to TRUE to output diagnostic plots</span></span>
-<span id="cb11-32"><a href="#cb11-32" tabindex="-1"></a>  <span class="at">output_dir =</span> output_dir                 <span class="co"># path to the output folder</span></span>
-<span id="cb11-33"><a href="#cb11-33" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># load gaia</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JGCRI/gaia" class="external-link">gaia</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Path to the output folder. Change it to your desired location</span></span>
+<span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="st">'gaia_output'</span></span>
+<span></span>
+<span><span class="co"># Run gaia</span></span>
+<span><span class="co"># The full run with raw future climate data can take up to an hour</span></span>
+<span><span class="fu">gaia</span><span class="fu">::</span><span class="fu"><a href="../reference/yield_impact.html">yield_impact</a></span><span class="op">(</span></span>
+<span>  pr_hist_ncdf <span class="op">=</span> <span class="cn">NULL</span>,                    <span class="co"># path to historical precipitation NetCDF file (must follow ISIMIP format); only if you wish to use your own historical precipitation observation</span></span>
+<span>  tas_hist_ncdf <span class="op">=</span> <span class="cn">NULL</span>,                   <span class="co"># path to historical temperature NetCDF file (must follow ISIMIP format); only if you wish to use your own historical temperature observation</span></span>
+<span>  pr_proj_ncdf <span class="op">=</span> <span class="va">pr_projection_file</span>,      <span class="co"># path to future projected precipitation NetCDF file (must follow ISIMIP format)</span></span>
+<span>  tas_proj_ncdf <span class="op">=</span> <span class="va">tas_projection_file</span>,    <span class="co"># path to future projected temperature NetCDF file (must follow ISIMIP format)</span></span>
+<span>  timestep <span class="op">=</span> <span class="st">'monthly'</span>,                   <span class="co"># specify the time step of the NetCDF data (monthly or daily)</span></span>
+<span>  climate_hist_dir <span class="op">=</span> <span class="va">climate_hist_dir</span>,    <span class="co"># path to the folder that holds cropland weighted historical climate observations</span></span>
+<span>  historical_periods <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1960</span><span class="op">:</span><span class="fl">2001</span><span class="op">)</span>,      <span class="co"># vector of historical years selected for fitting</span></span>
+<span>  climate_model <span class="op">=</span> <span class="st">'canesm5'</span>,              <span class="co"># label of climate model name</span></span>
+<span>  climate_scenario <span class="op">=</span> <span class="st">'ssp245'</span>,            <span class="co"># label of climate scenario name</span></span>
+<span>  member <span class="op">=</span> <span class="st">'r1i1p1f1'</span>,                    <span class="co"># label of ensemble member name</span></span>
+<span>  bias_adj <span class="op">=</span> <span class="st">'w5e5'</span>,                      <span class="co"># label of climate data for bias adjustment for the global climate model (GCM)</span></span>
+<span>  cfe <span class="op">=</span> <span class="st">'no-cfe'</span>,                         <span class="co"># label of CO2 fertilization effect in the formula (default is no CFE)</span></span>
+<span>  gcam_version <span class="op">=</span> <span class="st">'gcam7'</span>,                 <span class="co"># output is different depending on the GCAM version (gcam6 or gcam7)</span></span>
+<span>  use_default_coeff <span class="op">=</span> <span class="cn">FALSE</span>,              <span class="co"># set to TRUE when there is no historical climate data available</span></span>
+<span>  base_year <span class="op">=</span> <span class="fl">2015</span>,                       <span class="co"># GCAM base year</span></span>
+<span>  start_year <span class="op">=</span> <span class="fl">2015</span>,                      <span class="co"># start year of the projected climate data</span></span>
+<span>  end_year <span class="op">=</span> <span class="fl">2030</span>,                        <span class="co"># end year of the projected climate data</span></span>
+<span>  smooth_window <span class="op">=</span> <span class="fl">20</span>,                     <span class="co"># number of years as smoothing window</span></span>
+<span>  co2_hist <span class="op">=</span> <span class="cn">NULL</span>,                        <span class="co"># historical annual CO2 concentration. If NULL, will use default value</span></span>
+<span>  co2_proj <span class="op">=</span> <span class="cn">NULL</span>,                        <span class="co"># projected annual CO2 concentration. If NULL, will use default value</span></span>
+<span>  crop_select <span class="op">=</span> <span class="cn">NULL</span>,                     <span class="co"># set to NULL for the default crops</span></span>
+<span>  diagnostics <span class="op">=</span> <span class="cn">TRUE</span>,                     <span class="co"># set to TRUE to output diagnostic plots</span></span>
+<span>  output_dir <span class="op">=</span> <span class="va">output_dir</span>                 <span class="co"># path to the output folder</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <div class="alert alert-info">
-<p><strong>NOTE!</strong> The arguments <code>climate_model</code>,
-<code>climate_scenario</code>, <code>member</code>,
-<code>bias_adj</code>, and <code>cfe</code> require specific strings
-that provide climate model metadata in the output files. These arguments
-do not impact the <code>gaia</code> model simulation itself; they are
-only used to populate climate data metadata in the outputs.</p>
+<h5 class="alert-heading">
+NOTE!
+</h5>
+<p class="mb-0">
+The arguments <code>climate_model</code>, <code>climate_scenario</code>,
+<code>member</code>, <code>bias_adj</code>, and <code>cfe</code> require
+specific strings that provide climate model metadata in the output
+files. These arguments do not impact the <code>gaia</code> model
+simulation itself; they are only used to populate climate data metadata
+in the outputs.
+</p>
 </div>
 <p><br></p>
 </div>
@@ -484,8 +539,26 @@ weighted climate data requires only a few minutes.</p>
 <span>  diagnostics <span class="op">=</span> <span class="cn">TRUE</span>,                     <span class="co"># set to TRUE to output diagnostic plots</span></span>
 <span>  output_dir <span class="op">=</span> <span class="va">output_dir</span>                 <span class="co"># path to the output folder</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Explore the results in your output folder. For a detailed explanation
-of the output, checkout <a href="#example-3">Example 3</a>!</p>
+<p>As stated in the previous <a href="#note2">note</a>, if users plan to
+use the WATCH forcing data from our <a href="#example-data-1-quick-start-dataset">example data 1</a> for
+empirical model fitting, <code>gaia</code> has already stored the
+corresponding fitted coefficients. To use these pre-fitted regression
+coefficients, simply set <code>use_default_coeff = TRUE</code> and
+<code>climate_hist_dir = NULL</code> in the example above. This simply
+save some time to rerun the model regression. However, the pre-fitted
+coefficients are only available for limited selection of 17 crops,
+including barley, cassava, cotton, groundnuts, maize, millet, pulses,
+rape_seed, rice, root_tuber, rye, sorghum, soybean, sugarbeet,
+sugarcane, sunflower, and wheat.</p>
+<p>If you want to include new crops beyond these 17 crops, you will need
+to provide the data on their planting and harvesting times to update the
+crop calendars (see instructions in <a href="#crop_calendars">crop_calendars</a>). Then, you need to provide
+historical climate forcing data following either <a href="#example-1">Example 1</a> or <a href="#example-2">Example 2</a> to
+conduct the empirical fitting for those new crops.</p>
+<p>Both <a href="#example-1">Example 1</a> or <a href="#example-2">Example 2</a> will generate intermediate and final
+outputs. Explore the results in your output folder. For a detailed
+explanation of the outputs, checkout <a href="#example-3">Example
+3</a>!</p>
 <p><br></p>
 </div>
 <div class="section level3">
@@ -511,30 +584,6 @@ follows the <a href="https://www.isimip.org/protocol/preparing-simulation-files/
 simulation protocols</a>. Our <a href="#example-data-1-quick-start-dataset">example data 1</a> includes
 the standard ISIMIP-style climate data for users to check the data
 structure and format.</p>
-<div class="alert alert-info">
-<p><strong>NOTE!</strong> ISIMIP provides a range of bias-adjusted and
-statistically downscaled climate forcing data at a 0.5-degree
-resolution. Bias adjustment is the process of statistically modifying
-climate model outputs to better align with observed climate data,
-thereby reducing systematic errors or biases. To ensure consistency,
-simulated climate data should be bias-adjusted using the same historical
-climate observations that were used to fit the empirical model. For
-example, ISIMIP’s current CMIP6 climate outputs are bias-adjusted
-against the W5E5 v2.0 climate dataset using the ISIMIP3BASD v2.5.0
-approach.</p>
-<p>If you plan to use other climate observations or simulations that are
-not directly from ISIMIP, please ensure that you:</p>
-<ul>
-<li>Bias-adjust and statistically downscale your data to 0.5-degree
-resolution. You can follow ISIMIP’s official ISIMIP3BASD v2.5.0 approach
-(<a href="https://doi.org/10.5281/zenodo.4686991" class="external-link">Lange, 2021</a>; <a href="https://doi.org/10.5194/gmd-12-3055-2019" class="external-link">Lange, 2019</a>), or use
-the <a href="https://jgcri.github.io/basd/" class="external-link">basd software</a> developed
-by the Pacific Northwest National Laboratory.</li>
-<li>Format your data according to ISIMIP’s guidelines for <a href="https://www.isimip.org/protocol/preparing-simulation-files/" class="external-link">preparing
-simulation files</a> in terms of NetCDF headers, grid format, variables
-and dimensions, and the time axis.</li>
-</ul>
-</div>
 <p>The example below uses the monthly precipitation (mm) and temperature
 (degree C) projections from 2015 to 2030 To run this climate data
 processing, please provide the file paths for the precipitation and
