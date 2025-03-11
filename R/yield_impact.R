@@ -121,6 +121,8 @@ yield_impact <- function(pr_hist_ncdf = NULL,
     climate_impact_dir = climate_impact_dir,
     climate_model = climate_model,
     climate_scenario = climate_scenario,
+    co2_hist = co2_hist,
+    co2_proj = co2_proj,
     output_dir = output_dir
   )
 
