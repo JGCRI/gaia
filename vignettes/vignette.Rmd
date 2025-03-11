@@ -126,7 +126,7 @@ brew install gdal
 The primary functionality of `gaia` is encapsulated in the `yield_impact` wrapper function, which executes the entire workflow from climate data processing to yield shock estimation. Users can also execute individual functions to work through the main steps of the process ([Figure 1](#figure1)).
 
 
-1. [`weighted_climate`](#weighted_climate): Processes CMIP6 daily or monthly climate NetCDF data in accordance with the [ISIMIP simulation protocols](https://www.isimip.org/protocol/preparing-simulation-files/ "Here we specifically require the bias-adjusted and statistically downscaled CMIP climate data following ISIMIP's protocols") and calculates cropland-weighted precipitation and temperature at the country level, differentiated by crop type and irrigation type.
+1. [`weighted_climate`](#weighted_climate): Processes CMIP6 daily or monthly climate NetCDF data formatted in accordance with the [ISIMIP simulation protocols](https://www.isimip.org/protocol/preparing-simulation-files/ "Here we specifically require the bias-adjusted and statistically downscaled CMIP climate data following ISIMIP's protocols") (more details [here](#note3)) and calculates cropland-weighted precipitation and temperature at the country level, differentiated by crop type and irrigation type.
 
 2. [`crop_calendars`](#crop_calendars): Generates crop planting months for each country and crop based on crop calendar data [Sacks et al., (2010)](https://doi.org/10.1111/j.1466-8238.2010.00551.x).
 
@@ -172,7 +172,7 @@ The primary functionality of `gaia` is encapsulated in the `yield_impact` wrappe
 If you plan to use other climate observations or simulations that are not directly from ISIMIP, please ensure that you:
 
 * Bias-adjust and statistically downscale your data to 0.5-degree resolution. You can follow ISIMIP’s official ISIMIP3BASD v2.5.0 approach ([Lange, 2021](https://doi.org/10.5281/zenodo.4686991); [Lange, 2019](https://doi.org/10.5194/gmd-12-3055-2019)), or use the [basd software](https://jgcri.github.io/basd/) developed by the Pacific Northwest National Laboratory.
-* Format your data according to ISIMIP's guidelines for [preparing simulation files](https://www.isimip.org/protocol/preparing-simulation-files/) in terms of NetCDF headers, grid format, variables and dimensions, and the time axis.</p>
+* Format your data according to ISIMIP's guidelines for [preparing simulation files](https://www.isimip.org/protocol/preparing-simulation-files/) in terms of NetCDF headers, grid format, variables and dimensions, and the time axis. More tips can be found [here](#note3).</p>
 </div>
 
 <br />
@@ -271,6 +271,84 @@ tas_projection_file <- file.path(data_dir, 'tas_monthly_canesm5_w5e5_ssp245_2015
 
 ```
 
+If you have your own climate forcing data, please follow the guidance below to format your data to be compatible with `gaia`.
+
+<a name="note3"></a>
+<details>
+<summary>Tips for Formatting Climate Forcing NetCDF (Click to Expand the Content)</summary>
+
+<div class="alert alert-info">
+<h4 class="alert-heading">Formatting Your Climate Forcing Data for gaia</h4>
+  <p class="mb-0">
+  `gaia` requires that the climate NetCDF files follow the basic formatting rules, specifically in terms of variables and dimensions, spatial resolution, and attributes instructed in [ISIMIP protocols](https://www.isimip.org/protocol/preparing-simulation-files). The followings are some of the [general formatting requirements](https://www.isimip.org/protocol/preparing-simulation-files/#general-formatting-requirements) from ISIMIP that are compatible with `gaia`.
+  
+**Variables and Dimensions**
+
+ * Variable names for precipitation and temperature should be `pr` and `tas`, respectively.
+ * Every dimension should have an associated coordinate variable. For `pr` and `tas`, they should include three dimensions (coordinate variables): `time`, `lon`, and `lat`.
+ * Precision of output variable is float.
+ * Precision of lon, lat and time should be double.
+ * First dimension should always be *time*.
+ * Identifier of dimensions and variables are all lowercase without spaces.
+ * For internal name of dimensions (coordinate variables), standard_name, long_name, unit and axis follow the conventions in the table below – the long_name definitions are not critical for the dimensions, but will give us warnings during the format checks.
+
+**Spatial Grid Resolution**
+
+Global grid ranges 89.75 to -89.75° latitude, and ‐179.75 to 179.75° longitude, i.e. 0.5° grid spacing, 360 rows and 720 columns, or 259200 grid cells total (corresponding to the resolution of the climate input data).
+
+ * Please report the output data row-wise starting at 89.75 and -179.75, and ending at -89.75 and 179.75.
+ * Reporting intervals are 0.5 degrees_east for longitude, and -0.5 degrees_north for latitude.
+ * CDO gridtype should be lonlat (not generic). This requires the longitude and latitude variable and dimension to be named 'lon' and 'lat'.
+ * Grid points you do not simulate should be filled with the missing_value and _FillValue marker (1.e+20f).
+
+**Attributes**
+
+ * Each variable's attribute should at least include the units. `pr` should be in the unit of *kg m-2 s-1*, and `tas` should be in the unit of *K*.
+ 
+ A Standar NetCDF header should look like this:
+ 
+ ```
+ dimensions:
+   lon = 720 ;
+   lat = 360 ;
+   time = UNLIMITED ;
+variables:
+   double lon(lon) ;
+       lon:standard_name = "longitude" ;
+       lon:long_name = "Longitude" ;
+       lon:units = "degrees_east" ;
+       lon:axis = "X" ;
+
+   double lat(lat) ;
+       lat:standard_name = "latitude" ;
+       lat:long_name = "Latitude" ;
+       lat:units = "degrees_north" ;
+       lat:axis = "Y" ;
+
+   double time(time) ;
+       time:standard_name = "time" ;
+       lat:long_name = "Time" ;
+       time:units = "days since 1661-01-01 00:00:00" ;
+       time:calendar = "proleptic_gregorian" ;
+       time:axis = "T" ;
+
+   float tas(time, lat, lon) ;
+       tas:_FillValue = 1.e+20f ;
+       tas:missing_value = 1.e+20f ;
+       tas:units = “K" ;
+       tas:standard_name = "air_temperature" ;
+       tas:long_name = “Near-Surface Air Temperature" ;
+
+// global attributes:
+       :contact = "Your Contact Info <email>";
+       :institution = "Your Institution";
+       :comment = "Your comments" ;
+```
+
+  </p>
+</div>
+
+</details>
 
 <br />
 

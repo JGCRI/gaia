@@ -89,9 +89,6 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #  )
 #  
 
-## ----eval=F, echo=F-----------------------------------------------------------
-#  crop_mirca$crop_name[!is.na(crop_mirca$crop_sage)]
-
 ## ----eval=F, echo=T-----------------------------------------------------------
 #  
 #  # load gaia
