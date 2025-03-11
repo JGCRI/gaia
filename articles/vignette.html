@@ -134,7 +134,7 @@ brew install gdal</code></pre>
 <!-------------------------->
 </div>
 <div class="section level2">
-<h2 id="workflow">Workflow<a class="anchor" aria-label="anchor" href="#workflow"></a>
+<h2 id="workflow-overview">Workflow Overview<a class="anchor" aria-label="anchor" href="#workflow-overview"></a>
 </h2>
 <!-------------------------->
 <!-------------------------->
@@ -157,11 +157,11 @@ can also execute individual functions to work through the main steps of
 the process (<a href="#figure1">Figure 1</a>).</p>
 <ol style="list-style-type: decimal">
 <li><p><a href="#weighted_climate"><code>weighted_climate</code></a>:
-Processes CMIP6 daily or monthly climate NetCDF data in accordance with
-the <a href="https://www.isimip.org/protocol/preparing-simulation-files/" title="Here we specifically require the bias-adjusted and statistically downscaled CMIP climate data following ISIMIP's protocols" class="external-link">ISIMIP
-simulation protocols</a> and calculates cropland-weighted precipitation
-and temperature at the country level, differentiated by crop type and
-irrigation type.</p></li>
+Processes CMIP6 daily or monthly climate NetCDF data formatted in
+accordance with the <a href="https://www.isimip.org/protocol/preparing-simulation-files/" title="Here we specifically require the bias-adjusted and statistically downscaled CMIP climate data following ISIMIP's protocols" class="external-link">ISIMIP
+simulation protocols</a> (more details <a href="#note3">here</a>) and
+calculates cropland-weighted precipitation and temperature at the
+country level, differentiated by crop type and irrigation type.</p></li>
 <li><p><a href="#crop_calendars"><code>crop_calendars</code></a>:
 Generates crop planting months for each country and crop based on crop
 calendar data <a href="https://doi.org/10.1111/j.1466-8238.2010.00551.x" class="external-link">Sacks et al.,
@@ -274,7 +274,7 @@ the <a href="https://jgcri.github.io/basd/" class="external-link">basd software<
 by the Pacific Northwest National Laboratory.</li>
 <li>Format your data according to ISIMIP’s guidelines for <a href="https://www.isimip.org/protocol/preparing-simulation-files/" class="external-link">preparing
 simulation files</a> in terms of NetCDF headers, grid format, variables
-and dimensions, and the time axis.
+and dimensions, and the time axis. More tips can be found <a href="#note3">here</a>.
 
 </li>
 </ul>
@@ -398,7 +398,102 @@ function following the code chunk below.</li>
 <span><span class="co"># projected climate data</span></span>
 <span><span class="va">pr_projection_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">'pr_monthly_canesm5_w5e5_ssp245_2015_2030.nc'</span><span class="op">)</span></span>
 <span><span class="va">tas_projection_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">data_dir</span>, <span class="st">'tas_monthly_canesm5_w5e5_ssp245_2015_2030.nc'</span><span class="op">)</span></span></code></pre></div>
-<p><br></p>
+<p>If you have your own climate forcing data, please follow the guidance
+below to format your data to be compatible with <code>gaia</code>.</p>
+<a name="note3"></a>
+<details><summary>
+Tips for Formatting Climate Forcing NetCDF (Click to Expand the Content)
+</summary><div class="alert alert-info">
+<h5 class="alert-heading">
+Formatting Your Climate Forcing Data for gaia
+</h5>
+<p class="mb-0">
+</p>
+<p><code>gaia</code> requires that the climate NetCDF files follow the
+basic formatting rules, specifically in terms of variables and
+dimensions, spatial resolution, and attributes instructed in <a href="https://www.isimip.org/protocol/preparing-simulation-files" class="external-link">ISIMIP
+protocols</a>. The followings are some of the <a href="https://www.isimip.org/protocol/preparing-simulation-files/#general-formatting-requirements" class="external-link">general
+formatting requirements</a> from ISIMIP that are compatible with
+<code>gaia</code>.</p>
+<p><strong>Variables and Dimensions</strong></p>
+<ul>
+<li>Variable names for precipitation and temperature should be
+<code>pr</code> and <code>tas</code>, respectively.</li>
+<li>Every dimension should have an associated coordinate variable. For
+<code>pr</code> and <code>tas</code>, they should include three
+dimensions (coordinate variables): <code>time</code>, <code>lon</code>,
+and <code>lat</code>.</li>
+<li>Precision of output variable is float.</li>
+<li>Precision of lon, lat and time should be double.</li>
+<li>First dimension should always be <em>time</em>.</li>
+<li>Identifier of dimensions and variables are all lowercase without
+spaces.</li>
+<li>For internal name of dimensions (coordinate variables),
+standard_name, long_name, unit and axis follow the conventions in the
+table below – the long_name definitions are not critical for the
+dimensions, but will give us warnings during the format checks.</li>
+</ul>
+<p><strong>Spatial Grid Resolution</strong></p>
+<p>Global grid ranges 89.75 to -89.75° latitude, and ‐179.75 to 179.75°
+longitude, i.e. 0.5° grid spacing, 360 rows and 720 columns, or 259200
+grid cells total (corresponding to the resolution of the climate input
+data).</p>
+<ul>
+<li>Please report the output data row-wise starting at 89.75 and
+-179.75, and ending at -89.75 and 179.75.</li>
+<li>Reporting intervals are 0.5 degrees_east for longitude, and -0.5
+degrees_north for latitude.</li>
+<li>CDO gridtype should be lonlat (not generic). This requires the
+longitude and latitude variable and dimension to be named ‘lon’ and
+‘lat’.</li>
+<li>Grid points you do not simulate should be filled with the
+missing_value and _FillValue marker (1.e+20f).</li>
+</ul>
+<p><strong>Attributes</strong></p>
+<ul>
+<li>Each variable’s attribute should at least include the units.
+<code>pr</code> should be in the unit of <em>kg m-2 s-1</em>, and
+<code>tas</code> should be in the unit of <em>K</em>.</li>
+</ul>
+<p>A Standar NetCDF header should look like this:</p>
+<pre><code> dimensions:
+   lon = 720 ;
+   lat = 360 ;
+   time = UNLIMITED ;
+variables:
+   double lon(lon) ;
+       lon:standard_name = "longitude" ;
+       lon:long_name = "Longitude" ;
+       lon:units = "degrees_east" ;
+       lon:axis = "X" ;
+
+   double lat(lat) ;
+       lat:standard_name = "latitude" ;
+       lat:long_name = "Latitude" ;
+       lat:units = "degrees_north" ;
+       lat:axis = "Y" ;
+
+   double time(time) ;
+       time:standard_name = "time" ;
+       lat:long_name = "Time" ;
+       time:units = "days since 1661-01-01 00:00:00" ;
+       time:calendar = "proleptic_gregorian" ;
+       time:axis = "T" ;
+
+   float tas(time, lat, lon) ;
+       tas:_FillValue = 1.e+20f ;
+       tas:missing_value = 1.e+20f ;
+       tas:units = “K" ;
+       tas:standard_name = "air_temperature" ;
+       tas:long_name = “Near-Surface Air Temperature" ;
+
+// global attributes:
+       :contact = "Your Contact Info &lt;email&gt;";
+       :institution = "Your Institution";
+       :comment = "Your comments" ;</code></pre>
+
+</div>
+</details><p><br></p>
 <!-------------------------->
 <!-------------------------->
 </div>
@@ -450,7 +545,7 @@ entire workflow. For detailed explanations of each argument in
 page</a>.</p>
 <p>Intermediate outputs will be generated and saved to the
 user-specified output folder.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load gaia</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JGCRI/gaia" class="external-link">gaia</a></span><span class="op">)</span></span>
 <span></span>
@@ -510,7 +605,7 @@ This example serves as a guide to help users format their own data to
 match the weighted climate data structure if their raw climate data
 differs from the ISIMIP format. Running <code>gaia</code> directly with
 weighted climate data requires only a few minutes.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load gaia</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JGCRI/gaia" class="external-link">gaia</a></span><span class="op">)</span></span>
 <span></span>
@@ -557,23 +652,31 @@ historical climate forcing data following either <a href="#example-1">Example 1<
 conduct the empirical fitting for those new crops.</p>
 <p>Both <a href="#example-1">Example 1</a> or <a href="#example-2">Example 2</a> will generate intermediate and final
 outputs. Explore the results in your output folder. For a detailed
-explanation of the outputs, checkout <a href="#example-3">Example
-3</a>!</p>
+explanation of the outputs, checkout <a href="#explore-outputs">Explore
+Outputs</a> section!</p>
 <p><br></p>
 </div>
-<div class="section level3">
-<h3 id="example-3">Example 3<a class="anchor" aria-label="anchor" href="#example-3"></a>
-</h3>
-<p>Example 1 and 2 demonstrates how to use the wrapper function
-<code>yield_impact</code> to streamline the entire workflows shown in <a href="#figure1">Figure 1</a>. In Example 3, we provide additional
-instructions on using each function described in the <a href="#workflow">Workflow</a> section with the example data and explain
-the associated outputs and diagnostic plots if any. This section can
-also help you better understand each step, and allow you to make changes
-to certain steps if needed.</p>
+</div>
+<div class="section level2">
+<h2 id="explore-outputs">Explore Outputs<a class="anchor" aria-label="anchor" href="#explore-outputs"></a>
+</h2>
+<p><a href="#example-1">Example 1</a> and <a href="#example-2">Example
+2</a> demonstrate how to use the wrapper function
+<code>yield_impact</code> to streamline the entire workflows shown in <a href="#figure1">Figure 1</a>.</p>
+<p>In this Section, we provide additional details on using each function
+described in the <a href="#workflow-overview">Workflow Overview</a>
+section with the example data and explain the associated outputs and
+diagnostic plots if any. <strong>This section can help you better
+understand the workflow and the structure of the outputs, and allow you
+to make changes to certain steps (e.g., crop calendars) if
+needed.</strong></p>
+<p>If you have run <a href="#example-1">Example 1</a> or <a href="#example-2">Example 2</a> successfully, you should have all the
+outputs available. However, you may choose to run the code snippet
+within each subsection to regenerate these outputs if you prefer.</p>
 <p><br></p>
-<div class="section level4">
-<h4 id="weighted_climate">weighted_climate<a class="anchor" aria-label="anchor" href="#weighted_climate"></a>
-</h4>
+<div class="section level3">
+<h3 id="weighted_climate">weighted_climate<a class="anchor" aria-label="anchor" href="#weighted_climate"></a>
+</h3>
 <hr>
 <p><code>weighted_climate</code> function calculates the
 cropland-weighted monthly precipitation and temperature for the
@@ -591,7 +694,7 @@ temperature NetCDF files using the <code>pr_ncdf</code> and
 <code>tas_ncdf</code> arguments, respectively, and adjust the other
 arguments accordingly to match the specifics of your climate data.</p>
 <p>Please note that this step may take up to an hour to complete.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JGCRI/gaia" class="external-link">gaia</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Path to the output folder where you wish to save the outputs. Change it accordingly</span></span>
@@ -11099,9 +11202,9 @@ country.
 </table>
 <p><br></p>
 </div>
-<div class="section level4">
-<h4 id="crop_calendars">crop_calendars<a class="anchor" aria-label="anchor" href="#crop_calendars"></a>
-</h4>
+<div class="section level3">
+<h3 id="crop_calendars">crop_calendars<a class="anchor" aria-label="anchor" href="#crop_calendars"></a>
+</h3>
 <hr>
 <p>The <code>crop_calendars</code> function calculates crop calendars
 based on the SAGE global crop planting and harvesting dates data (<a href="https://doi.org/10.1111/j.1466-8238.2010.00551.x" class="external-link">Sacks et al.,
@@ -11114,7 +11217,7 @@ et al., 2010</a>) as standard crop types. The code chunk below runs
 <code>rice</code>, <code>root_tuber</code>, <code>sorghum</code>,
 <code>soybean</code>, <code>sugarbeet</code>, <code>sugarcane</code>,
 <code>sunflower</code>, <code>wheat.</code></p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Path to the output folder where you wish to save the outputs. Change it accordingly</span></span>
 <span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="st">'gaia_output'</span></span>
 <span></span>
@@ -11646,7 +11749,7 @@ selection in <code>gaia</code> are based on the crop availability from
 both MIRCA2000 and SAGE crop types. Note that <a href="https://www.fao.org/faostat/en/#data/QCL/metadata" class="external-link">FAOSTAT</a>
 crops are categorized into MIRCA2000 crop category. The example below
 selects barley and millet in addition to the default ones.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># calculate crop calendars</span></span>
 <span><span class="va">crop_cal</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/crop_calendars.html">crop_calendars</a></span><span class="op">(</span>crop_select <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"barley"</span>, <span class="st">"millet"</span><span class="op">)</span>,</span>
 <span>                           output_dir <span class="op">=</span> <span class="va">output_dir</span><span class="op">)</span></span>
@@ -11671,16 +11774,16 @@ an example on how to add a crop to the crop calendar. The name of the
 new crops need to follow the format of the crops listed above (e.g., use
 <code>oil_palm</code> with underscore instead of
 <code>oil palm</code>).</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># adding a new crop: oil_palm. The crop name should follow the crop names listed above.</span></span>
 <span><span class="co"># Construct the structure of the data with oil_palm</span></span>
-<span><span class="va">crop_add</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>iso <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'cog'</span>, <span class="st">'gha'</span>, <span class="st">'lbr'</span><span class="op">)</span>,</span>
+<span><span class="va">crop_add</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span>iso <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ago'</span>, <span class="st">'gha'</span>, <span class="st">'lbr'</span><span class="op">)</span>,</span>
 <span>                        crops <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">crop_cal</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">crop_cal</span><span class="op">)</span> <span class="op">-</span> <span class="fl">2</span><span class="op">)</span><span class="op">]</span>, <span class="st">'oil_palm'</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">crops</span> <span class="op">==</span> <span class="st">'oil_palm'</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="st">'crops'</span>, values_from <span class="op">=</span> <span class="st">'value'</span>, values_fill <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># planting and harvesting month for countries with oil_palm</span></span>
-<span><span class="va">crop_harvest_plant</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>iso <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'cog'</span>, <span class="st">'gha'</span>, <span class="st">'lbr'</span><span class="op">)</span>,</span>
+<span><span class="va">crop_harvest_plant</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>iso <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ago'</span>, <span class="st">'gha'</span>, <span class="st">'lbr'</span><span class="op">)</span>,</span>
 <span>                                 plant <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>                                 harvest  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">9</span>, <span class="fl">10</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -11691,7 +11794,8 @@ new crops need to follow the format of the crops listed above (e.g., use
 <span><span class="va">crop_cal_update</span> <span class="op">&lt;-</span> <span class="va">crop_cal</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">crop_add</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/replace_na.html" class="external-link">replace_na</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>oil_palm <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">plant</span>, <span class="op">-</span><span class="va">harvest</span>, <span class="fu">everything</span><span class="op">(</span><span class="op">)</span>, <span class="va">plant</span>, <span class="va">harvest</span><span class="op">)</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">plant</span>, <span class="op">-</span><span class="va">harvest</span>, <span class="fu">everything</span><span class="op">(</span><span class="op">)</span>, <span class="va">plant</span>, <span class="va">harvest</span><span class="op">)</span> <span class="op">%&gt;%</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">iso</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># view updated crop calendar</span></span>
 <span><span class="va">crop_cal_update</span></span></code></pre></div>
@@ -11749,6 +11853,194 @@ harvest
 </th>
 </tr></thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+ago
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ago
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ago
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ago
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+9
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 alb
@@ -12031,194 +12323,6 @@ alb
 10
 </td>
 </tr>
-<tr>
-<td style="text-align:left;">
-alb
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-7
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-alb
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-8
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-alb
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-11
-</td>
-<td style="text-align:right;">
-6
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-alb
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-11
-</td>
-<td style="text-align:right;">
-6
-</td>
-</tr>
 </tbody>
 <tfoot>
 <tr>
@@ -12236,7 +12340,7 @@ alb
 <p>Save the updated crop calendar table to CSV. Below is an option to
 use gaia’s <code>output_data</code> function to write output. Users can
 also use other preferred ways to write output.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Optional: save the update crop calendar to CSV if you haven't already</span></span>
 <span><span class="co"># you can choose to use gaia's output_data function to write output</span></span>
 <span><span class="fu">gaia</span><span class="fu">::</span><span class="fu"><a href="../reference/output_data.html">output_data</a></span><span class="op">(</span></span>
@@ -12249,7 +12353,7 @@ path to your updated crop calendar file to
 <code>crop_calendar_file</code> argument in the
 <code>crop_calendar</code> function to run and the subsequent steps will
 use the crop calendar data you provided.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Path to the output folder where you wish to save the outputs. Change it accordingly</span></span>
 <span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="st">'gaia_output'</span></span>
 <span></span>
@@ -12262,16 +12366,16 @@ use the crop calendar data you provided.</p>
 with your updated crop calendar.</p>
 <p><br></p>
 </div>
-<div class="section level4">
-<h4 id="data_aggregation">data_aggregation<a class="anchor" aria-label="anchor" href="#data_aggregation"></a>
-</h4>
+<div class="section level3">
+<h3 id="data_aggregation">data_aggregation<a class="anchor" aria-label="anchor" href="#data_aggregation"></a>
+</h3>
 <hr>
 <p>The <code>data_aggregation</code> function calculates crop growing
 seasons using climate variables processed by
 <code>weighted_climate</code> along with crop calendars for both
 historical and projected periods. This function prepares climate and
 yield data for subsequent model fitting.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Path to the output folder where you wish to save the outputs. Change it accordingly</span></span>
 <span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="st">'gaia_output'</span></span>
 <span></span>
@@ -13186,9 +13290,9 @@ Argentina
 </table>
 <p><br></p>
 </div>
-<div class="section level4">
-<h4 id="yield_regression">yield_regression<a class="anchor" aria-label="anchor" href="#yield_regression"></a>
-</h4>
+<div class="section level3">
+<h3 id="yield_regression">yield_regression<a class="anchor" aria-label="anchor" href="#yield_regression"></a>
+</h3>
 <hr>
 <p>The <code><a href="../reference/yield_regression.html">gaia::yield_regression</a></code> function performs empirical
 model fitting and generates diagnostic plots comparing modeled yields to
@@ -13228,7 +13332,7 @@ define the response of log yield to average, minimum, and maximum
 precipitation.</p>
 <p>Running <code>yield_regression</code> is as simple as the code chunk
 below.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Path to the output folder where you wish to save the outputs. Change it accordingly</span></span>
 <span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="st">'gaia_output'</span></span>
 <span></span>
@@ -13472,9 +13576,9 @@ soybean.
 </p>
 <p><br></p>
 </div>
-<div class="section level4">
-<h4 id="yield_shock_projection">yield_shock_projection<a class="anchor" aria-label="anchor" href="#yield_shock_projection"></a>
-</h4>
+<div class="section level3">
+<h3 id="yield_shock_projection">yield_shock_projection<a class="anchor" aria-label="anchor" href="#yield_shock_projection"></a>
+</h3>
 <hr>
 <p>Once the <code>gaia</code> model has completed fitting, the
 <code><a href="../reference/yield_shock_projection.html">gaia::yield_shock_projection</a></code> function calculates the
@@ -13494,7 +13598,7 @@ at the base year will be set to 1. The results are provided in both
 as climate model, climate scenario, base year, start and end year of the
 climate data, and smooth window to the function. The code chunk below
 shows an example.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Path to the output folder where you wish to save the outputs. Change it accordingly</span></span>
 <span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="st">'gaia_output'</span></span>
 <span></span>
@@ -16764,9 +16868,9 @@ nga
 </p>
 <p><br></p>
 </div>
-<div class="section level4">
-<h4 id="gcam_agprodchange">gcam_agprodchange<a class="anchor" aria-label="anchor" href="#gcam_agprodchange"></a>
-</h4>
+<div class="section level3">
+<h3 id="gcam_agprodchange">gcam_agprodchange<a class="anchor" aria-label="anchor" href="#gcam_agprodchange"></a>
+</h3>
 <hr>
 <p>The <code>gcam_agprodchange</code> function is specifically designed
 for the Global Change Analysis Model (GCAM) <a href="https://doi.org/10.5194/gmd-12-677-2019" class="external-link">(Calvin et al.,
@@ -16782,7 +16886,7 @@ APG based on the yield shocks computed in the previous step. If
 <code>climate_scenario</code> is set to other strings that does not
 indicate <code>ssp</code> scenario, <code>gaia</code> will use the
 baseline APG without any socioeconomic impact.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Path to the output folder where you wish to save the outputs. Change it accordingly</span></span>
 <span><span class="va">output_dir</span> <span class="op">&lt;-</span> <span class="st">'gaia_output'</span></span>
 <span></span>
@@ -16827,7 +16931,6 @@ intersection.
 </p>
 <p><br></p>
 <p><a href="#top">Back to top</a></p>
-</div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
