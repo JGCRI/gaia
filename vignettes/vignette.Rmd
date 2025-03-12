@@ -198,7 +198,7 @@ data_dir <- 'path/to/downloaded/folder'
 library(gaia)
 
 # Path to the output folder. Change it to your desired location
-output_dir <- 'gaia_output'
+output_dir <- 'gaia_example/example_climate'
 
 # Cropland-weighted historical and future climate data
 data_dir <- gaia::get_example_data(
@@ -250,7 +250,7 @@ data_dir <- 'path/to/downloaded/folder'
 library(gaia)
 
 # Path to the output folder. Change it to your desired location
-output_dir <- 'gaia_output'
+output_dir <- 'gaia_example/example_climate'
 
 # Future Climate Data
 data_dir <- gaia::get_example_data(
@@ -389,7 +389,7 @@ Intermediate outputs will be generated and saved to the user-specified output fo
 library(gaia)
 
 # Path to the output folder. Change it to your desired location
-output_dir <- 'gaia_output'
+output_dir <- 'gaia_example/example_1_output'
 
 # Run gaia
 # The full run with raw future climate data can take up to an hour
@@ -439,7 +439,7 @@ This example only uses the example of **weighted climate data** as described in 
 library(gaia)
 
 # Path to the output folder. Change it to your desired location
-output_dir <- 'gaia_output'
+output_dir <- 'gaia_example/example_2_output'
 
 # Run gaia
 gaia::yield_impact(
@@ -481,7 +481,7 @@ Both [Example 1](#example-1) or [Example 2](#example-2) will generate intermedia
 
 In this Section, we provide additional details on using each function described in the [Workflow Overview](#workflow-overview) section with the example data and explain the associated outputs and diagnostic plots if any. **This section can help you better understand the workflow and the structure of the outputs, and allow you to make changes to certain steps (e.g., crop calendars) if needed.**
 
-If you have run [Example 1](#example-1) or [Example 2](#example-2) successfully, you should have all the outputs available. However, you may choose to run the code snippet within each subsection to regenerate these outputs if you prefer.
+If you have run [Example 1](#example-1) or [Example 2](#example-2) successfully, you should have all the outputs available. However, you may choose to run the code snippet within each subsection to regenerate these outputs if you prefer. Please note that running the following code snippets will overwrite the existing outputs in the corresponding `output_dir`.
 
 <br />
 
@@ -493,14 +493,14 @@ If you have run [Example 1](#example-1) or [Example 2](#example-2) successfully,
 
 The example below uses the monthly precipitation (mm) and temperature (degree C) projections from 2015 to 2030 To run this climate data processing, please provide the file paths for the precipitation and temperature NetCDF files using the `pr_ncdf` and `tas_ncdf` arguments, respectively, and adjust the other arguments accordingly to match the specifics of your climate data.
 
-Please note that this step may take up to an hour to complete.
+Please note that this step may take up to 10 minutes to complete.
 
 
 ```{r eval=F, echo=T}
 library(gaia)
 
 # Path to the output folder where you wish to save the outputs. Change it accordingly
-output_dir <- 'gaia_output'
+output_dir <- 'gaia_example/example_1_output'
 
 # calculate weigted climate
 weighted_climate(pr_ncdf = pr_projection_file ,
@@ -557,7 +557,7 @@ The `crop_calendars` function calculates crop calendars based on the SAGE global
 ```{r eval=F, echo=T}
 
 # Path to the output folder where you wish to save the outputs. Change it accordingly
-output_dir <- 'gaia_output'
+output_dir <- 'gaia_example/example_2_output'
 
 # calculate crop calendars
 crop_cal <- crop_calendars(output_dir = output_dir)
@@ -668,7 +668,7 @@ Once you've created your own crop calendar file, simply provide the path to your
 ```{r eval=F, echo=T}
 
 # Path to the output folder where you wish to save the outputs. Change it accordingly
-output_dir <- 'gaia_output'
+output_dir <- 'gaia_example/example_2_output'
 
 # crop calendars
 crop_cal <- crop_calendars(crop_calendar_file = 'path/to/your/crop/calendar/file',
@@ -689,7 +689,7 @@ The `data_aggregation` function calculates crop growing seasons using climate va
 ```{r eval=F, echo=T}
 
 # Path to the output folder where you wish to save the outputs. Change it accordingly
-output_dir <- 'gaia_output'
+output_dir <- 'gaia_example/example_2_output'
 
 # aggregate crop and climate information at the country level
 data_agg <- data_aggregation(climate_hist_dir = climate_hist_dir,
@@ -764,7 +764,7 @@ Running `yield_regression` is as simple as the code chunk below.
 ```{r eval=F, echo=T}
 
 # Path to the output folder where you wish to save the outputs. Change it accordingly
-output_dir <- 'gaia_output'
+output_dir <- 'gaia_example/example_2_output'
 
 # perform empirical regression
 yield_regression(diagnostics = TRUE,
@@ -822,7 +822,7 @@ To run `yield_shock_projection`, simply pass metadata such as climate model, cli
 ```{r eval=F, echo=T}
 
 # Path to the output folder where you wish to save the outputs. Change it accordingly
-output_dir <- 'gaia_output'
+output_dir <- 'gaia_example/example_2_output'
 
 # calculate projected yield shocks
 out_yield_shock <- yield_shock_projection(use_default_coeff = FALSE,
@@ -905,7 +905,7 @@ The `gcam_agprodchange` function is specifically designed for the Global Change 
 ```{r eval=F, echo=T}
 
 # Path to the output folder where you wish to save the outputs. Change it accordingly
-output_dir <- 'gaia_output'
+output_dir <- 'gaia_example/example_2_output'
 
 # calculate region-basin agricultural productivity growth rate for GCAM
 gcam_apg <- gcam_agprodchange(data = out_yield_shock,

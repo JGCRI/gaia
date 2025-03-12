@@ -10,7 +10,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #  library(gaia)
 #  
 #  # Path to the output folder. Change it to your desired location
-#  output_dir <- 'gaia_output'
+#  output_dir <- 'gaia_example/example_climate'
 #  
 #  # Cropland-weighted historical and future climate data
 #  data_dir <- gaia::get_example_data(
@@ -35,7 +35,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #  library(gaia)
 #  
 #  # Path to the output folder. Change it to your desired location
-#  output_dir <- 'gaia_output'
+#  output_dir <- 'gaia_example/example_climate'
 #  
 #  # Future Climate Data
 #  data_dir <- gaia::get_example_data(
@@ -58,7 +58,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #  library(gaia)
 #  
 #  # Path to the output folder. Change it to your desired location
-#  output_dir <- 'gaia_output'
+#  output_dir <- 'gaia_example/example_1_output'
 #  
 #  # Run gaia
 #  # The full run with raw future climate data can take up to an hour
@@ -95,7 +95,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #  library(gaia)
 #  
 #  # Path to the output folder. Change it to your desired location
-#  output_dir <- 'gaia_output'
+#  output_dir <- 'gaia_example/example_2_output'
 #  
 #  # Run gaia
 #  gaia::yield_impact(
@@ -125,7 +125,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 #  library(gaia)
 #  
 #  # Path to the output folder where you wish to save the outputs. Change it accordingly
-#  output_dir <- 'gaia_output'
+#  output_dir <- 'gaia_example/example_1_output'
 #  
 #  # calculate weigted climate
 #  weighted_climate(pr_ncdf = pr_projection_file ,
@@ -155,7 +155,7 @@ knitr::kable(input_climate[1:12],
 ## ----eval=F, echo=T-----------------------------------------------------------
 #  
 #  # Path to the output folder where you wish to save the outputs. Change it accordingly
-#  output_dir <- 'gaia_output'
+#  output_dir <- 'gaia_example/example_2_output'
 #  
 #  # calculate crop calendars
 #  crop_cal <- crop_calendars(output_dir = output_dir)
@@ -237,7 +237,7 @@ knitr::kable(crop_cal_update[1:10],
 ## ----eval=F, echo=T-----------------------------------------------------------
 #  
 #  # Path to the output folder where you wish to save the outputs. Change it accordingly
-#  output_dir <- 'gaia_output'
+#  output_dir <- 'gaia_example/example_2_output'
 #  
 #  # crop calendars
 #  crop_cal <- crop_calendars(crop_calendar_file = 'path/to/your/crop/calendar/file',
@@ -247,7 +247,7 @@ knitr::kable(crop_cal_update[1:10],
 ## ----eval=F, echo=T-----------------------------------------------------------
 #  
 #  # Path to the output folder where you wish to save the outputs. Change it accordingly
-#  output_dir <- 'gaia_output'
+#  output_dir <- 'gaia_example/example_2_output'
 #  
 #  # aggregate crop and climate information at the country level
 #  data_agg <- data_aggregation(climate_hist_dir = climate_hist_dir,
@@ -287,7 +287,7 @@ knitr::kable(crop_projection[1:10],
 ## ----eval=F, echo=T-----------------------------------------------------------
 #  
 #  # Path to the output folder where you wish to save the outputs. Change it accordingly
-#  output_dir <- 'gaia_output'
+#  output_dir <- 'gaia_example/example_2_output'
 #  
 #  # perform empirical regression
 #  yield_regression(diagnostics = TRUE,
@@ -311,7 +311,7 @@ knitr::kable(fit_model[1:10],
 ## ----eval=F, echo=T-----------------------------------------------------------
 #  
 #  # Path to the output folder where you wish to save the outputs. Change it accordingly
-#  output_dir <- 'gaia_output'
+#  output_dir <- 'gaia_example/example_2_output'
 #  
 #  # calculate projected yield shocks
 #  out_yield_shock <- yield_shock_projection(use_default_coeff = FALSE,
@@ -357,7 +357,7 @@ knitr::kable(smooth_yield[1:10],
 ## ----eval=F, echo=T-----------------------------------------------------------
 #  
 #  # Path to the output folder where you wish to save the outputs. Change it accordingly
-#  output_dir <- 'gaia_output'
+#  output_dir <- 'gaia_example/example_2_output'
 #  
 #  # calculate region-basin agricultural productivity growth rate for GCAM
 #  gcam_apg <- gcam_agprodchange(data = out_yield_shock,
