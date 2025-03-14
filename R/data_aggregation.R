@@ -26,7 +26,7 @@ data_aggregation <- function(climate_hist_dir = NULL,
   message("Starting Step: data_aggregation")
 
   # read crop calendar output from crop_calendars function
-  if(is..null(crop_calendar_file)){
+  if(is.null(crop_calendar_file)){
 
     # Use default crop_calendar.csv created from the workflow
     gaia::path_check(file.path(output_dir, "data_processed", "crop_calendar.csv"))
