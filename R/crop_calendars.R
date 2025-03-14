@@ -43,11 +43,14 @@ crop_calendars <- function(crop_calendar_file = NULL,
     d <- gaia::colname_replace(d, "Crop", "crop")
     d$crop <- tolower(d$crop)
 
+    # average days in a month
+    days_in_month <- 30.4
+
     # Average plant and harvest month
-    d$plant <- ifelse(d$Plant.start < d$Plant.end, ((d$Plant.start + d$Plant.end) / 2 / 30), ((d$Plant.start + d$Plant.end + 365) / 2 / 30))
+    d$plant <- ifelse(d$Plant.start < d$Plant.end, ((d$Plant.start + d$Plant.end) / 2 / days_in_month), ((d$Plant.start + d$Plant.end + 365) / 2 / days_in_month))
     d$plant <- ceiling(ifelse(d$plant > 12, d$plant - 12, d$plant))
     d$plant <- ifelse(d$crop == "sugarcane", 1, d$plant) # Sugarcane is a multiyear crop, will assume that 12 months preceding annual value equals growing season.
-    d$harvest <- ifelse(d$Harvest.start < d$Harvest.end, ((d$Harvest.start + d$Harvest.end) / 2) / 30, ((d$Harvest.start + d$Harvest.end + 365) / 2) / 30)
+    d$harvest <- ifelse(d$Harvest.start < d$Harvest.end, ((d$Harvest.start + d$Harvest.end) / 2) / days_in_month, ((d$Harvest.start + d$Harvest.end + 365) / 2) / days_in_month)
     d$harvest <- ceiling(ifelse(d$harvest > 12, d$harvest - 12, d$harvest))
     d$harvest <- ifelse(d$crop == "sugarcane", 12, d$harvest) # Sugarcane is a multiyear crop, will assume that 12 months preceding annual value equals growing season.
 
