@@ -49,6 +49,7 @@
 <span>  climate_model <span class="op">=</span> <span class="st">"gcm"</span>,</span>
 <span>  climate_scenario <span class="op">=</span> <span class="st">"rcp"</span>,</span>
 <span>  historical_periods <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  crop_calendar_file <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  co2_hist <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  co2_proj <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  output_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"output"</span><span class="op">)</span></span>
@@ -77,6 +78,10 @@
 
 <dt id="arg-historical-periods">historical_periods<a class="anchor" aria-label="anchor" href="#arg-historical-periods"></a></dt>
 <dd><p>Default = NULL. Vector for years to subset from the historical climate data. If NULL, use the default climate data period</p></dd>
+
+
+<dt id="arg-crop-calendar-file">crop_calendar_file<a class="anchor" aria-label="anchor" href="#arg-crop-calendar-file"></a></dt>
+<dd><p>Default = NULL. String for the path of the crop calendar file. If crop_calendar_file is provided, crop_select will be set to crops in crop calendar. User provided crop_calendar_file can include any crops MIRCA2000 crops: "wheat", "maize", "rice", "barley", "rye", "millet", "sorghum", "soybean", "sunflower", "root_tuber", "cassava", "sugarcane", "sugarbeet", "oil_palm", "rape_seed", "groundnuts", "pulses", "citrus", "date_palm", "grapes", "cotton", "cocoa", "coffee", "others_perennial", "fodder_grasses", "others_annual"</p></dd>
 
 
 <dt id="arg-co-hist">co2_hist<a class="anchor" aria-label="anchor" href="#arg-co-hist"></a></dt>
