@@ -1,7 +1,9 @@
 
 #' co2_historical
 #'
-#' @source Historical CO2 concentration hist_co2_conc.csv; ftp://aftp.cmdl.noaa.gov/products/trends/co2/co2_annmean_mlo.txt
+#' Historical annual mean CO2 concentration from NOAA https://gml.noaa.gov/ccgg/trends/global.html
+#'
+#' @source ftp://aftp.cmdl.noaa.gov/products/trends/co2/co2_annmean_mlo.txt
 #' @examples
 #' \dontrun{
 #'  library(gaia);
@@ -12,7 +14,9 @@
 
 #' co2_projection
 #'
-#' @source GCAM7 reference CO2 concentration; obtained from default GCAM7 Reference scenario CO2 concentration projection
+#' Projected global annual mean CO2 concentration based on GCAM7 Reference scenario, which is aligned with RCP7.0. Obtained from running default GCAM7 Reference scenario. This is the default CO2 projection used in gaia. User can update the CO2 concentration if preferred by using the argument co2_proj from yield_impact function.
+#'
+#' @source https://gmd.copernicus.org/articles/12/677/2019/gmd-12-677-2019.html
 #' @format R data frame
 #' @examples
 #' \dontrun{
@@ -24,7 +28,9 @@
 
 #' agprodchange_ni_gcam7
 #'
-#' @source GCAM7 ag productivity change reference data https://jgcri.github.io/gcam-doc/inputs_supply.html
+#' Agricultural productivity change from GCAM7 Reference scenario
+#'
+#' @source https://jgcri.github.io/gcam-doc/inputs_supply.html
 #' @format R data frame
 #' @examples
 #' \dontrun{
@@ -35,7 +41,9 @@
 
 #' agprodchange_ni_gcam6
 #'
-#' @source GCAM6 ag productivity change reference data https://jgcri.github.io/gcam-doc/inputs_supply.html
+#' #' Agricultural productivity change from GCAM6 Reference scenario
+#'
+#' @source https://jgcri.github.io/gcam-doc/inputs_supply.html
 #' @format R data frame
 #' @examples
 #' \dontrun{
@@ -46,7 +54,7 @@
 
 #' coef_default
 #'
-#' @source Regression coefficients derived from the default historical climate data
+#' @source Regression coefficients derived from the default historical WATCH climate data
 #' @format R data frame
 #' @examples
 #' \dontrun{
