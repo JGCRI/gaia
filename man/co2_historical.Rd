@@ -5,10 +5,10 @@
 \alias{co2_historical}
 \title{co2_historical}
 \format{
-R data frame
+An object of class \code{data.table} (inherits from \code{data.frame}) with 57 rows and 2 columns.
 }
 \source{
-Historical CO2 concentration hist_co2_conc.csv
+Historical CO2 concentration hist_co2_conc.csv; ftp://aftp.cmdl.noaa.gov/products/trends/co2/co2_annmean_mlo.txt
 }
 \usage{
 co2_historical

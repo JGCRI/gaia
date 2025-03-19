@@ -7,6 +7,7 @@
 #'
 #' @param path Default = NULL. String for path to example files
 #' @returns A string of path for files within the extras folder of gaia package
+#' @keywords internal
 #' @export
 
 pkg_example <- function(path = NULL) {

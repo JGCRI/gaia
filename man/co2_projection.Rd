@@ -8,7 +8,7 @@
 R data frame
 }
 \source{
-GCAM7 reference CO2 concentration
+GCAM7 reference CO2 concentration; obtained from default GCAM7 Reference scenario CO2 concentration projection
 }
 \usage{
 co2_projection

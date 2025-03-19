@@ -8,7 +8,7 @@
 R data frame
 }
 \source{
-GCAM7 ag productivity change reference data
+GCAM7 ag productivity change reference data https://jgcri.github.io/gcam-doc/inputs_supply.html
 }
 \usage{
 agprodchange_ni_gcam7

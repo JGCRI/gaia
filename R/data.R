@@ -1,8 +1,7 @@
 
 #' co2_historical
 #'
-#' @source Historical CO2 concentration hist_co2_conc.csv
-#' @format R data frame
+#' @source Historical CO2 concentration hist_co2_conc.csv; ftp://aftp.cmdl.noaa.gov/products/trends/co2/co2_annmean_mlo.txt
 #' @examples
 #' \dontrun{
 #'  library(gaia);
@@ -13,7 +12,7 @@
 
 #' co2_projection
 #'
-#' @source GCAM7 reference CO2 concentration
+#' @source GCAM7 reference CO2 concentration; obtained from default GCAM7 Reference scenario CO2 concentration projection
 #' @format R data frame
 #' @examples
 #' \dontrun{
@@ -25,7 +24,7 @@
 
 #' agprodchange_ni_gcam7
 #'
-#' @source GCAM7 ag productivity change reference data
+#' @source GCAM7 ag productivity change reference data https://jgcri.github.io/gcam-doc/inputs_supply.html
 #' @format R data frame
 #' @examples
 #' \dontrun{
@@ -36,7 +35,7 @@
 
 #' agprodchange_ni_gcam6
 #'
-#' @source GCAM6 ag productivity change reference data
+#' @source GCAM6 ag productivity change reference data https://jgcri.github.io/gcam-doc/inputs_supply.html
 #' @format R data frame
 #' @examples
 #' \dontrun{
