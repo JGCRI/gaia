@@ -484,7 +484,8 @@ regression_fixed_effects <- function(data = NULL,
   # print( sum$coefficients )
   print(lmtest::bptest(f, data = d), studentize = TRUE)
   sandwich::sandwich(reg)
-  reg$se_robust <- sandwich::vcovHC(reg, type = "HC", weights = iso)
+  # reg$se_robust <- sandwich::vcovHC(reg, type = "HC", weights = iso)
+  reg$se_robust <- sandwich::vcovCL(reg, cluster = ~iso)
   sum.fit <- broom::tidy(reg)
   # print( sum.fit )
 
