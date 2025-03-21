@@ -93,5 +93,5 @@ yield_impact(
 A data frame of formatted agricultural productivity change for GCAM
 }
 \description{
-integrate all the workflow together
+Wrapper function that integrates all the workflow together
 }

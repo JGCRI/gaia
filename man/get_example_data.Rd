@@ -24,5 +24,5 @@ get_example_data(
 A string of path that the data is downloaded to
 }
 \description{
-get_example_data
+Download and unzip example data with download URL
 }

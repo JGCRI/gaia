@@ -8,7 +8,7 @@
 R data frame
 }
 \source{
-Regression coefficients derived from the default historical climate data
+Regression coefficients derived from the default historical WATCH climate data
 }
 \usage{
 coef_default

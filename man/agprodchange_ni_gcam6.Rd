@@ -8,13 +8,13 @@
 R data frame
 }
 \source{
-GCAM6 ag productivity change reference data https://jgcri.github.io/gcam-doc/inputs_supply.html
+https://jgcri.github.io/gcam-doc/inputs_supply.html
 }
 \usage{
 agprodchange_ni_gcam6
 }
 \description{
-agprodchange_ni_gcam6
+#' Agricultural productivity change from GCAM6 Reference scenario
 }
 \examples{
 \dontrun{

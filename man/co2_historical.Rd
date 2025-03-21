@@ -8,13 +8,13 @@
 An object of class \code{data.table} (inherits from \code{data.frame}) with 57 rows and 2 columns.
 }
 \source{
-Historical CO2 concentration hist_co2_conc.csv; ftp://aftp.cmdl.noaa.gov/products/trends/co2/co2_annmean_mlo.txt
+ftp://aftp.cmdl.noaa.gov/products/trends/co2/co2_annmean_mlo.txt
 }
 \usage{
 co2_historical
 }
 \description{
-co2_historical
+Historical annual mean CO2 concentration from NOAA https://gml.noaa.gov/ccgg/trends/global.html
 }
 \examples{
 \dontrun{

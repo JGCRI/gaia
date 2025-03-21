@@ -1,6 +1,6 @@
 #' yield_impact
 #'
-#' integrate all the workflow together
+#' Wrapper function that integrates all the workflow together
 #'
 #' @param pr_hist_ncdf Default = NULL. List of paths for historical precipitation NetCDF files from ISIMIP
 #' @param pr_proj_ncdf Default = NULL. List of paths for projected precipitation NetCDF files from ISIMIP

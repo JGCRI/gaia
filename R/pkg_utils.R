@@ -594,6 +594,8 @@ iso_replace <- function(d) {
 # ------------------------------------------------------------------------------
 #' get_example_data
 #'
+#' Download and unzip example data with download URL
+#'
 #' @param download_url Default = ''. Link to the downloadable dataset
 #' @param file_extension Default = 'zip'. String of file extension without "."
 #' @param data_dir Default= file.path(getwd(), 'example'). Path of desired location to download data
