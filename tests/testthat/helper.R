@@ -58,15 +58,16 @@ run_weighted_climate <- function(pr_ncdf = NULL,
                                  output_dir = file.path(getwd(), "output", "weighted_climate_test"),
                                  name_append = NULL){
 
-  gaia::weighted_climate(pr_ncdf = pr_ncdf,
-                         tas_ncdf = tas_ncdf,
-                         timestep = timestep,
-                         climate_model = climate_model,
-                         climate_scenario = climate_scenario,
-                         time_periods = time_periods,
-                         crop_names = crop_names,
-                         output_dir = output_dir,
-                         name_append = name_append)
+  start_end_year <-
+    gaia::weighted_climate(pr_ncdf = pr_ncdf,
+                           tas_ncdf = tas_ncdf,
+                           timestep = timestep,
+                           climate_model = climate_model,
+                           climate_scenario = climate_scenario,
+                           time_periods = time_periods,
+                           crop_names = crop_names,
+                           output_dir = output_dir,
+                           name_append = name_append)
 
 }
 
@@ -87,6 +88,8 @@ run_data_aggregation <- function(data_dir = NULL,
                                  climate_model = climate_model_i,
                                  climate_scenario = climate_scenario_i,
                                  crop_calendar_file = NULL,
+                                 start_year = start_year_i,
+                                 end_year = end_year_i,
                                  co2_hist = co2_hist_i,
                                  co2_proj = co2_proj_i,
                                  output_dir = output_dir_i){
@@ -99,6 +102,8 @@ run_data_aggregation <- function(data_dir = NULL,
                                    climate_model = climate_model,
                                    climate_scenario = climate_scenario,
                                    crop_calendar_file = crop_calendar_file,
+                                   start_year = start_year,
+                                   end_year = end_year,
                                    co2_hist = co2_hist,
                                    co2_proj = co2_proj,
                                    output_dir = output_dir)

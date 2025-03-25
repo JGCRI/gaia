@@ -141,7 +141,7 @@ weighted_climate <- function(pr_ncdf = NULL,
         nc_time_subset <- nc_time[nc_time %in% time_periods]
 
         if (is.null(nc_time_subset)) {
-          stop("Selected time periods are not within the available historical data.")
+          stop("Selected time periods are beyond the available precipitation data.")
         }
       } else {
         nc_time_subset <- nc_time
@@ -195,7 +195,7 @@ weighted_climate <- function(pr_ncdf = NULL,
         nc_time_subset <- nc_time[nc_time %in% time_periods]
 
         if (is.null(nc_time_subset)) {
-          stop("Selected time periods are not within the available historical data.")
+          stop("Selected time periods are beyond the available temperature data.")
         }
       } else {
         nc_time_subset <- nc_time
@@ -268,6 +268,29 @@ weighted_climate <- function(pr_ncdf = NULL,
       warning("No temperature output is generated.")
     }
   } # end of for(crop in names(gaia::mirca_harvest_area))
+
+  # output the data periods
+  if(all(tas_exists, pr_exists, tas_period == pr_period)){
+
+    period_split <- strsplit(tas_period, "_")
+    start_end_year <- c(period_split[[1]][1], period_split[[1]][2])
+
+  } else if (all(tas_exists, !pr_exists)){
+
+    period_split <- strsplit(tas_period, "_")
+    start_end_year <- c(period_split[[1]][1], period_split[[1]][2])
+
+  } else if (all(!tas_exists, pr_exists)){
+
+    period_split <- strsplit(pr_period, "_")
+    start_end_year <- c(period_split[[1]][1], period_split[[1]][2])
+
+  } else {
+
+    stop(paste0("Precipitation (", pr_period, ") and Temperature (", tas_period, ") time periods are not identical."))
+  }
+
+  return(start_end_year)
 
   message("The function weighted_climate is complete.")
 } # end of function weighted_climate

@@ -61,7 +61,7 @@ yield_impact <- function(pr_hist_ncdf = NULL,
                          diagnostics = TRUE,
                          output_dir = file.path(getwd(), "output")) {
   # Step 1a: Process standard NetCDF files from ISIMIP to country level historical climate
-  if (any(!is.null(pr_hist_ncdf), !is.null(tas_hist_ncdf), use_default_coeff == F)) {
+  if (all(any(!is.null(pr_hist_ncdf), !is.null(tas_hist_ncdf)), use_default_coeff == F)) {
     gaia::weighted_climate(
       pr_ncdf = pr_hist_ncdf,
       tas_ncdf = tas_hist_ncdf,
@@ -75,17 +75,28 @@ yield_impact <- function(pr_hist_ncdf = NULL,
   }
 
   # Step 1b: Process standard NetCDF files from ISIMIP to country level projected climate
+  if(any(is.null(start_year), is.null(end_year))){
+    time_periods <- NULL
+  } else {
+    time_periods <- seq(start_year, end_year, 1)
+  }
+
   if (any(!is.null(pr_proj_ncdf), !is.null(tas_proj_ncdf))) {
-    gaia::weighted_climate(
+    start_end_year <- gaia::weighted_climate(
       pr_ncdf = pr_proj_ncdf,
       tas_ncdf = tas_proj_ncdf,
       timestep = timestep,
       climate_model = climate_model,
       climate_scenario = climate_scenario,
-      time_periods = seq(start_year, end_year, 1),
+      time_periods = time_periods,
       output_dir = output_dir,
       name_append = NULL
     )
+
+    # get the updated start and end year
+    start_year <- start_end_year[1]
+    end_year <- start_end_year[2]
+
   }
 
 
@@ -122,6 +133,8 @@ yield_impact <- function(pr_hist_ncdf = NULL,
     climate_model = climate_model,
     climate_scenario = climate_scenario,
     crop_calendar_file = crop_calendar_file,
+    start_year = start_year,
+    end_year = end_year,
     co2_hist = co2_hist,
     co2_proj = co2_proj,
     output_dir = output_dir

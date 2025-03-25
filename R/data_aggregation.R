@@ -8,6 +8,8 @@
 #' @param climate_scenario Default = NULL. String for climate scenario (e.g., 'ssp245')
 #' @param historical_periods Default = NULL. Vector for years to subset from the historical climate data. If NULL, use the default climate data period
 #' @param crop_calendar_file Default = NULL. String for the path of the crop calendar file. If crop_calendar_file is provided, crop_select will be set to crops in crop calendar. User provided crop_calendar_file can include any crops MIRCA2000 crops: "wheat", "maize", "rice", "barley", "rye", "millet", "sorghum", "soybean", "sunflower", "root_tuber", "cassava", "sugarcane", "sugarbeet", "oil_palm", "rape_seed", "groundnuts", "pulses", "citrus", "date_palm", "grapes", "cotton", "cocoa", "coffee", "others_perennial", "fodder_grasses", "others_annual"
+#' @param start_year Default = NULL. Integer for the  start year of the projected data
+#' @param end_year Default = NULL. Integer for the end year of the projected data
 #' @param co2_hist Default = NULL. Data table for historical CO2 concentration in columns [year, co2_conc]. If NULL, use built-in CO2 emission data
 #' @param co2_proj Default = NULL. Data table for projected CO2 concentration in columns [year, co2_conc]. If NULL, use built-in CO2 emission data
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
@@ -20,6 +22,8 @@ data_aggregation <- function(climate_hist_dir = NULL,
                              climate_scenario = "rcp",
                              historical_periods = NULL,
                              crop_calendar_file = NULL,
+                             start_year = NULL,
+                             end_year = NULL,
                              co2_hist = NULL,
                              co2_proj = NULL,
                              output_dir = file.path(getwd(), "output")) {
@@ -78,6 +82,14 @@ data_aggregation <- function(climate_hist_dir = NULL,
       recursive = TRUE, full.names = TRUE
     )
 
+    # check if there is multiple files for each weather-irritype-crop combination
+    if(any(length(list_precip_rfc) > 26, length(list_temp_rfc) > 26)){
+
+      stop(paste0("Please check your climate input folder: ", climate_hist_dir,
+                  ", and make sure there is only one file for each weather-irrigation type-crop combination."))
+
+    }
+
     crop_historic <- data.table::data.table()
 
     for (crop_i in crop_select) {
@@ -129,15 +141,25 @@ data_aggregation <- function(climate_hist_dir = NULL,
   # get file list
   list_precip_rfc <- list.files(
     path = climate_impact_dir,
-    pattern = utils::glob2rx(paste0(climate_model, "*", climate_scenario, "*precip*rfc*")),
+    pattern = utils::glob2rx(paste0(climate_model, "*", climate_scenario,
+                                    "*precip*rfc*", start_year, "*", end_year, "*")),
     recursive = TRUE, full.names = TRUE
   )
 
   list_temp_rfc <- list.files(
     path = climate_impact_dir,
-    pattern = utils::glob2rx(paste0(climate_model, "*", climate_scenario, "*tmean*rfc*")),
+    pattern = utils::glob2rx(paste0(climate_model, "*", climate_scenario,
+                                    "*tmean*rfc*", start_year, "*", end_year, "*")),
     recursive = TRUE, full.names = TRUE
   )
+
+  # check if there is multiple files for each weather-irritype-crop combination
+  if(any(length(list_precip_rfc) > 26, length(list_temp_rfc) > 26)){
+
+    stop(paste0("Please check your climate input folder: ", climate_impact_dir,
+                ", and make sure there is only one file for each weather-irrigation type-crop combination."))
+
+  }
 
   crop_projection <- data.table::data.table()
 

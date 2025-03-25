@@ -11,6 +11,8 @@ data_aggregation(
   climate_scenario = "rcp",
   historical_periods = NULL,
   crop_calendar_file = NULL,
+  start_year = NULL,
+  end_year = NULL,
   co2_hist = NULL,
   co2_proj = NULL,
   output_dir = file.path(getwd(), "output")
@@ -28,6 +30,10 @@ data_aggregation(
 \item{historical_periods}{Default = NULL. Vector for years to subset from the historical climate data. If NULL, use the default climate data period}
 
 \item{crop_calendar_file}{Default = NULL. String for the path of the crop calendar file. If crop_calendar_file is provided, crop_select will be set to crops in crop calendar. User provided crop_calendar_file can include any crops MIRCA2000 crops: "wheat", "maize", "rice", "barley", "rye", "millet", "sorghum", "soybean", "sunflower", "root_tuber", "cassava", "sugarcane", "sugarbeet", "oil_palm", "rape_seed", "groundnuts", "pulses", "citrus", "date_palm", "grapes", "cotton", "cocoa", "coffee", "others_perennial", "fodder_grasses", "others_annual"}
+
+\item{start_year}{Default = NULL. Integer for the  start year of the projected data}
+
+\item{end_year}{Default = NULL. Integer for the end year of the projected data}
 
 \item{co2_hist}{Default = NULL. Data table for historical CO2 concentration in columns [year, co2_conc]. If NULL, use built-in CO2 emission data}
 

@@ -254,6 +254,8 @@ knitr::kable(crop_cal_update[1:10],
 #                               climate_impact_dir = climate_impact_dir,
 #                               climate_model = 'canesm5',
 #                               climate_scenario = 'ssp245',
+#                               start_year = 2015,
+#                               end_year = 2100,
 #                               output_dir = output_dir)
 #  
 
