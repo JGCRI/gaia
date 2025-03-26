@@ -628,8 +628,6 @@ gcam_agprodchange <- function(data = NULL,
     gcamdata::add_xml_data(yield_impact_gcam, "AgProdChange") %>%
     gcamdata::run_xml_conversion()
 
-  return(yield_impact_gcam)
-
 
   # ----------------------------------------------------------------------------
   # plot ag productivity change
@@ -654,6 +652,9 @@ gcam_agprodchange <- function(data = NULL,
         output_dir = output_dir
       )
     }
+
   }
+
+  return(yield_impact_gcam)
 
 }
