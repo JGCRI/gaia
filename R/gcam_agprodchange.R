@@ -603,6 +603,8 @@ gcam_agprodchange <- function(data = NULL,
     by = c("region", "AgSupplySector", "AgSupplySubsector", "AgProductionTechnology", "year"),
     all.x = TRUE)
 
+  data.table::setDT(yield_impact_gcam)
+
   yield_impact_gcam[, AgProdChange := as.numeric("")]
   get_agprodchange(data = yield_impact_gcam, year_pairs = year_pairs, gcam_timestep = gcam_timestep)
 
