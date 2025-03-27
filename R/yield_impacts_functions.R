@@ -1286,13 +1286,13 @@ plot_agprodchange <- function(data = NULL,
 
   print(paste0("Plotting Productivity Change for ", commodity, " to: ", file.path(save_path, paste0(commodity, ".png"))))
 
-  df_plot <- data %>%
-    tidyr::separate(
-      col = AgProductionTechnology, sep = "_",
-      into = c("crop", "GLU", "irrtype", "mgmt"),
-      remove = F
-    ) %>%
-    dplyr::filter(crop %in% commodity, mgmt == "hi")
+
+  data.table::setDT(data)
+  df_plot <- data[
+    , c("crop", "GLU", "irrtype", "mgmt") := data.table::tstrsplit(AgProductionTechnology, "_", fixed = TRUE)
+  ][
+    crop == commodity  # Apply filtering condition
+  ]
 
   cropmodel <- unique(df_plot$cropmodel)
   climatemodel <- unique(df_plot$climatemodel)
@@ -1304,10 +1304,10 @@ plot_agprodchange <- function(data = NULL,
       data = df_plot,
       ggplot2::aes(
         x = year, y = AgProdChange,
-        group = interaction(region, AgProductionTechnology, irrtype)
+        group = interaction(region, GLU, irrtype, mgmt)
       )
     ) +
-      ggplot2::geom_line(ggplot2::aes(color = irrtype), show.legend = T) +
+      ggplot2::geom_line(ggplot2::aes(color = irrtype, linetype = mgmt), show.legend = T) +
       ggplot2::facet_wrap(~region) +
       ggplot2::labs(
         title = paste(cropmodel, climatemodel, scenario, commodity, sep = " | "),
@@ -1318,6 +1318,10 @@ plot_agprodchange <- function(data = NULL,
         "IRR" = "#FFB900",
         "RFD" = "#5773CC"
       )) +
+      ggplot2::scale_linetype_manual(values = c(
+        "hi" = "solid",
+        "lo" = "dashed"
+        )) +
       ggplot2::theme_bw()
 
 

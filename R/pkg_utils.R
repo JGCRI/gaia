@@ -257,7 +257,7 @@ agprodchange_interp <- function(data = NULL,
   # check if the reference time step equals to user defined gcam_timestep
 
   if (any(ref_timestep != gcam_timestep) | length(ref_timestep) != 1) {
-    warning(paste0(
+    print(paste0(
       "The time step of the reference agricultural productivity change data: ", paste(ref_timestep, collapse = ", "),
       ", different from the user defined gcam_timestep = ",
       gcam_timestep
@@ -269,20 +269,6 @@ agprodchange_interp <- function(data = NULL,
       paste(unique(seq(min(years_ref), max(years_ref), gcam_timestep), max(years_ref)), collapse = ', ')
     ))
 
-    # data_interp <- data %>%
-    #   dplyr::mutate(year = as.numeric(gsub("X", "", year))) %>%
-    #   dplyr::group_by(region, AgSupplySector, AgSupplySubsector, AgProductionTechnology) %>%
-    #   tidyr::complete(year = unique(c(seq(min(year), max(year), gcam_timestep), max(year)))) %>%
-    #   dplyr::mutate(AgProdChange_ni = ifelse(is.na(AgProdChange_ni),
-    #     approx(
-    #       x = year[!is.na(AgProdChange_ni)],
-    #       y = AgProdChange_ni[!is.na(AgProdChange_ni)],
-    #       xout = year
-    #     )$y,
-    #     AgProdChange_ni
-    #   )) %>%
-    #   dplyr::ungroup() %>%
-    #   dplyr::mutate(year = paste0("X", year))
 
     # Convert to data.table
     data_dt <- data.table::as.data.table(data)
@@ -291,13 +277,17 @@ agprodchange_interp <- function(data = NULL,
     data_dt[, year := as.numeric(sub("X", "", year))]
 
     # Define the interpolation function
-    interp_function <- function(dt, gcam_timestep) {
+    interp_function <- function(dt = NULL, gcam_timestep = NULL) {
       # Create sequence of years
       complete_years <- unique(c(seq(min(dt$year), max(dt$year), gcam_timestep), max(dt$year)))
 
-      # Interpolate for each group
-      dt <- dt[, .SD[year %in% complete_years], by = .(region, AgSupplySector, AgSupplySubsector, AgProductionTechnology)]
+      # Use tidyr::complete to ensure all combinations are present
+      dt <- dt %>%
+        tidyr::complete(tidyr::nesting(region, AgSupplySector, AgSupplySubsector, AgProductionTechnology),
+                 year = complete_years) %>%
+        data.table::as.data.table()
 
+      # Interpolate for each group
       dt[, AgProdChange_ni := ifelse(is.na(AgProdChange_ni),
                                      approx(
                                        x = year[!is.na(AgProdChange_ni)],

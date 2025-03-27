@@ -483,14 +483,15 @@ get_agprodchange <- function(data = NULL,
     y2 <- paste0("X", year_pairs$to_year[i])
 
     # Apply the transformation for the current year pair
-    data <- data %>%
-      dplyr::mutate(AgProdChange = ifelse(
-        year == y2,
-        ((yield_multiplier[year == y2] / yield_multiplier[year == y1])^(1 / gcam_timestep)) * (1 + AgProdChange_ni[year == y2]) - 1,
-        AgProdChange
-      )) %>%
-      dplyr::mutate(AgProdChange = ifelse(is.na(AgProdChange) & is.na(yield_multiplier), AgProdChange_ni, AgProdChange))
+    data[year %in% c(y1, y2),
+         AgProdChange := data.table::fifelse(
+           year == y2,
+           ((yield_multiplier[year == y2] / yield_multiplier[year == y1])^(1 / gcam_timestep)) * (1 + AgProdChange_ni[year == y2]) - 1,
+           AgProdChange),
+         by = .(region, AgProductionTechnology)]
   }
+
+  data[is.na(AgProdChange) & is.na(yield_multiplier), AgProdChange := AgProdChange_ni]
 
   return(data)
 }
@@ -596,23 +597,23 @@ gcam_agprodchange <- function(data = NULL,
   )
 
   # calculate agricultural productivity change
-  yield_impact_gcam <- agprodchange_ni %>%
-    dplyr::left_join(yield_impact,
-      by = c("region", "AgSupplySector", "AgSupplySubsector", "AgProductionTechnology", "year")
-    ) %>%
-    # dplyr::mutate(AgProdChange_ni = ifelse(year == 'X2015', 0, AgProdChange_ni)) %>%
-    dplyr::group_by(region, AgProductionTechnology) %>%
-    dplyr::mutate(AgProdChange = as.numeric("")) %>%
-    get_agprodchange(year_pairs = year_pairs) %>%
-    dplyr::ungroup() %>%
-    # dplyr::distinct() %>%
-    dplyr::mutate(
-      year = as.integer(gsub("X", "", year)),
-      AgProdChange = round(AgProdChange, digits = 6)
-    ) %>%
-    dplyr::filter(year != 2015) %>%
-    dplyr::select(region, AgSupplySector, AgSupplySubsector, AgProductionTechnology, year, AgProdChange) %>%
-    dplyr::arrange(region, AgSupplySector, AgSupplySubsector, year)
+  yield_impact_gcam <- merge(
+    agprodchange_ni,
+    yield_impact,
+    by = c("region", "AgSupplySector", "AgSupplySubsector", "AgProductionTechnology", "year"),
+    all.x = TRUE)
+
+  yield_impact_gcam[, AgProdChange := as.numeric("")]
+  get_agprodchange(data = yield_impact_gcam, year_pairs = year_pairs, gcam_timestep = gcam_timestep)
+
+  yield_impact_gcam[, year := as.integer(gsub("X", "", year))]
+  yield_impact_gcam[, AgProdChange := round(AgProdChange, 6)]
+  yield_impact_gcam <- yield_impact_gcam[
+    year != 2015,
+    .(region, AgSupplySector, AgSupplySubsector, AgProductionTechnology, year, AgProdChange)]
+  data.table::setorder(yield_impact_gcam, region, AgSupplySector, AgSupplySubsector, year)
+
+  yield_impact_gcam <- tibble::as_tibble(yield_impact_gcam)
 
   any(is.na(yield_impact_gcam))
 
@@ -634,11 +635,11 @@ gcam_agprodchange <- function(data = NULL,
   # ----------------------------------------------------------------------------
 
   if (diagnostics == TRUE) {
-    ag_subsector_gcam <- yield_impact_gcam %>%
-      dplyr::select(AgSupplySubsector) %>%
-      tidyr::separate(AgSupplySubsector, into = c("commod", "GLU")) %>%
-      dplyr::select(-GLU) %>%
-      dplyr::distinct()
+
+    data.table::setDT(yield_impact_gcam)
+    ag_subsector_gcam <- yield_impact_gcam[, .(commod = sub("_.*", "", AgSupplySubsector)), by = AgSupplySubsector]
+    ag_subsector_gcam <- unique(ag_subsector_gcam[, AgSupplySubsector := NULL])
+
 
     # plot climate impact scenarios
     for (i in 1:nrow(ag_subsector_gcam)) {
