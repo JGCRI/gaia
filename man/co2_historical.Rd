@@ -14,7 +14,7 @@ ftp://aftp.cmdl.noaa.gov/products/trends/co2/co2_annmean_mlo.txt
 co2_historical
 }
 \description{
-Historical annual mean CO2 concentration from NOAA https://gml.noaa.gov/ccgg/trends/global.html
+Historical annual mean CO2 concentration (in parts per million) from NOAA https://gml.noaa.gov/ccgg/trends/global.html
 }
 \examples{
 \dontrun{

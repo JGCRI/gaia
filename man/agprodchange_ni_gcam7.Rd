@@ -14,7 +14,7 @@ https://jgcri.github.io/gcam-doc/inputs_supply.html
 agprodchange_ni_gcam7
 }
 \description{
-Agricultural productivity change from GCAM7 Reference scenario
+Agricultural productivity change (unitless) obtained from GCAM7 Reference scenario. This is the baseline APC that is used to calculate the climate impacted APC.
 }
 \examples{
 \dontrun{

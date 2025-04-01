@@ -33,7 +33,7 @@ clean_yield <- function(fao_yield = NULL,
     dplyr::filter(!is.na(iso))
 
   # clean up the iso code which megers some FAOSTAT specific 'f' iso codes
-  df <- gaia::iso_replace(df)
+  df <- iso_replace(df)
 
   # restructure data
   df <- df %>%
@@ -60,37 +60,7 @@ clean_yield <- function(fao_yield = NULL,
     dplyr::summarise(area_harvest = sum(area_harvest, na.rm = T),
                      yield = mean(yield, na.rm = T)) %>%
     dplyr::filter(area_harvest > 0, yield > 0)
-  #
-  #
-  # d <- subset(fao_yield, select = c("Area", "Element", "Item", "Year", "Value"))
-  # d <- subset(d, Area != "")
-  # d <- subset(d, Area != "China, mainland")
-  # d <- gaia::colname_replace(d, "Area", "country_name")
-  # d <- gaia::colname_replace(d, "Element", "var")
-  # d <- gaia::colname_replace(d, "Item", "crop")
-  # d <- gaia::colname_replace(d, "Year", "year")
-  # d <- gaia::colname_replace(d, "Value", "value")
-  # d$crop <- tolower(d$crop)
-  # d$var <- gsub("Area harvested", "area_harvest", d$var)
-  # d$var <- gsub("Yield", "yield", d$var)
-  # d <- subset(d, crop != "cottonseed") # Cotton seed has no data, FAO yields are for seed cotton
-  # d$crop <- gsub("rice, paddy", "rice", d$crop)
-  # d$crop <- gsub("soybeans", "soybean", d$crop)
-  # d$crop <- gsub("sugar cane", "sugarcane", d$crop)
-  # d$crop <- gsub("sugar beet", "sugarbeet", d$crop)
-  # d$crop <- gsub("seed cotton, unginned", "cotton", d$crop)
-  # d$crop <- gsub("sunflower seed", "sunflower", d$crop)
-  # d$crop <- gsub(" ", "_", d$crop)
-  # d <- data.table::dcast(d, country_name + crop + year ~ var, value.var = "value")
-  # d <- merge(d, mapping_gcam_iso, by = "country_name", all.x = TRUE)
-  # d <- gaia::iso_replace(d)
-  # #   For these countries, root_tuber == cassava; others root_tuber == potato
-  # d$crop <- ifelse(d$crop == "potatoes", "root_tuber", d$crop)
-  # #   d$crop <- ifelse( ( ( d$iso == "ben" | d$iso ==  "cmr" | d$iso == "caf" | d$iso == "cog" | d$iso == "cod" | d$iso == "civ" | d$iso == "gab" | d$iso == "gha" |
-  # #                           d$iso == "gin" | d$iso == "lbr" | d$iso == "nga" | d$iso == "sle" | d$iso == "som" | d$iso == "tgo" ) & d$crop == "cassava" ), "root_tuber", d$crop )
-  # #   d$crop <- ifelse( ( ( d$iso == "ben" | d$iso ==  "cmr" | d$iso == "caf" | d$iso == "cog" | d$iso == "cod" | d$iso == "civ" | d$iso == "gab" | d$iso == "gha" |
-  # #                           d$iso == "gin" | d$iso == "lbr" | d$iso == "nga" | d$iso == "sle" | d$iso == "som" | d$iso == "tgo" ) & d$crop == "potatoes" ), "potatoes", d$crop )
-  # d <- subset(d, select = c("iso", "crop", "year", "area_harvest", "yield"))
+
   return(df_mirca)
 }
 
@@ -107,7 +77,7 @@ clean_yield <- function(fao_yield = NULL,
 #' @param time_periods Default = NULL. vector for years to subset from the climate data. If NULL, use the default climate data period
 #' @returns A data frame of formatted weather data
 #' @keywords internal
-#' @export
+#' @noRd
 
 weather_clean <- function(file = NULL,
                           crop_name = NULL,
@@ -131,7 +101,7 @@ weather_clean <- function(file = NULL,
   d <- subset(d, country_name != "Coral Sea Islands")
   d$country_name <- NULL
   d$crop <- crop_name
-  d <- gaia::colname_replace(d, "value", weather_var)
+  d <- colname_replace(d, "value", weather_var)
   d$irr_rf <- irr_type
   d <- subset(d, iso != "ala")
   d <- subset(d, iso != "umi")
@@ -155,20 +125,20 @@ weather_clean <- function(file = NULL,
 #' @param time_periods Default = NULL. Vector for years to subset from the climate data. If NULL, use the default climate data period
 #' @returns A data frame of aggregated weather data
 #' @keywords internal
-#' @export
+#' @noRd
 
 weather_agg <- function(file_precip = NULL,
                         file_temp = NULL,
                         crop_name = NULL,
                         time_periods = NULL) {
-  d1 <- gaia::weather_clean(
+  d1 <- weather_clean(
     file = file_precip,
     crop_name = crop_name,
     weather_var = "precip",
     irr_type = "rf",
     time_periods = time_periods
   )
-  d2 <- gaia::weather_clean(
+  d2 <- weather_clean(
     file = file_temp,
     crop_name = crop_name,
     weather_var = "temp",
@@ -190,7 +160,7 @@ weather_agg <- function(file_precip = NULL,
 #' @param crop_calendar Default = NULL. Data table for crop calendar
 #' @returns A data frame of crop growing season
 #' @keywords internal
-#' @export
+#' @noRd
 
 crop_month <- function(climate_data = NULL,
                        crop_name = NULL,
@@ -227,7 +197,7 @@ crop_month <- function(climate_data = NULL,
     "month_7", "month_8", "month_9", "month_10", "month_11", "month_12"
   ))
   d <- data.table::melt(d, id.vars = 1:9)
-  d <- gaia::colname_replace(d, "variable", "grow_month")
+  d <- colname_replace(d, "variable", "grow_month")
   d$grow_month <- as.numeric(as.character(gsub("month_", "", d$grow_month)))
   # Remove partial year coverage in first year for growing seasons that cover different years
   d.year2 <- subset(d, year2 == 1)
@@ -258,7 +228,7 @@ crop_month <- function(climate_data = NULL,
 #' @param gdp_hist Default = gdp. Data table for historical GDP by ISO [iso, year, gdp_pcap_ppp]
 #' @returns A data frame of aggregated country, crop, weather data
 #' @keywords internal
-#' @export
+#' @noRd
 
 data_merge <- function(data = NULL,
                        crop_name = NULL,
@@ -310,7 +280,7 @@ data_merge <- function(data = NULL,
 #' @param co2_proj Default = NULL. Data table for future CO2 concentration [year, co2_conc]
 #' @returns A data frame of formatted future weather data
 #' @keywords internal
-#' @export
+#' @noRd
 
 data_trans <- function(data = NULL,
                        climate_model = NULL,
@@ -327,7 +297,7 @@ data_trans <- function(data = NULL,
   d <- subset(data, grow_season == 1)
   d$grow_season <- NULL
   d <- data.table::melt(d, id.vars = c("iso", "year", "crop", "irr_rf", "grow_month"))
-  d <- gaia::colname_replace(d, "variable", "var")
+  d <- colname_replace(d, "variable", "var")
   d <- data.table::dcast(d, iso + year + crop + var ~ grow_month, value.var = "value")
 
   # temperature
@@ -376,7 +346,7 @@ data_trans <- function(data = NULL,
 #' @param data Default = NULL. Data frame for crop data
 #' @returns A data frame of formatted historical weather and crop data
 #' @keywords internal
-#' @export
+#' @noRd
 
 prep_regression <- function(data = NULL) {
   grow_season <- variable <- NULL
@@ -461,7 +431,7 @@ prep_regression <- function(data = NULL) {
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @returns A data frame of historical weather variables used in the regression model
 #' @keywords internal
-#' @export
+#' @noRd
 
 regression_fixed_effects <- function(data = NULL,
                                      crop_name = NULL,
@@ -524,7 +494,7 @@ regression_fixed_effects <- function(data = NULL,
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @returns No return value, called for the side effects of plotting fitted regression
 #' @keywords internal
-#' @export
+#' @noRd
 
 plot_fit <- function(data = NULL,
                      crop_name = NULL,
@@ -581,7 +551,7 @@ plot_fit <- function(data = NULL,
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @returns A data frame of variables in the regression model
 #' @keywords internal
-#' @export
+#' @noRd
 
 z_estimate <- function(use_default_coeff = FALSE,
                        climate_model = NULL,
@@ -698,7 +668,7 @@ z_estimate <- function(use_default_coeff = FALSE,
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @returns A data frame of projected climate impacts on annual yield shocks at the country level
 #' @keywords internal
-#' @export
+#' @noRd
 
 climate_impact <- function(use_default_coeff = FALSE,
                            climate_model = NULL,
@@ -709,7 +679,7 @@ climate_impact <- function(use_default_coeff = FALSE,
                            end_year = NULL,
                            output_dir = file.path(getwd(), "output")) {
   # estimate z hat
-  d <- gaia::z_estimate(
+  d <- z_estimate(
     use_default_coeff = use_default_coeff,
     climate_model = climate_model,
     climate_scenario = climate_scenario,
@@ -762,10 +732,10 @@ climate_impact <- function(use_default_coeff = FALSE,
   # clean up the data
   d <- dplyr::select(d, -(paste0("X", start_year:end_year)))
   d <- data.table::melt(d, id.vars = 1:3)
-  d <- gaia::colname_replace(d, "variable", "year")
+  d <- colname_replace(d, "variable", "year")
   d$year <- gsub("avg_impact_X", "", d$year)
   d$year <- as.numeric(as.character(d$year))
-  d <- gaia::colname_replace(d, "value", "yield_impact")
+  d <- colname_replace(d, "value", "yield_impact")
 
   # save
   gaia::output_data(
@@ -795,7 +765,7 @@ climate_impact <- function(use_default_coeff = FALSE,
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @returns A data frame of projected and smoothed climate impacts on annual yield shocks at the country level
 #' @keywords internal
-#' @export
+#' @noRd
 
 smooth_impacts <- function(data = NULL,
                            climate_model = NULL,
@@ -916,7 +886,7 @@ smooth_impacts <- function(data = NULL,
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @returns A data frame of formatted and smoothed yield impact projection
 #' @keywords internal
-#' @export
+#' @noRd
 
 format_projection <- function(data = NULL,
                               base_year = NULL,
@@ -928,7 +898,7 @@ format_projection <- function(data = NULL,
   # get the harvest area (ha) from FAO data
   d_ha <- subset(fao_yield, year == 2014)
   d_ha <- subset(d_ha, select = c("crop", "iso", "area_harvest"))
-  d_ha <- gaia::colname_replace(d_ha, "area_harvest", "harvested_area")
+  d_ha <- colname_replace(d_ha, "area_harvest", "harvested_area")
 
   # set up the years to filter out
   if (is.null(gcam_timestep)) {
@@ -975,7 +945,7 @@ format_projection <- function(data = NULL,
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @returns No return value, called for the side effects of plotting projected annual yield shocks
 #' @keywords internal
-#' @export
+#' @noRd
 
 plot_projection <- function(data = NULL,
                             climate_model = NULL,
@@ -1029,7 +999,7 @@ plot_projection <- function(data = NULL,
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @returns No return value, called for the side effects of plotting projected and smoothed annual yield shocks
 #' @keywords internal
-#' @export
+#' @noRd
 
 plot_projection_smooth <- function(data = NULL,
                                    climate_model = NULL,
@@ -1075,7 +1045,7 @@ plot_projection_smooth <- function(data = NULL,
 #' @returns No return value, called for the side effects of plotting map of yield shocks at selected years
 #' @import sf
 #' @keywords internal
-#' @export
+#' @noRd
 
 plot_map <- function(data = NULL,
                      plot_years = NULL,
@@ -1184,7 +1154,7 @@ plot_map <- function(data = NULL,
 #' @param output_dir Default = NULL. String for path to the output folder
 #' @returns No return value, called for the side effects of plotting projected yield impact by GCAM commodity
 #' @keywords internal
-#' @export
+#' @noRd
 
 
 plot_yield_impact <- function(data = NULL,
@@ -1271,7 +1241,7 @@ plot_yield_impact <- function(data = NULL,
 #' @param output_dir Default = NULL. String for path to the output folder
 #' @returns No return value, called for the side effects of plotting agricultural productivity change by GCAM commodity
 #' @keywords internal
-#' @export
+#' @noRd
 
 plot_agprodchange <- function(data = NULL,
                               commodity = NULL,

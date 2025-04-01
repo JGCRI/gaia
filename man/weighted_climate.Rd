@@ -36,9 +36,8 @@ weighted_climate(
 \item{name_append}{Default = NULL. String for name append to the output folder}
 }
 \value{
-No return value, called for the side effects of processing and writing output files
+No return value, called for the side effects of processing and writing output files. The output files include columns `[year, month, 1, 2, 3, ..., 265]`, where the numbers correspond to country IDs. To view the country names associated with these IDs, simply type gaia::country_id in the R console after loading the gaia package.
 }
 \description{
-Process standard NetCDF files from ISIMIP to country level climate
-based on crop harvested area from MIRCA2000
+Processes CMIP6 daily or monthly climate NetCDF data formatted in accordance with the ISIMIP simulation protocols (more details here) and calculates cropland-weighted precipitation and temperature at the country level, differentiated by crop type and irrigation type.
 }

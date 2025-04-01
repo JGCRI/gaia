@@ -93,5 +93,5 @@ yield_impact(
 A data frame of formatted agricultural productivity change for GCAM
 }
 \description{
-Wrapper function that integrates all the workflow together
+The wrapper function that runs the entire workflow from climate data processing to yield shock estimation to agricultural productivity change calculation for the Global Change Analysis Model (GCAM).
 }

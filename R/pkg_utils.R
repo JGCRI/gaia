@@ -8,7 +8,7 @@
 #' @param path Default = NULL. String for path to example files
 #' @returns A string of path for files within the extras folder of gaia package
 #' @keywords internal
-#' @export
+#' @noRd
 
 pkg_example <- function(path = NULL) {
   if (is.null(path)) {
@@ -27,7 +27,7 @@ pkg_example <- function(path = NULL) {
 #' @param file_type Default = NULL. String for extension of the file
 #' @returns No return value, called for the side effects of checking if a path exists
 #' @keywords internal
-#' @export
+#' @noRd
 
 path_check <- function(path = NULL,
                        file_type = NULL) {
@@ -63,7 +63,7 @@ path_check <- function(path = NULL,
 #' @param nc_file Default = NULL. String for path to the nc file
 #' @returns A vector of time series based on the input NetCDF file.
 #' @keywords internal
-#' @export
+#' @noRd
 
 get_nc_time <- function(nc_file = NULL) {
   nc <- ncdf4::nc_open(nc_file)
@@ -184,7 +184,7 @@ output_data <- function(data = NULL,
 #' @param y Replacing string
 #' @returns A data frame
 #' @keywords internal
-#' @export
+#' @noRd
 colname_replace <- function(d, x, y) {
   colnames(d)[colnames(d) == x] <- y
   return(d)
@@ -201,7 +201,7 @@ colname_replace <- function(d, x, y) {
 #' @param x2 String for column name in d2
 #' @returns A data frame
 #' @keywords internal
-#' @export
+#' @noRd
 
 merge_data <- function(d1, d2, x1, x2) {
   d1$id <- paste(d1[[x1]], d1[[x2]], sep = "_")
@@ -213,8 +213,8 @@ merge_data <- function(d1, d2, x1, x2) {
   x2.y <- paste(x2, "y", sep = ".")
   d1[[x1.y]] <- NULL
   d1[[x2.y]] <- NULL
-  d1 <- gaia::colname_replace(d1, x1.x, x1)
-  d1 <- gaia::colname_replace(d1, x2.x, x2)
+  d1 <- colname_replace(d1, x1.x, x1)
+  d1 <- colname_replace(d1, x2.x, x2)
   d1$id <- NULL
   return(d1)
 }
@@ -230,7 +230,7 @@ merge_data <- function(d1, d2, x1, x2) {
 #' @param gcam_timestep Default = 5. Integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)
 #' @returns A data frame of the interpolated data
 #' @keywords internal
-#' @export
+#' @noRd
 
 agprodchange_interp <- function(data = NULL,
                                 gcam_timestep = 5) {
@@ -327,7 +327,7 @@ agprodchange_interp <- function(data = NULL,
 #' @param gcamdata_dir Default = NULL. String for directory to the gcamdata folder within the specific GCAM version. The gcamdata need to be run with drake to have the CSV outputs beforehand.
 #' @returns A data frame of the baseline agricultural productivity change from GCAM
 #' @keywords internal
-#' @export
+#' @noRd
 
 agprodchange_ref <- function(gcam_version = "gcam7",
                              gcam_timestep = 5,
@@ -339,7 +339,7 @@ agprodchange_ref <- function(gcam_version = "gcam7",
 
   if (!is.null(gcamdata_dir)) {
     # If user provide their own gcamdata dirctory, then use user provided data
-    gaia::path_check(gcamdata_dir)
+    path_check(gcamdata_dir)
 
     if (grepl("ssp1|ssp5", climate_scenario)) {
       agprodchange_ag <- data.table::fread(list.files(path = gcamdata_dir, pattern = "L2052.AgProdChange_irr_high.csv", recursive = T, full.names = T))
@@ -426,7 +426,7 @@ agprodchange_ref <- function(gcam_version = "gcam7",
 #' @param d Data frame with country_name column
 #' @returns A data frame
 #' @keywords internal
-#' @export
+#' @noRd
 iso_replace <- function(d) {
   iso <- function(d, x, y) {
     d$iso <- ifelse(d$country_name == x, y, d$iso)
@@ -584,13 +584,21 @@ iso_replace <- function(d) {
 # ------------------------------------------------------------------------------
 #' get_example_data
 #'
-#' Download and unzip example data with download URL
+#' Download and extract data from a URL.
+#'
+#' This function downloads a ZIP file from the specified URL and extracts its contents.
+#' While it is designed for downloading gaia example data, it can be used for any dataset
+#' as long as the provided URL points to a single ZIP file.
 #'
 #' @param download_url Default = ''. Link to the downloadable dataset
 #' @param file_extension Default = 'zip'. String of file extension without "."
 #' @param data_dir Default= file.path(getwd(), 'example'). Path of desired location to download data
 #' @param check_exist Default = TRUE. Binary to check if the example data already exists. If TRUE, then function gives error if the downloaded folder already exist
 #' @returns A string of path that the data is downloaded to
+#' @examples
+#' \dontrun{
+#' get_example_data(download_url = "https://example.com/data.zip", data_dir = "downloaded_data")
+#' }
 #' @export
 
 get_example_data <- function(download_url = "",
@@ -655,7 +663,8 @@ get_example_data <- function(download_url = "",
 #' @param file_extension Default = 'zip'. String of file extension without "."
 #' @param data_dir Default = file.path(getwd(), 'example'). Path of desired location to download data
 #' @returns A string of path that the data is downloaded to
-#' @export
+#' @keywords internal
+#' @noRd
 
 get_mirca2000_data <- function(download_url = "https://zenodo.org/records/7422506/files/harvested_area_grids.zip?download=1",
                                file_extension = "zip",

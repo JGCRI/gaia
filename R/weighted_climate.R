@@ -1,7 +1,6 @@
 #' weighted_climate
 #'
-#' Process standard NetCDF files from ISIMIP to country level climate
-#' based on crop harvested area from MIRCA2000
+#' Processes CMIP6 daily or monthly climate NetCDF data formatted in accordance with the ISIMIP simulation protocols (more details here) and calculates cropland-weighted precipitation and temperature at the country level, differentiated by crop type and irrigation type.
 #'
 #' @param pr_ncdf Default = NULL. List of paths for precipitation NetCDF files from ISIMIP
 #' @param tas_ncdf Default = NULL. List of paths for temperature NetCDF files from ISIMIP
@@ -12,7 +11,7 @@
 #' @param crop_names Default = NULL. String vector for selected crops id names from MIRCA2000. If NULL, use all MIRCA 26 crops. Crop names should be strings like 'irc_crop01', 'rfc_crop01', ..., 'irc_crop26', 'rfc_crop26'
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @param name_append Default = NULL. String for name append to the output folder
-#' @returns No return value, called for the side effects of processing and writing output files
+#' @returns No return value, called for the side effects of processing and writing output files. The output files include columns `[year, month, 1, 2, 3, ..., 265]`, where the numbers correspond to country IDs. To view the country names associated with these IDs, simply type gaia::country_id in the R console after loading the gaia package.
 #' @export
 
 
@@ -127,13 +126,13 @@ weighted_climate <- function(pr_ncdf = NULL,
     # loop through all pr files
     for (pr_file in pr_ncdf) {
       # check if pr file is valid
-      gaia::path_check(path = pr_file, file_type = "nc")
+      path_check(path = pr_file, file_type = "nc")
 
       # precipitation
       message(paste0("Processing: ", pr_file))
 
       # get time periods of the nc file
-      nc_time <- gaia::get_nc_time(pr_file)
+      nc_time <- get_nc_time(pr_file)
 
       # check if the data periods is within the selected periods
       if (!is.null(time_periods)) {
@@ -181,13 +180,13 @@ weighted_climate <- function(pr_ncdf = NULL,
     # loop through all tas files
     for (tas_file in tas_ncdf) {
       # check if pr file is valid
-      gaia::path_check(path = tas_file, file_type = "nc")
+      path_check(path = tas_file, file_type = "nc")
 
       # precipitation
       message(paste0("Processing: ", tas_file))
 
       # get time periods of the nc file
-      nc_time <- gaia::get_nc_time(tas_file)
+      nc_time <- get_nc_time(tas_file)
 
       # check if the data periods is within the selected periods
       if (!is.null(time_periods)) {

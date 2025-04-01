@@ -1,6 +1,6 @@
 #' data_aggregation
 #'
-#' Process multiple models to analyze historical weather variables and crop yields
+#' This function calculates crop growing seasons using climate variables processed by weighted_climate along with crop calendars for both historical and projected periods. This function prepares climate and yield data for subsequent model fitting.
 #'
 #' @param climate_hist_dir Default = NULL. String for path to the processed historical climate data folder
 #' @param climate_impact_dir Default = NULL. String for path to the processed future climate data folder using weighted_climate function
@@ -33,7 +33,7 @@ data_aggregation <- function(climate_hist_dir = NULL,
   if(is.null(crop_calendar_file)){
 
     # Use default crop_calendar.csv created from the workflow
-    gaia::path_check(file.path(output_dir, "data_processed", "crop_calendar.csv"))
+    path_check(file.path(output_dir, "data_processed", "crop_calendar.csv"))
     crop_cal <- gaia::input_data(
       folder_path = file.path(output_dir, "data_processed"),
       input_file = "crop_calendar.csv"
@@ -42,7 +42,7 @@ data_aggregation <- function(climate_hist_dir = NULL,
   } else {
 
     # Use user provided crop_calendar_file
-    gaia::path_check(crop_calendar_file)
+    path_check(crop_calendar_file)
     crop_cal <- gaia::input_data(
       folder_path = dirname(crop_calendar_file),
       input_file = basename(crop_calendar_file)
@@ -54,7 +54,7 @@ data_aggregation <- function(climate_hist_dir = NULL,
   crop_select <- names(crop_cal)[!names(crop_cal) %in% c('iso', 'plant', 'harvest')]
 
   # merge fao yield and fao irrigation equip data
-  yield <- gaia::merge_data(fao_yield, fao_irr_equip, "iso", "year")
+  yield <- merge_data(fao_yield, fao_irr_equip, "iso", "year")
 
 
   # ----------------------------------------------------------------------------
@@ -67,7 +67,7 @@ data_aggregation <- function(climate_hist_dir = NULL,
 
     crop_historic <- NULL
   } else {
-    gaia::path_check(climate_hist_dir)
+    path_check(climate_hist_dir)
 
     # get file list
     list_precip_rfc <- list.files(
@@ -100,7 +100,7 @@ data_aggregation <- function(climate_hist_dir = NULL,
       file_temp <- list_temp_rfc[grepl(crop_id, list_temp_rfc)]
 
       # aggregate weather data for crop_i
-      d_climate <- gaia::weather_agg(
+      d_climate <- weather_agg(
         file_precip = file_precip,
         file_temp = file_temp,
         crop_name = crop_i,
@@ -108,14 +108,14 @@ data_aggregation <- function(climate_hist_dir = NULL,
       )
 
       # estimate growing season for each crop and country (SAGE db)
-      d_crop <- gaia::crop_month(
+      d_crop <- crop_month(
         climate_data = d_climate,
         crop_name = crop_i,
         crop_calendar = crop_cal
       )
 
       # merge data
-      d_crop <- gaia::data_merge(
+      d_crop <- data_merge(
         data = d_crop,
         crop_name = crop_i,
         yield = yield,
@@ -135,7 +135,7 @@ data_aggregation <- function(climate_hist_dir = NULL,
   if (is.null(climate_impact_dir)) {
     stop("Please provide folder path to the projected climate data.")
   } else {
-    gaia::path_check(climate_impact_dir)
+    path_check(climate_impact_dir)
   }
 
   # get file list
@@ -171,21 +171,21 @@ data_aggregation <- function(climate_hist_dir = NULL,
     file_temp <- list_temp_rfc[grepl(crop_id, list_temp_rfc)]
 
     # aggregate weather data for crop_i
-    d_climate <- gaia::weather_agg(
+    d_climate <- weather_agg(
       file_precip = file_precip,
       file_temp = file_temp,
       crop_name = crop_i
     )
 
     # estimate growing season for each crop and country (SAGE db)
-    d_crop <- gaia::crop_month(
+    d_crop <- crop_month(
       climate_data = d_climate,
       crop_name = crop_i,
       crop_calendar = crop_cal
     )
 
     # merge data
-    d_crop <- gaia::data_trans(
+    d_crop <- data_trans(
       data = d_crop,
       climate_model = climate_model,
       climate_scenario = climate_scenario,

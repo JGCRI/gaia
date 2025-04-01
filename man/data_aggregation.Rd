@@ -45,5 +45,5 @@ data_aggregation(
 A list of historical and projected weather variables and crop data.
 }
 \description{
-Process multiple models to analyze historical weather variables and crop yields
+This function calculates crop growing seasons using climate variables processed by weighted_climate along with crop calendars for both historical and projected periods. This function prepares climate and yield data for subsequent model fitting.
 }

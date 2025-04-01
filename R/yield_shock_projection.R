@@ -1,7 +1,6 @@
 #' yield_shock_projection
 #'
-#' Project yields for future climate scenarios using regression analysis
-#' Using average growing season temperature and precipitation, max and min months
+#' Projects yield shocks for future climate scenarios using the fitted model and temperature, precipitation, and CO2 projections from the climate scenario.
 #'
 #' @param use_default_coeff Default = FALSE. Binary for using default regression coefficients. Set to TRUE will use the default coefficients instead of calculating coefficients from the historical climate data.
 #' @param climate_model Default = NULL. String for climate model (e.g., 'CanESM5')
@@ -49,7 +48,7 @@ yield_shock_projection <- function(use_default_coeff = FALSE,
     print(paste(climate_model, climate_scenario, crop_i, sep = " "))
 
     # calculate yield impact for each crop and country
-    d <- gaia::climate_impact(
+    d <- climate_impact(
       use_default_coeff = use_default_coeff,
       climate_model = climate_model,
       climate_scenario = climate_scenario,
@@ -62,7 +61,7 @@ yield_shock_projection <- function(use_default_coeff = FALSE,
 
     # plot projected yield impact
     if (diagnostics == TRUE) {
-      gaia::plot_projection(
+      plot_projection(
         data = d,
         climate_model = climate_model,
         climate_scenario = climate_scenario,
@@ -74,7 +73,7 @@ yield_shock_projection <- function(use_default_coeff = FALSE,
 
 
     # smooth annual impacts using moving average and output certain time step
-    d_smooth <- gaia::smooth_impacts(
+    d_smooth <- smooth_impacts(
       data = d,
       climate_model = climate_model,
       climate_scenario = climate_scenario,
@@ -92,7 +91,7 @@ yield_shock_projection <- function(use_default_coeff = FALSE,
 
     if (diagnostics == TRUE) {
       # plot smoothed projected yield impact
-      gaia::plot_projection_smooth(
+      plot_projection_smooth(
         data = d_smooth,
         climate_model = climate_model,
         climate_scenario = climate_scenario,
@@ -102,7 +101,7 @@ yield_shock_projection <- function(use_default_coeff = FALSE,
       )
 
       # plot spatial map
-      gaia::plot_map(
+      plot_map(
         data = d_smooth,
         plot_years = NULL,
         output_dir = output_dir
@@ -111,7 +110,7 @@ yield_shock_projection <- function(use_default_coeff = FALSE,
   }
 
   # format the smoothed yield to prepare for GCAM related process
-  d_format <- gaia::format_projection(
+  d_format <- format_projection(
     data = d_bind,
     base_year = base_year,
     gcam_timestep = gcam_timestep,

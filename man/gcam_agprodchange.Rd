@@ -48,7 +48,5 @@ gcam_agprodchange(
 A data frame of formatted agricultural productivity change for GCAM
 }
 \description{
-Map country level yield impacts to GCAM region-GLU level
-Calculate agricultural productivity change by region GLU
-Output agprodchange XML
+Remaps country-level yield shocks to GCAM-required spatial scales (e.g., region, basin, and intersections), based on harvested areas, and aggregates crops to GCAM commodities. This function applies the projected shocks to GCAM scenario agricultural productivity growth rates (the unit used to project future yields in GCAM) and creates ready-to-use XML outputs for GCAM.
 }

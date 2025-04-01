@@ -42,6 +42,5 @@ yield_shock_projection(
 A data frame of formatted smoothed annual crop yield shocks under climate impacts
 }
 \description{
-Project yields for future climate scenarios using regression analysis
-Using average growing season temperature and precipitation, max and min months
+Projects yield shocks for future climate scenarios using the fitted model and temperature, precipitation, and CO2 projections from the climate scenario.
 }

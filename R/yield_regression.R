@@ -1,7 +1,6 @@
 #' yield_regression
 #'
-#' Yield regressions and create figures
-#' using average growing season temperature and precipitation, max and min months
+#' Performs regression analysis fitted with historical annual crop yields, growing season monthly temperature and precipitation, CO2 concentrations, and GDP per capita. The default econometric model applied in gaia is from Waldhoff et al., (2020). User can specify alternative formulas that are consistent with the data processed in data_aggregation.
 #'
 #' @param formula Default = NULL. String for regression formula
 #' @param diagnostics Default = TRUE. Logical for performing diagnostic plot
@@ -39,10 +38,10 @@ yield_regression <- function(formula = NULL,
     )
 
     # prepare for regression analysis
-    d_crop_reg <- gaia::prep_regression(d_crop)
+    d_crop_reg <- prep_regression(d_crop)
 
     # regression analysis with fixed effects
-    d_crop_reg_fe <- gaia::regression_fixed_effects(
+    d_crop_reg_fe <- regression_fixed_effects(
       d = d_crop_reg,
       crop_name = crop_i,
       formula = formula,
@@ -51,7 +50,7 @@ yield_regression <- function(formula = NULL,
 
     # plot
     if (diagnostics == TRUE) {
-      gaia::plot_fit(
+      plot_fit(
         data = d_crop_reg_fe,
         crop_name = crop_i,
         output_dir = output_dir

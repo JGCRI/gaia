@@ -21,6 +21,5 @@ yield_regression(
 No return value, called for the side effects of processing and writing output files
 }
 \description{
-Yield regressions and create figures
-using average growing season temperature and precipitation, max and min months
+Performs regression analysis fitted with historical annual crop yields, growing season monthly temperature and precipitation, CO2 concentrations, and GDP per capita. The default econometric model applied in gaia is from Waldhoff et al., (2020). User can specify alternative formulas that are consistent with the data processed in data_aggregation.
 }

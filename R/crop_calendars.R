@@ -1,7 +1,6 @@
 #' crop_calendars
 #'
-#' Generate planting months for each country
-#' Data from SAGE
+#' Generate planting months for each crop and country using SAGE global crop planting and harvesting dates data [Sacks et al., 2010](https://doi.org/10.1111/j.1466-8238.2010.00551.x).
 #'
 #' @param crop_calendar_file Default = NULL. String for the path of the crop calendar file. If crop_calendar_file is provided, crop_select will be set to crops in crop calendar. User provided crop_calendar_file can include any crops MIRCA2000 crops: "wheat", "maize", "rice", "barley", "rye", "millet", "sorghum", "soybean", "sunflower", "root_tuber", "cassava", "sugarcane", "sugarbeet", "oil_palm", "rape_seed", "groundnuts", "pulses", "citrus", "date_palm", "grapes", "cotton", "cocoa", "coffee", "others_perennial", "fodder_grasses", "others_annual"
 #' @param crop_select Default = NULL. Vector of strings for the selected crops from our database. If NULL, the default crops will be used in the crop calendar: c("cassava", "cotton", "maize", "rice", "root_tuber", "sorghum", "soybean", "sugarbeet", "sugarcane", "sunflower", "wheat"). The additional crops available for selection from our crop calendar database are: "barley", "groundnuts", "millet", "pulses", "rape_seed", "rye"
@@ -17,7 +16,7 @@ crop_calendars <- function(crop_calendar_file = NULL,
   message("Starting Step: crop_calendars")
 
   # verify the crops provided or selected are within the MIRCA crops
-  crops <- gaia::verify_crop(
+  crops <- verify_crop(
     crop_calendar_file = crop_calendar_file,
     crop_select = crop_select)
 
@@ -39,8 +38,8 @@ crop_calendars <- function(crop_calendar_file = NULL,
     # format, subset data and replace location name
     d$Location <- ifelse(d$Location == "Georgia" & d$Source == "USDA UPHD", "Georgia_USA", d$Location)
     d <- subset(d, select = c("Data.ID", "Location", "Crop", "Qualifier", "Plant.start", "Plant.end", "Harvest.start", "Harvest.end"))
-    d <- gaia::colname_replace(d, "Location", "country_name")
-    d <- gaia::colname_replace(d, "Crop", "crop")
+    d <- colname_replace(d, "Location", "country_name")
+    d <- colname_replace(d, "Crop", "crop")
     d$crop <- tolower(d$crop)
 
     # average days in a month
@@ -56,7 +55,7 @@ crop_calendars <- function(crop_calendar_file = NULL,
 
     # Country codes
     d <- merge(d, mapping_gcam_iso, by = "country_name", all.x = TRUE)
-    d <- gaia::iso_replace(d)
+    d <- iso_replace(d)
 
     for (i in 1:nrow(crops)) {
       d <- d %>%
@@ -64,8 +63,9 @@ crop_calendars <- function(crop_calendar_file = NULL,
     }
 
     # clean up crop calendar
-    d <- gaia::clean_sage(d = d,
-                          crop_select = crops$crop_mirca)
+    d <- clean_sage(
+      d = d,
+      crop_select = crops$crop_mirca)
 
   }
 
@@ -94,7 +94,7 @@ crop_calendars <- function(crop_calendar_file = NULL,
 #' @param crop_select Default = NULL. Vector of strings for the selected crops from our database. If NULL, the default crops will be used in the crop calendar: c("cassava", "cotton", "maize", "rice", "root_tuber", "sorghum", "soybean", "sugarbeet", "sugarcane", "sunflower", "wheat"). The additional crops available for selection from our crop calendar database are: "barley", "groundnuts", "millet", "pulses", "rape_seed", "rye"
 #' @returns A data frame of crop name mapping between MIRCA and SAGE
 #' @keywords internal
-#' @export
+#' @noRd
 
 verify_crop <- function(crop_calendar_file = NULL,
                         crop_select = NULL){
@@ -173,7 +173,7 @@ verify_crop <- function(crop_calendar_file = NULL,
 #' @param crop_select Default = NULL. Vector of strings for selected crops
 #' @returns A data frame of clean crop calendar
 #' @keywords internal
-#' @export
+#' @noRd
 
 clean_sage <- function(d = NULL,
                        crop_select = NULL){

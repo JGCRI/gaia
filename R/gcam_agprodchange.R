@@ -17,7 +17,7 @@
 #' @param climate_scenario Default = NULL. String for climate scenario (e.g., 'ssp245')
 #' @returns A list of mapping of GCAM region, GLU, and country MIRCA crops, and GCAM commodities
 #' @keywords internal
-#' @export
+#' @noRd
 
 mirca_to_gcam <- function(gcam_version = "gcam7",
                           climate_scenario = NULL) {
@@ -159,7 +159,7 @@ mirca_to_gcam <- function(gcam_version = "gcam7",
 #' @param mapping Default = NULL. Data table of 0.5 degree 67420 grid cells with lat and lon of global land area
 #' @returns A list of cropland fraction for country and GLU intersection
 #' @keywords internal
-#' @export
+#' @noRd
 
 get_mirca_cropland <- function(raster_brick = NULL,
                                mapping = NULL) {
@@ -212,7 +212,7 @@ get_mirca_cropland <- function(raster_brick = NULL,
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @returns A list of cropland weight within a specific spatial boundary
 #' @keywords internal
-#' @export
+#' @noRd
 
 get_cropland_weight <- function(gcam_version = "gcam7",
                                 climate_scenario = NULL,
@@ -222,7 +222,7 @@ get_cropland_weight <- function(gcam_version = "gcam7",
 
 
   # get MIRCA2000 harvested area data
-  mirca_data <- gaia::get_mirca2000_data(data_dir = output_dir)
+  mirca_data <- get_mirca2000_data(data_dir = output_dir)
 
   # cropland area file list
   crop_area_list <- list.files(mirca_data, full.names = TRUE)
@@ -332,7 +332,7 @@ get_cropland_weight <- function(gcam_version = "gcam7",
 #' @param output_dir Default = file.path(getwd(), 'output'). String for output directory
 #' @returns A data frame of projected yield shocks at the region-basin intersection
 #' @keywords internal
-#' @export
+#' @noRd
 
 get_weighted_yield_impact <- function(data = NULL,
                                       gcam_version = "gcam7",
@@ -467,7 +467,7 @@ get_weighted_yield_impact <- function(data = NULL,
 #' @param gcam_timestep Default = 5. Integer for the time step of GCAM (Select either 1 or 5 years for GCAM use)
 #' @returns A data frame of agricultural productivity change
 #' @keywords internal
-#' @export
+#' @noRd
 
 
 get_agprodchange <- function(data = NULL,
@@ -501,9 +501,7 @@ get_agprodchange <- function(data = NULL,
 # -----------------------------------------------------------------------------
 #' gcam_agprodchange
 #'
-#' Map country level yield impacts to GCAM region-GLU level
-#' Calculate agricultural productivity change by region GLU
-#' Output agprodchange XML
+#' Remaps country-level yield shocks to GCAM-required spatial scales (e.g., region, basin, and intersections), based on harvested areas, and aggregates crops to GCAM commodities. This function applies the projected shocks to GCAM scenario agricultural productivity growth rates (the unit used to project future yields in GCAM) and creates ready-to-use XML outputs for GCAM.
 #'
 #' @param data Default = NULL. Output data frame from function yield_shock_projection, or similar format of data
 #' @param gcamdata_dir Default = NULL. String for directory to the gcamdata folder within the specific GCAM version. The gcamdata need to be run with drake to have the CSV outputs beforehand.
