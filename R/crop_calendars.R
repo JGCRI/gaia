@@ -470,6 +470,18 @@ clean_sage <- function(d = NULL,
     d$rape_seed <- ifelse(d$country_name == "Ukraine" & d$crop == "rapeseed" &  d$Data.ID == 779, 0, d$rape_seed)
   }
 
+  # Cassava Corrections (MZ)
+  # The SAGE data shows cassava has long planting range, which implies that it is
+  # a crop that is continually planted and harvested in some countries.
+  # There are probably multiple harvests in those countries and we can't identify yields for each one.
+  # Thus, we omit countries that have planting ranges > 62 days (2 months)
+  if('cassava' %in% crop_select){
+    d$cassava <- ifelse(
+      d$crop == "cassava" & !d$country_name %in% c('Benin') &
+        (ifelse(d$Plant.end >= d$Plant.start, d$Plant.end - d$Plant.start, d$Plant.end - d$Plant.start + 365) <= 62),
+      1, 0)
+  }
+
   # PULSES CORRECTIONS
   if('pulses' %in% crop_select){
 
