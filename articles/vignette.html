@@ -105,7 +105,7 @@ font-style: italic;
 <!-------------------------->
 <!-------------------------->
 <p align="center">
-<img src="vignetteFigs%2Fdivider.png"></p>
+<img src="vignetteFigs/divider.png"></p>
 <ol style="list-style-type: decimal">
 <li>Download and install:
 <ul>
@@ -139,7 +139,7 @@ brew install gdal</code></pre>
 <!-------------------------->
 <!-------------------------->
 <p align="center">
-<img src="vignetteFigs%2Fdivider.png"></p>
+<img src="vignetteFigs/divider.png"></p>
 <p><code>gaia</code> is designed with a climate-driven empirical model
 at its core, integrated into an efficient modular structure. This
 architecture streamlines the entire workflow. This workflow includes raw
@@ -192,7 +192,7 @@ ready-to-use XML outputs for GCAM.</p></li>
 </ol>
 <p><br></p>
 <p align="center">
-<img src="vignetteFigs%2Fworkflow.jpg"></p>
+<img src="vignetteFigs/workflow.jpg"></p>
 <a name="figure1"></a>
 <p align="left" style="font-size:14px;">
 <strong>Figure 1:</strong> The gaia workflow showing the functions and
@@ -209,7 +209,7 @@ variations using empirical econometric model.
 <!-------------------------->
 <!-------------------------->
 <p align="center">
-<img src="vignetteFigs%2Fdivider.png"></p>
+<img src="vignetteFigs/divider.png"></p>
 <p><code>gaia</code> requires global climate data from the
 Inter-Sectoral Impact Model Intercomparison Project (<a href="https://www.isimip.org/" class="external-link">ISIMIP</a>) or data formatted according
 to <a href="https://www.isimip.org/protocol/preparing-simulation-files" class="external-link">ISIMIP
@@ -504,7 +504,7 @@ variables:
 <!-------------------------->
 <!-------------------------->
 <p align="center">
-<img src="vignetteFigs%2Fdivider.png"></p>
+<img src="vignetteFigs/divider.png"></p>
 <div class="section level3">
 <h3 id="example-1">Example 1<a class="anchor" aria-label="anchor" href="#example-1"></a>
 </h3>
@@ -11228,6 +11228,11 @@ et al., 2010</a>) as standard crop types. The code chunk below runs
 <span></span>
 <span><span class="co"># print result</span></span>
 <span><span class="va">crop_cal</span></span></code></pre></div>
+<p>Please note that we have excluded countries with <code>cassava</code>
+planting seasons longer than two months, based on SAGE data. This is
+because extended planting periods from SAGE data typically indicate
+multiple planting and harvesting cycles, which makes it difficult to
+identify yield for each individual harvest.</p>
 <p><strong>Outputs of the function:</strong> The function returns a data
 frame of crop calendars. It also writes the output in
 <code>output_dir/data_processed/crop_calendar.csv</code></p>
@@ -13573,7 +13578,7 @@ precip_mean_2
 <p><br></p>
 <a name="figure2"></a>
 <p align="center">
-<img src="vignetteFigs%2Fmodel_soybean_fit.png"></p>
+<img src="vignetteFigs/model_soybean_fit.png"></p>
 <p align="left" style="font-size:14px;">
 <strong>Figure 2:</strong> Model fitted yields versus FAO yields for
 soybean.
@@ -16866,7 +16871,7 @@ nga
 <p><br></p>
 <a name="figure3"></a>
 <p align="center">
-<img src="vignetteFigs%2Fannual_projected_soybean.png"></p>
+<img src="vignetteFigs/annual_projected_soybean.png"></p>
 <p align="left" style="font-size:14px;">
 <strong>Figure 3:</strong> Projected yield shocks for soybean.
 </p>
@@ -16927,13 +16932,63 @@ rainfed crop types. An example of APG for soybean is shown in <a href="#figure4"
 </ul>
 <a name="figure4"></a>
 <p align="center">
-<img src="vignetteFigs%2Fagprodchange_soybean.png"></p>
+<img src="vignetteFigs/agprodchange_soybean.png"></p>
 <p align="left" style="font-size:14px;">
 <strong>Figure 4:</strong> Agricultural productivity growth rate for
 soybean. Each line under a region indicates the APG for the region-basin
 intersection.
 </p>
 <p><br></p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="limitations">Limitations<a class="anchor" aria-label="anchor" href="#limitations"></a>
+</h2>
+<hr>
+<p>The current version of <code>gaia</code> has several limitations that
+users should be aware of.</p>
+<div class="section level3">
+<h3 id="weather-data-aggregation-and-theoretical-consistency">Weather Data Aggregation and Theoretical Consistency<a class="anchor" aria-label="anchor" href="#weather-data-aggregation-and-theoretical-consistency"></a>
+</h3>
+<p>In the current implementation, <code>gaia</code> uses cropland
+area-weighted averages of weather variables (e.g., temperature and
+precipitation) to construct country-level climate inputs. While this
+aggregation method is commonly used in empirical crop yield modeling,
+its theoretical justification is more robust when the dependent variable
+(e.g., yield) is in linear form, as it can be interpreted as a
+consistent approximation of a field-level data-generating process.</p>
+<p>However, in <code>gaia</code>, the dependent variable is specified as
+the natural logarithm of yield, which allows us to project the future
+yield shocks based on weather only, allowing modelers to use their own
+assumptions about technological improvements driving yield improvements.
+In this context, the use of cropland-weighted average climate inputs
+might lead to theoretical inconsistency. Specifically, if yield is
+assumed to be generated by an underlying nonlinear function of weather
+at the field level (e.g.,
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>l</mi><mi>o</mi><mi>g</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>y</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>f</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>T</mi><mo>,</mo><mi>P</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">log(y)=f(T,P)</annotation></semantics></math>),
+then aggregating climate variables before applying the function is not
+equivalent to aggregating yield outcomes after applying the function at
+the field level. This is a known issue related to the log-sum-exp
+transformation.</p>
+<p>While this limitation does not undermine the empirical validity of
+the model, users should be aware that the aggregation procedure may not
+be interpretable as a field-level yield formulation. The software
+currently supports only cropland area-weighted climate and does not
+offer alternative methods for constructing climate inputs.</p>
+<p><br></p>
+</div>
+<div class="section level3">
+<h3 id="uncertainty-quantification">Uncertainty Quantification<a class="anchor" aria-label="anchor" href="#uncertainty-quantification"></a>
+</h3>
+<p><code>gaia</code> currently does not explicitly quantify uncertainty
+in projected yield shock outcomes resulting from uncertainty in the
+estimated econometric coefficients. While <code>gaia</code> provides
+statistics of the regression analysis, it does not perform uncertainty
+quantification, such as Monte Carlo simulations, to propagate the
+uncertainty in model parameters through to the final results. However,
+users are provided with all necessary outputs (including coefficient
+estimates and associated statistics in the reg_out_[crop]_xxx.csv files)
+to implement such an analysis independently, if desired.</p>
 <p><a href="#top">Back to top</a></p>
 </div>
 </div>
@@ -16948,7 +17003,7 @@ intersection.
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
