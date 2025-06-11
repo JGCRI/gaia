@@ -21,5 +21,5 @@ yield_regression(
 No return value, called for the side effects of processing and writing output files
 }
 \description{
-Performs regression analysis fitted with historical annual crop yields, growing season monthly temperature and precipitation, CO2 concentrations, and GDP per capita. The default econometric model applied in gaia is from Waldhoff et al., (2020). User can specify alternative formulas that are consistent with the data processed in data_aggregation.
+Performs regression analysis fitted with historical annual crop yields, growing season monthly temperature and precipitation, CO2 concentrations, and GDP per capita. The default econometric model applied in gaia is from \href{https://www.doi.org/10.1088/1748-9326/abadcb}{Waldhoff et al., (2020)}. User can specify alternative formulas that are consistent with the data processed in `data_aggregation`.
 }

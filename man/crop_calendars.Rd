@@ -21,5 +21,5 @@ crop_calendars(
 A data frame of crop calendars
 }
 \description{
-Generate planting months for each crop and country using SAGE global crop planting and harvesting dates data [Sacks et al., 2010](https://doi.org/10.1111/j.1466-8238.2010.00551.x).
+Generate planting months for each crop and country using SAGE global crop planting and harvesting dates data \href{https://doi.org/10.1111/j.1466-8238.2010.00551.x}{(Sacks et al., 2010)}.
 }
