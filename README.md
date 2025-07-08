@@ -29,7 +29,7 @@ alt="https://jgcri.github.io/gaia/articles/vignette.html" height="60"/></a>
 <!-- ------------------------>
 <!-- ------------------------>
 
-> Zhao, M., Waldhoff, S., Tebaldi, C., Snyder, A. 2024. gaia: An R package to estimate crop yield responses to temperature and precipitation. (In progress) Journal of Open Source Software, DOI: XXXX
+> Zhao, M., Morris, S.T., Tebaldi, C., Snyder, A. 2025. gaia: An R package to estimate crop yield responses to temperature and precipitation. Journal of Open Source Software, DOI: XXXX
 
 <br/>
 

@@ -7,7 +7,7 @@ authors:
   - name: Mengqi Zhao
     orcid: 0000-0001-5385-2758
     affiliation: 1
-  - name: Stephanie Waldhoff
+  - name: Stephanie T. Morris
     orcid: 0000-0002-8073-0868
     affiliation: 2
   - name: Claudia Tebaldi
