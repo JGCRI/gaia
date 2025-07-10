@@ -1,11 +1,11 @@
 Package: gaia
 Title: gaia: An R package to estimate crop yield responses to temperature
     and precipitation
-Version: 1.0.0
+Version: 2.0.0
 Authors@R: c(
     person("Mengqi", "Zhao", , "mengqi.zhao@pnnl.gov", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-5385-2758")),
-    person("Stephanie", "Waldhoff", , "Stephanie.Waldhoff@pnnl.gov", role = "aut",
+    person("Stephanie T.", "Morris", , "Stephanie.morris@pnnl.gov", role = "aut",
            comment = c(ORCID = "0000-0002-8073-0868")),
     person("Claudia", "Tebaldi", , "claudia.tebaldi@pnnl.gov", role = "aut",
            comment = c(ORCID = "0000-0001-9233-8903")),
