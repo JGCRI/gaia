@@ -723,10 +723,11 @@ climate_impact <- function(use_default_coeff = FALSE,
 
     d.hist <- subset(d, select = histYears)
     d.impact <- exp(d[[x]] - d.hist)
-    d[[x1]] <- as.vector(ifelse(is.na(d.hist[, 1]),
-      rowSums(d.impact[, 2:ncol(d.impact)]) / (ncol(d.impact) - 1),
-      rowSums(d.impact[, 1:ncol(d.impact)]) / ncol(d.impact)
-    ))
+    d[[x1]] <- as.vector(ifelse(apply(d.impact, 1, function(x) all(is.na(x))),
+                                NA,
+                                rowSums(d.impact, na.rm = T) / rowSums(!is.na(d.impact))
+                                )
+                         )
   }
 
   # clean up the data
