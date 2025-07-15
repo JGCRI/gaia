@@ -810,7 +810,7 @@ smooth_impacts <- function(data = NULL,
       } else {
         window <- paste0("X", seq(max(start_year, (y - window_pre)), min(end_year, (y + window_post)), 1)) # 20 year window
         Year <- paste0("X", y)
-        d[[Year]] <- d[, rowMeans(.SD), .SDcols = window]
+        d[[Year]] <- d[, rowMeans(.SD, na.rm = T), .SDcols = window]
       }
     }
   } else {
