@@ -3,6 +3,7 @@
 [![test-coverage](https://github.com/JGCRI/gaia/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/JGCRI/gaia/actions/workflows/test-coverage.yaml)
 [![codecov](https://codecov.io/gh/JGCRI/gaia/branch/main/graph/badge.svg?token=XQ913U4IYM)](https://codecov.io/gh/JGCRI/gaia)
 [![docs](https://github.com/JGCRI/gaia/actions/workflows/docs.yaml/badge.svg)](https://github.com/JGCRI/gaia/actions/workflows/docs.yaml)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.07538/status.svg)](https://doi.org/10.21105/joss.07538)
 <!-- badges: end -->
 
 
@@ -29,7 +30,7 @@ alt="https://jgcri.github.io/gaia/articles/vignette.html" height="60"/></a>
 <!-- ------------------------>
 <!-- ------------------------>
 
-> Zhao, M., Morris, S.T., Tebaldi, C., Snyder, A. 2025. gaia: An R package to estimate crop yield responses to temperature and precipitation. Journal of Open Source Software, DOI: XXXX
+> Zhao, M., Morris, S.T., Tebaldi, C., Snyder, A., (2025). gaia: An R package to estimate crop yield responses to temperature and precipitation. Journal of Open Source Software, 10(111), 7538, https://doi.org/10.21105/joss.07538
 
 <br/>
 
